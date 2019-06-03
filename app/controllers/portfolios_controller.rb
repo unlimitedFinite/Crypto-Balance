@@ -8,8 +8,12 @@ class PortfoliosController < ApplicationController
   def create
     @portfolio = Portfolio.new(portfolio_params)
     @portfolio.user = current_user
-    @portfolio.coin = Coin.find(params[:id])
-    raise
+    @portfolio.coin_id = Coin.find(params[:coin_id])
+    if @portfolio.save
+      redirect_to root_path
+    else
+      render :new
+    end
   end
 
   def edit
