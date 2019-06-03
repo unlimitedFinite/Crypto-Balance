@@ -10,10 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_03_072431) do
+
+ActiveRecord::Schema.define(version: 2019_06_03_075015) do
+
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "allocations", force: :cascade do |t|
+    t.integer "allocation_pct"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "coin_id"
+    t.bigint "portfolio_id"
+    t.index ["coin_id"], name: "index_allocations_on_coin_id"
+    t.index ["portfolio_id"], name: "index_allocations_on_portfolio_id"
+  end
 
   create_table "coins", force: :cascade do |t|
     t.string "name"
@@ -40,6 +52,27 @@ ActiveRecord::Schema.define(version: 2019_06_03_072431) do
     t.index ["target_coin_id"], name: "index_orders_on_target_coin_id"
   end
 
+  create_table "portfolios", force: :cascade do |t|
+    t.string "rebalance_freq"
+    t.date "next_rebalance_dt"
+    t.integer "current_value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "positions", force: :cascade do |t|
+    t.bigint "coin_id"
+    t.integer "current_quantity"
+    t.integer "current_value"
+    t.date "as_of_dt"
+    t.date "as_of_dt_end"
+    t.bigint "portfolio_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["coin_id"], name: "index_positions_on_coin_id"
+    t.index ["portfolio_id"], name: "index_positions_on_portfolio_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -54,4 +87,8 @@ ActiveRecord::Schema.define(version: 2019_06_03_072431) do
 
   add_foreign_key "orders", "coins", column: "base_coin_id"
   add_foreign_key "orders", "coins", column: "target_coin_id"
+  add_foreign_key "allocations", "coins"
+  add_foreign_key "allocations", "portfolios"
+  add_foreign_key "positions", "coins"
+  add_foreign_key "positions", "portfolios"
 end
