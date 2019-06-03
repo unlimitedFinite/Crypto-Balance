@@ -1,4 +1,11 @@
 Rails.application.routes.draw do
+
+  get 'portfolios/new'
+  post 'portfolios/create'
+  get 'portfolios/edit'
+  post 'portfolios/update'
+  get 'portfolios/show'
+
   get 'allocations/new'
   get 'allocations/create'
   get 'allocations/edit'
