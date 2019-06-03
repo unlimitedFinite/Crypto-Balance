@@ -1,9 +1,10 @@
 <h1>Portfolios#new</h1>
 
 
-<%= form_for @portfolio, url: {action:"create"} do |f| %>
-  <%= f.text_field :rebalance_freq, placeholder: "Enter rebalance frequency" %>
-  <%= f.date_field :next_rebalance_dt %>
-  <%= f.text_field :coin_id, placeholder: "Enter BTC or USDT" %>
+<%= simple_form_for @portfolio, url: {action:"create"} do |f| %>
+  <%= f.input :rebalance_freq, collection: %w(Daily Weekly Biweekly Monthly Quarterly), selected: "Weekly",  prompt: "Choose frequency" %>
+  <%= f.date_select :next_rebalance_dt, order: [:day, :month, :year], selected: Date.today + 7 %>
+  <%= f.collection_radio_buttons :coin_id, [["BTC", 'BTC'], ["USDT", 'USDT']], :first, :last, wrapper_html: { class: 'ml-2' }, message:'Wrong symbol' %>
+
   <%= f.submit "Create" %>
 <% end %>
