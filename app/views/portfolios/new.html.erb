@@ -1,2 +1,9 @@
 <h1>Portfolios#new</h1>
 <p>Find me in app/views/portfolios/new.html.erb</p>
+
+<%= form_for @portfolio, url: {action:"create"} do |f| %>
+  <%= f.text_field :rebalance_freq %>
+  <%= f.date_field :next_rebalance_dt %>
+  <%= f.text_field :base_coin_id %>
+  <%= f.submit "Create" %>
+<% end %>

@@ -1,5 +1,6 @@
 class PortfoliosController < ApplicationController
   def new
+    @portfolio = Portfolio.new
   end
 
   def create
