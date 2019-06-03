@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'positions/create'
+  get 'positions/index'
   get 'portfolios/new'
   post 'portfolios/create'
   get 'portfolios/edit'
