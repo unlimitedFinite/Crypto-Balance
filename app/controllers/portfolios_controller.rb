@@ -8,7 +8,7 @@ class PortfoliosController < ApplicationController
   def create
     @portfolio = Portfolio.new(portfolio_params)
     @portfolio.user = current_user
-    @portfolio.coin_id = Coin.find(params[:coin_id])
+    @portfolio.coin_id = Coin.find_by(symbol: params['portfolio']['coin_id']).id
     if @portfolio.save
       redirect_to root_path
     else
