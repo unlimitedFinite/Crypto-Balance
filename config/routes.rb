@@ -7,9 +7,9 @@ Rails.application.routes.draw do
   get 'portfolios/show'
 
   get 'allocations/new'
-  get 'allocations/create'
+  post 'allocations/create'
   get 'allocations/edit'
-  get 'allocations/update'
+  post 'allocations/update'
   get 'orders/new'
   post 'orders/create'
   get 'orders/index'
