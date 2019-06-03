@@ -10,9 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema.define(version: 2019_06_03_075015) do
-
+ActiveRecord::Schema.define(version: 2019_06_03_090604) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,18 +20,17 @@ ActiveRecord::Schema.define(version: 2019_06_03_075015) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "coin_id"
-    t.bigint "portfolio_id"
     t.index ["coin_id"], name: "index_allocations_on_coin_id"
-    t.index ["portfolio_id"], name: "index_allocations_on_portfolio_id"
   end
 
   create_table "coins", force: :cascade do |t|
     t.string "name"
     t.string "symbol"
-    t.float "current_price"
+    t.float "usdt_price"
     t.boolean "is_base_coin"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "btc_price"
   end
 
   create_table "orders", force: :cascade do |t|
@@ -55,9 +52,13 @@ ActiveRecord::Schema.define(version: 2019_06_03_075015) do
   create_table "portfolios", force: :cascade do |t|
     t.string "rebalance_freq"
     t.date "next_rebalance_dt"
+    t.bigint "user_id"
     t.integer "current_value"
+    t.bigint "coin_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["coin_id"], name: "index_portfolios_on_coin_id"
+    t.index ["user_id"], name: "index_portfolios_on_user_id"
   end
 
   create_table "positions", force: :cascade do |t|
@@ -85,10 +86,11 @@ ActiveRecord::Schema.define(version: 2019_06_03_075015) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "allocations", "coins"
   add_foreign_key "orders", "coins", column: "base_coin_id"
   add_foreign_key "orders", "coins", column: "target_coin_id"
-  add_foreign_key "allocations", "coins"
-  add_foreign_key "allocations", "portfolios"
+  add_foreign_key "portfolios", "coins"
+  add_foreign_key "portfolios", "users"
   add_foreign_key "positions", "coins"
   add_foreign_key "positions", "portfolios"
 end
