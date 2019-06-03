@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  get 'portfolios/new'
+  get 'portfolios/create'
+  get 'portfolios/edit'
+  get 'portfolios/update'
+  get 'portfolios/show'
   get 'orders/new'
   post 'orders/create'
   get 'orders/index'
