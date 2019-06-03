@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  get 'allocations/new'
+  get 'allocations/create'
+  get 'allocations/edit'
+  get 'allocations/update'
   get 'orders/new'
   post 'orders/create'
   get 'orders/index'
