@@ -12,7 +12,6 @@
 
 ActiveRecord::Schema.define(version: 2019_06_03_072902) do
 
-
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,6 +19,10 @@ ActiveRecord::Schema.define(version: 2019_06_03_072902) do
     t.integer "allocation_pct"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "coin_id"
+    t.bigint "portfolio_id"
+    t.index ["coin_id"], name: "index_allocations_on_coin_id"
+    t.index ["portfolio_id"], name: "index_allocations_on_portfolio_id"
   end
 
   create_table "coins", force: :cascade do |t|
@@ -63,4 +66,6 @@ ActiveRecord::Schema.define(version: 2019_06_03_072902) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "allocations", "coins"
+  add_foreign_key "allocations", "portfolios"
 end
