@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_03_075015) do
+ActiveRecord::Schema.define(version: 2019_06_03_132539) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,7 +20,9 @@ ActiveRecord::Schema.define(version: 2019_06_03_075015) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "coin_id"
+    t.bigint "portfolio_id"
     t.index ["coin_id"], name: "index_allocations_on_coin_id"
+    t.index ["portfolio_id"], name: "index_allocations_on_portfolio_id"
   end
 
   create_table "coins", force: :cascade do |t|
@@ -86,6 +88,7 @@ ActiveRecord::Schema.define(version: 2019_06_03_075015) do
   end
 
   add_foreign_key "allocations", "coins"
+  add_foreign_key "allocations", "portfolios"
   add_foreign_key "orders", "coins", column: "base_coin_id"
   add_foreign_key "orders", "coins", column: "target_coin_id"
   add_foreign_key "portfolios", "coins"
