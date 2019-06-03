@@ -10,7 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+
 ActiveRecord::Schema.define(version: 2019_06_03_075015) do
+
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,12 +40,16 @@ ActiveRecord::Schema.define(version: 2019_06_03_075015) do
     t.string "status"
     t.float "price"
     t.integer "quantity"
-    t.float "commision"
+    t.float "commission"
     t.string "side"
     t.string "type"
     t.string "binance_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "base_coin_id"
+    t.bigint "target_coin_id"
+    t.index ["base_coin_id"], name: "index_orders_on_base_coin_id"
+    t.index ["target_coin_id"], name: "index_orders_on_target_coin_id"
   end
 
   create_table "portfolios", force: :cascade do |t|
@@ -79,6 +85,8 @@ ActiveRecord::Schema.define(version: 2019_06_03_075015) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "orders", "coins", column: "base_coin_id"
+  add_foreign_key "orders", "coins", column: "target_coin_id"
   add_foreign_key "allocations", "coins"
   add_foreign_key "allocations", "portfolios"
   add_foreign_key "positions", "coins"
