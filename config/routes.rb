@@ -1,5 +1,11 @@
 Rails.application.routes.draw do
 
+  get 'positions/create'
+  get 'positions/index'
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5f1de54c816136ab3c9a810fdafe1d7e09f07f94
   get 'portfolios/new'
   post 'portfolios/create'
   get 'portfolios/edit'
