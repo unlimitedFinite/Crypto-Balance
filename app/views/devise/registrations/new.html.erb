@@ -4,6 +4,18 @@
   <%= f.error_notification %>
 
   <div class="form-inputs">
+    <%= f.input :first_name,
+                required: true,
+                input_html: { autocomplete: "First Name" } %>
+    <%= f.input :last_name,
+                required: true,
+                input_html: { autocomplete: "Last Name" } %>
+    <%= f.input :api_key,
+                required: true,
+                input_html: { autocomplete: "Binance API Key" } %>
+    <%= f.input :secret_key,
+                required: true,
+                input_html: { autocomplete: "Binance Secret Key" } %>
     <%= f.input :email,
                 required: true,
                 autofocus: true,
