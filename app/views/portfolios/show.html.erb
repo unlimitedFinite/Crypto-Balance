@@ -1,15 +1,44 @@
-<h1>Portfolios#show</h1>
-<p>Find me in app/views/portfolios/show.html.erb</p>
+<div class="container">
+  <h1>Portfolio<small><%= current_user.email %></small></h1>
 
 
-<%= form_tag create_positions_path(@portfolio) do %>
-  <%= submit_tag 'Update Positions', class: 'btn btn-primary' %>
-<% end %>
-
-<ul>
-  <% @portfolio.positions.each do |position| %>
-    <li><%= position.current_quantity %> <%= position.current_value %></li>
+  <%= form_tag create_positions_path(@portfolio) do %>
+    <%= submit_tag 'Update Positions', class: 'btn btn-primary' %>
   <% end %>
-</ul>
 
-<a href="/portfolios/1/create_positions" method="post">/portfolios/1/create_positions</a>
+  <h1>Total in USD: <%=  %></h1>
+  <h1>Total in BTC: </h1>
+
+  <table class="table table-dark">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Coin</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Value (BTC)</th>
+        <th scope="col">Value (USD)</th>
+        <th scope="col">Current</th>
+        <th scope="col">Target</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @portfolio.positions.each_with_index do |position, index| %>
+      <% coin = position.coin %>
+        <tr>
+          <th scope="row"><%= index + 1 %></th>
+          <td><%= coin.name %></td>
+          <td><%= position.current_quantity %></td>
+          <td><%= position.current_quantity * coin.btc_price %></td>
+          <td><%= position.current_quantity * coin.usdt_price %></td>
+          <td><%=  %></td>
+          <td><%= @allocations.find{|a| a[:coin_id] == coin.id}.allocation_pct %>%</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <% @allocations.each do |a| %>
+
+  <% end %>
+
+  <div id="chart_div"></div>
+</div>
