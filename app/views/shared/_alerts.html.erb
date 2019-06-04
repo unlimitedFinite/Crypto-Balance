@@ -1,0 +1,27 @@
+<% unless flash[:success].nil? %>
+  <div class="flash flash-success alert alert-dismissible fade show" role="alert">
+    <span><%= flash[:success] %></span>
+    <a data-dismiss="alert" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </a>
+  </div>
+<% end %>
+
+<% unless flash[:warning].nil? %>
+  <div class="flash flash-warning alert alert-dismissible fade show" role="alert">
+    <span><%= flash[:warning] %></span>
+     <a data-dismiss="alert" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </a>
+  </div>
+<% end %>
+
+<% unless flash[:failure].nil? %>
+  <div class="flash flash-danger alert alert-dismissible fade show" role="alert">
+    <span><%= flash[:failure] %></span>
+    <a data-dismiss="alert" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </a>
+  </div>
+<% end %>
+
