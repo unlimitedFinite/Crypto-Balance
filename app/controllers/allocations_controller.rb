@@ -10,13 +10,13 @@ class AllocationsController < ApplicationController
   end
 
   def create
-    # @portfolio = Portfolio.find(params[:portfolio_id])
+    # @portfolio = Portfolio.find(params[:portfolio_id]
     @allocation = Allocation.new(allocation_params)
     @portfolio = params[:portfolio_id]
 
     if params[:crypto].values.map(&:to_i).sum != 100
       flash[:failure] = "Allocation must total 100% !"
-      redirect_to new_portfolio_allocation_path(@allocation.portfolio_id)
+      redirect_to new_portfolio_allocation_path(@portfolio)
     else
       params[:crypto].each do |coin, percentage|
         @allocation = Allocation.new
@@ -27,10 +27,10 @@ class AllocationsController < ApplicationController
       end
       unless Allocation.last.portfolio_id.nil?
         flash[:success] = "Allocations have been saved!"
-        redirect_to portfolio_path(@allocation.portfolio_id)
+        redirect_to portfolio_path(@portfolio)
       else
         flash[:failure] = "There has been a problem allocating, Please try again!"
-        redirect_to new_portfolio_allocation_path(@allocation.portfolio_id)
+        redirect_to new_portfolio_allocation_path(@portfolio)
       end
     end
   end
