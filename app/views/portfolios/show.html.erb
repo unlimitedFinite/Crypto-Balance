@@ -31,10 +31,10 @@
         <tr>
           <th scope="row"><%= index + 1 %></th>
           <td><%= coin.name %></td>
-          <td><%= position.current_quantity %></td>
-          <td><%= position.current_quantity * coin.btc_price %></td>
-          <td><%= position.current_quantity * coin.usdt_price %></td>
-          <td><%= (((position.current_quantity * coin.usdt_price)/(@portfolio.current_value * btc_price))*100) %>%</td>
+          <td><%= sprintf('%.6f', position.current_quantity) %></td>
+          <td><%= sprintf('%.6f', (position.current_quantity * coin.btc_price)) %></td>
+          <td><%= sprintf('%.2f', (position.current_quantity * coin.usdt_price)) %></td>
+          <td><%= (((position.current_quantity * coin.usdt_price)/(@portfolio.current_value * btc_price))*100).round(1) %>%</td>
           <td><%= @allocations.find{|a| a[:coin_id] == coin.id}.allocation_pct %>%</td>
         </tr>
       <% end %>
