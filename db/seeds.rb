@@ -10,7 +10,6 @@ require 'json'
 #   Character.create(name: 'Luke', movie: movies.first)
 
 
-
 puts 'Destroying db contents'
 # Delete records
 Coin.destroy_all
@@ -62,5 +61,4 @@ coins.each do |coin|
     is_base_coin: is_base_coin
   )
 end
-
 
