@@ -1,2 +1,15 @@
 <h1>Portfolios#show</h1>
 <p>Find me in app/views/portfolios/show.html.erb</p>
+
+
+<%= form_tag create_positions_path(@portfolio) do %>
+  <%= submit_tag 'Update Positions', class: 'btn btn-primary' %>
+<% end %>
+
+<ul>
+  <% @portfolio.positions.each do |position| %>
+    <li><%= position.current_quantity %> <%= position.current_value %></li>
+  <% end %>
+</ul>
+
+<a href="/portfolios/1/create_positions" method="post">/portfolios/1/create_positions</a>
