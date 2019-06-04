@@ -3,5 +3,5 @@ class Portfolio < ApplicationRecord
   has_one :coin
   has_many :positions
 
-  validates :rebalance_freq, :coin, presence: true
+  validates :rebalance_freq, :coin_id, presence: true
 end

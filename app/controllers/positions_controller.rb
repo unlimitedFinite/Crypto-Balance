@@ -1,7 +1,8 @@
 class PositionsController < ApplicationController
-  def create
-  end
 
   def index
+  end
+
+  def create
   end
 end

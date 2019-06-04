@@ -11,10 +11,10 @@ class AllocationsController < ApplicationController
 
     if params[:crypto].values.map(&:to_i).sum != 100
       flash[:failure] = "Allocation must total 100%"
-      redirect_to new_allocation_path
+      redirect_to new_portfolio_allocation_path
     else
-      params[:crypto].each do |coin, percentage|
-        @allocation.coin_id = Coin.find(coin)
+      params[:crypto].each do |_, percentage|
+        @allocation.coin_id = Coin.find(params[:coin_id])
         @allocation.allocation_pct = percentage.to_i
 
         if @allocation.save
