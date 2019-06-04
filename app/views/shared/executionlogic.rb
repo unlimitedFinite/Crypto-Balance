@@ -36,5 +36,54 @@
 # to make it easier just do BTC or USDT conversion via the spot rate first then
 # apply all excution logic in one standard method.
 
-def portfolio_setup(balance_in_USDT)
+def check_base_ccy
+  # check base and convert to USD
+  # portfolio_setup if not exist
+  # else portfolio_rebalance
+  account_info = Binance::Api::Account.info!
+  balance = account_info[:balances]
+  raise
+  @portfolio.coin_id = Coin.find_by(symbol: params['portfolio']['coin_id']).id
+    if @portfolio.coin_id == 'BTC'
+
 end
+
+def portfoilo_rebalance
+end
+
+# submit orders individually?
+
+def portfolio_setup(balance_in_USDT, live_bid_price, live_offer_price, bid_depth, offer_depth)
+
+end
+
+check_base_ccy
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
