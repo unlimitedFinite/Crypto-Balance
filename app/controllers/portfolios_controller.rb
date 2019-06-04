@@ -37,19 +37,18 @@ class PortfoliosController < ApplicationController
       balance[:free] == "0.00000000"
     end
     positions.each do |position|
-      coin = Coin.where(symbol: position[:asset])
-      price_to_use = @portfolio.coin.symbol == 'USDT' ? @portfolio.coin.usdt_price : @portfolio.coin.btc_price
-      quantity = position[:free]
+      coin = Coin.find_by(symbol: position[:asset])
 
-      unless coin.ids == []
-        position_record = Position.new(
+      unless coin.nil?
+        price_to_use = @portfolio.coin.symbol == 'USDT' ? coin.usdt_price : coin.btc_price
+        quantity = position[:free]
+        Position.create(
           portfolio: @portfolio,
+          coin_id: coin.id,
           current_quantity: quantity,
-          current_value: quantity * price_to_use,
+          current_value: quantity.to_f * price_to_use,
           as_of_dt: DateTime.now.to_date
         )
-        position_record.coin_id = coin.ids.join.to_i
-        position_record.save
       end
     end
     redirect_to portfolio_path(@portfolio)
