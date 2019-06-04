@@ -1,6 +1,6 @@
 class Portfolio < ApplicationRecord
   belongs_to :user
-  has_one :coin
+  belongs_to :coin
   has_many :positions
   has_many :allocations
 

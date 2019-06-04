@@ -1,5 +1,10 @@
+require 'open-uri'
+require 'json'
+require 'date'
+
 class PortfoliosController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_portfolio, only: [:show, :create_positions]
 
   def new
     @portfolio = Portfolio.new
@@ -25,10 +30,37 @@ class PortfoliosController < ApplicationController
 
   def show
   end
-end
 
-private
+  def create_positions
+    account_info = Binance::Api::Account.info!
+    positions = account_info[:balances].reject do |balance|
+      balance[:free] == "0.00000000"
+    end
+    positions.each do |position|
+      coin = Coin.find_by(symbol: position[:asset])
 
-def portfolio_params
-  params.require(:portfolio).permit(:rebalance_freq, :next_rebalance_dt, :coin_id)
+      unless coin.nil?
+        price_to_use = @portfolio.coin.symbol == 'USDT' ? coin.usdt_price : coin.btc_price
+        quantity = position[:free]
+        Position.create(
+          portfolio: @portfolio,
+          coin_id: coin.id,
+          current_quantity: quantity,
+          current_value: quantity.to_f * price_to_use,
+          as_of_dt: DateTime.now.to_date
+        )
+      end
+    end
+    redirect_to portfolio_path(@portfolio)
+  end
+
+  private
+
+  def set_portfolio
+    @portfolio = Portfolio.find(params[:id])
+  end
+
+  def portfolio_params
+    params.require(:portfolio).permit(:rebalance_freq, :next_rebalance_dt, :coin_id)
+  end
 end
