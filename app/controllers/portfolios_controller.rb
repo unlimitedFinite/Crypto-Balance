@@ -30,6 +30,7 @@ class PortfoliosController < ApplicationController
 
   def show
     @allocations = Allocation.where(portfolio: @portfolio)
+    @positions = Position.where(portfolio: @portfolio).where(as_of_dt_end: nil)
   end
 
   def create_positions
