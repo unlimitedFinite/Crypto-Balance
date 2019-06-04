@@ -53,7 +53,7 @@ class PortfoliosController < ApplicationController
     @portfolio.save
     redirect_to portfolio_path(@portfolio)
   end
-
+end
   private
 
   def create_new_position_record(coin, position)
@@ -69,6 +69,21 @@ class PortfoliosController < ApplicationController
     return new_position_record
   end
 
+
+  def check_base_ccy
+    account_info = Binance::Api::Account.info!
+    balance = account_info[:balances]
+    puts balance
+    @portfolio.coin_id = Coin.find_by(symbol: params['portfolio']['coin_id']).id
+    if @portfolio.coin_id == 'BTC'
+    end
+  end
+
+  def portfoilo_rebalance (balance_in_USDT, live_bid_price, live_offer_price, bid_depth, offer_depth)
+  end
+
+
+
   def set_portfolio
     @portfolio = Portfolio.find(params[:id])
   end
@@ -76,4 +91,4 @@ class PortfoliosController < ApplicationController
   def portfolio_params
     params.require(:portfolio).permit(:rebalance_freq, :next_rebalance_dt, :coin_id)
   end
-end
+

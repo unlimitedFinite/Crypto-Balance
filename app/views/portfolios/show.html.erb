@@ -3,10 +3,11 @@
 
 <h2>Current Value: <%= @portfolio.current_value %></h2>
 
-
-<%= form_tag create_positions_path(@portfolio) do %>
-  <%= submit_tag 'Update Positions', class: 'btn btn-primary' %>
-<% end %>
+<ul>
+  <%= form_tag create_positions_path(@portfolio) do %>
+    <%= submit_tag 'Update Positions', class: 'btn btn-primary' %>
+  <% end %>
+</ul>
 
 <ul>
   <% @portfolio.positions.each do |position| %>
@@ -14,4 +15,15 @@
   <% end %>
 </ul>
 
+<ul>
+  <%= form_tag rebalance_positions_path(@portfolio) do %>
+    <%= submit_tag 'Rebalance Positions', class: 'btn btn-primary' %>
+  <% end %>
+</ul>
+
+
 <a href="/portfolios/1/create_positions" method="post">/portfolios/1/create_positions</a>
+
+
+<a href="/portfolios/1/check_base_ccy" method="post">/
+portfolios/1/check_base_ccy</a>
