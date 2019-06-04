@@ -1,7 +1,47 @@
-<h1>Portfolios#show</h1>
-<p>Find me in app/views/portfolios/show.html.erb</p>
+<div class="container">
+  <h1>Portfolio<small> for <%= current_user.email %></small></h1>
+  <div class="row">
+    <div class="col-6">
+      <%= form_tag create_positions_path(@portfolio) do %>
+        <%= submit_tag 'Update Positions', class: 'btn btn-primary' %>
+      <% end %>
+    </div>
+    <div class="col-6 text-right">
+      <% btc_price = Coin.find_by(symbol: 'BTC').usdt_price %>
+      <h2>BTC <%= @portfolio.current_value %></h2>
+      <h2>Total value <%= number_to_currency(@portfolio.current_value * btc_price) %></h2>
+    </div>
+  </div>
 
-<h2>Current Value: <%= @portfolio.current_value %></h2>
+  <table class="table table-dark" width="80%">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Coin</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Value (BTC)</th>
+        <th scope="col">Value (USD)</th>
+        <th scope="col">Current</th>
+        <th scope="col">Target</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @positions.each_with_index do |position, index| %>
+      <% coin = position.coin %>
+        <tr>
+          <th scope="row"><%= index + 1 %></th>
+          <td><%= coin.name %></td>
+          <td><%= position.current_quantity %></td>
+          <td><%= position.current_quantity * coin.btc_price %></td>
+          <td><%= position.current_quantity * coin.usdt_price %></td>
+          <td><%= ((@portfolio.current_value * btc_price)/(position.current_quantity * coin.usdt_price)).to_i %>%</td>
+          <td><%= @allocations.find{|a| a[:coin_id] == coin.id}.allocation_pct %>%</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <% @allocations.each do |a| %>
+
 
 <ul>
   <%= form_tag create_positions_path(@portfolio) do %>
@@ -12,8 +52,10 @@
 <ul>
   <% @portfolio.positions.each do |position| %>
     <li><%= position.current_quantity %> <%= position.current_value %></li>
+
+
   <% end %>
-</ul>
+
 
 <ul>
   <%= form_tag rebalance_positions_path(@portfolio) do %>
@@ -27,3 +69,7 @@
 
 <a href="/portfolios/1/check_base_ccy" method="post">/
 portfolios/1/check_base_ccy</a>
+
+  <div id="chart_div"></div>
+</div>
+

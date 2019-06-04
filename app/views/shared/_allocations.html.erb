@@ -1,25 +1,31 @@
 
 <div class="container">
-  <%= simple_form_for [@portfolio, @allocation] do |f| %>
+  <div class="row">
+    <div class="col-4">
+      <%= simple_form_for [@portfolio, @allocation] do |f| %>
 
-    <% if @allocation.errors.any? %>
-      <div class="errors-container">
-        <ul>
-          <% @allocation.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
+        <% if @allocation.errors.any? %>
+          <div class="errors-container">
+            <ul>
+              <% @allocation.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="form-group row">
+          <% ['Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tron','Stellar','Zcash'].each do |currency| %>
+            <%= f.label "#{currency} ", class: "input-control col-sm-3 col-form-label" %>
+            <input type="number", name="crypto[<%= currency %>]", class= "form-control">
           <% end %>
-        </ul>
-      </div>
-    <% end %>
+          <%= f.submit "Submit Allocations", class: "btn btn-primary mt-3" %>
+        </div>
 
-    <div class="form-group row">
-      <% ['Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tether','Tron','Stellar','Zcash'].each do |currency| %>
-        <%= f.label "#{currency} ", class: "input-control col-sm-3 col-form-label" %>
-        <input type="number", name="crypto[<%= currency %>]", class= "form-control">
       <% end %>
-      <%= f.submit "Submit Allocations", class: "btn btn-primary mt-3" %>
     </div>
+    <div class="col-8">
 
-  <% end %>
-
+    </div>
+  </div>
 </div>
