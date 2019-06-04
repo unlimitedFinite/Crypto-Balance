@@ -18,11 +18,21 @@ function drawChart() {
   var data = new google.visualization.DataTable();
   data.addColumn('string', 'Coin');
   data.addColumn('number', 'Value');
-
+  console.log(positions);
+  console.log(coins);
   //
+  var coin = coins.find( c => {
+      return c.id === positions[0]['coin_id'];
+    })
   data.addRows([
-    ['Ethereum', 0.018417066586],
-    ['Stellar', 0.004678317]
+    [coin['name'], positions[0]['current_value']],
+    [positions[1]['coin_id'].toString(), positions[1]['current_value']],
+    [positions[2]['coin_id'].toString(), positions[2]['current_value']],
+    [positions[3]['coin_id'].toString(), positions[3]['current_value']],
+    [positions[4]['coin_id'].toString(), positions[4]['current_value']],
+    [positions[5]['coin_id'].toString(), positions[5]['current_value']],
+    [positions[6]['coin_id'].toString(), positions[6]['current_value']],
+    [positions[7]['coin_id'].toString(), positions[7]['current_value']]
   ]);
 
   // Set chart options

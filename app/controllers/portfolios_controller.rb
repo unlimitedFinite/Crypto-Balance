@@ -29,8 +29,9 @@ class PortfoliosController < ApplicationController
   end
 
   def show
+    @coins = Coin.all
     @allocations = Allocation.where(portfolio: @portfolio)
-    @positions = Position.where(portfolio: @portfolio).where(as_of_dt_end: nil)
+    @positions = Position.where(portfolio: @portfolio).where(as_of_dt_end: nil).order(current_value: :desc)
   end
 
   def create_positions
