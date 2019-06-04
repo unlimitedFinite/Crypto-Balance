@@ -5,6 +5,6 @@ class Coin < ApplicationRecord
   has_one :allocation
   has_one :position
 
-  validates :name, :symbol, :current_price, presence: true
+  validates :name, :symbol, presence: true
   validates :name, uniqueness: { scope: :symbol }
 end

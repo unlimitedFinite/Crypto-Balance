@@ -3,5 +3,8 @@ class Portfolio < ApplicationRecord
   has_one :coin
   has_many :positions
 
+
+
+  validates :rebalance_freq, inclusion: { in: %w[Daily Weekly Biweekly Monthly Quarterly] }
   validates :rebalance_freq, :coin_id, presence: true
 end
