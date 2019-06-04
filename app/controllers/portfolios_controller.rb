@@ -8,9 +8,10 @@ class PortfoliosController < ApplicationController
   def create
     @portfolio = Portfolio.new(portfolio_params)
     @portfolio.user = current_user
-    @portfolio.coin_id = Coin.find(params[:coin_id])
+    @portfolio.coin_id = Coin.find_by(symbol: params['portfolio']['coin_id']).id
+    @portfolio.next_rebalance_dt = Date.new(params["portfolio"]['next_rebalance_dt(1i)'].to_i,params["portfolio"]['next_rebalance_dt(2i)'].to_i,params["portfolio"]['next_rebalance_dt(3i)'].to_i)
     if @portfolio.save
-      redirect_to root_path
+      redirect_to new_allocation_path
     else
       render :new
     end
