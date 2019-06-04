@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_04_054806) do
+ActiveRecord::Schema.define(version: 2019_06_04_082402) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 2019_06_04_054806) do
   create_table "orders", force: :cascade do |t|
     t.string "status"
     t.float "price"
-    t.integer "quantity"
+    t.float "quantity"
     t.float "commission"
     t.string "side"
     t.string "type"
@@ -55,7 +55,7 @@ ActiveRecord::Schema.define(version: 2019_06_04_054806) do
     t.string "rebalance_freq"
     t.date "next_rebalance_dt"
     t.bigint "user_id"
-    t.integer "current_value"
+    t.float "current_value"
     t.bigint "coin_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

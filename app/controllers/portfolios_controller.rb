@@ -36,25 +36,38 @@ class PortfoliosController < ApplicationController
     positions = account_info[:balances].reject do |balance|
       balance[:free] == "0.00000000"
     end
+    @portfolio.current_value = 0.0
     positions.each do |position|
       coin = Coin.find_by(symbol: position[:asset])
 
       unless coin.nil?
-        price_to_use = @portfolio.coin.symbol == 'USDT' ? coin.usdt_price : coin.btc_price
-        quantity = position[:free]
-        Position.create(
-          portfolio: @portfolio,
-          coin_id: coin.id,
-          current_quantity: quantity,
-          current_value: quantity.to_f * price_to_use,
-          as_of_dt: DateTime.now.to_date
-        )
+        current_latest_position_record = Position.find_by(coin_id: coin.id, portfolio: @portfolio, as_of_dt_end: nil)
+        new_position_record = create_new_position_record(coin, position)
+        unless current_latest_position_record.nil?
+          current_latest_position_record.as_of_dt_end = new_position_record.as_of_dt.yesterday
+          current_latest_position_record.save
+        end
+        @portfolio.current_value += new_position_record.current_value
       end
     end
+    @portfolio.save
     redirect_to portfolio_path(@portfolio)
   end
 
   private
+
+  def create_new_position_record(coin, position)
+    price_to_use = @portfolio.coin.symbol == 'USDT' ? coin.usdt_price : coin.btc_price
+    quantity = position[:free]
+    new_position_record = Position.create(
+      portfolio: @portfolio,
+      coin_id: coin.id,
+      current_quantity: quantity,
+      current_value: quantity.to_f * price_to_use,
+      as_of_dt: DateTime.now.to_date
+    )
+    return new_position_record
+  end
 
   def set_portfolio
     @portfolio = Portfolio.find(params[:id])
