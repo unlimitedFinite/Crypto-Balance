@@ -43,11 +43,11 @@ coins.each do |coin|
 
 
   if coin == 'Tether'
-    usdt_price = 0
+    usdt_price = 1
     btc_price = 0
   elsif coin == 'Bitcoin'
     usdt_price = usdt_data['price']
-    btc_price = 0
+    btc_price = 1
   else
     usdt_price = usdt_data['price']
     btc_price = btc_data['price']
