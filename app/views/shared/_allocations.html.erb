@@ -1,6 +1,6 @@
 
 <div class="container">
-  <%= simple_form_for(@allocation) do |f| %>
+  <%= simple_form_for [@portfolio, @allocation] do |f| %>
 
     <% if @allocation.errors.any? %>
       <div class="errors-container">
@@ -13,7 +13,7 @@
     <% end %>
 
     <div class="form-group row">
-      <% %w(BTC ETH XRP EOS BitcoinCash LTC ETHclassic ZCash Monero).each do |currency| %>
+      <% ['Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tether','Tron','Stellar','Zcash'].each do |currency| %>
         <%= f.label "#{currency} ", class: "input-control col-sm-3 col-form-label" %>
         <input type="number", name="crypto[<%= currency %>]", class= "form-control">
       <% end %>

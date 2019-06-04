@@ -11,7 +11,7 @@ class PortfoliosController < ApplicationController
     @portfolio.coin_id = Coin.find_by(symbol: params['portfolio']['coin_id']).id
     @portfolio.next_rebalance_dt = Date.new(params["portfolio"]['next_rebalance_dt(1i)'].to_i,params["portfolio"]['next_rebalance_dt(2i)'].to_i,params["portfolio"]['next_rebalance_dt(3i)'].to_i)
     if @portfolio.save
-      redirect_to new_allocation_path
+      redirect_to new_portfolio_allocation_path(@portfolio.id)
     else
       render :new
     end
