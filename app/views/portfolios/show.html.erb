@@ -1,6 +1,8 @@
 <div class="container">
   <h1>Portfolio<small><%= current_user.email %></small></h1>
 
+<h2>Current Value: <%= @portfolio.current_value %></h2>
+
 
   <%= form_tag create_positions_path(@portfolio) do %>
     <%= submit_tag 'Update Positions', class: 'btn btn-primary' %>
