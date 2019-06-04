@@ -9,6 +9,7 @@ require 'json'
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+
 puts 'Destroying db contents'
 # Delete records
 Coin.destroy_all
