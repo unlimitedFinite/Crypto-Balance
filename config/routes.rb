@@ -6,7 +6,7 @@ Rails.application.routes.draw do
     resources :allocations, except: [:index, :show, :destroy]
   end
   resources :orders, except: [:new, :edit, :show]
-  devise_for :users
+  devise_for :users, controllers: { registrations: "registrations" }
   root to: 'pages#home'
 
   require "sidekiq/web"
