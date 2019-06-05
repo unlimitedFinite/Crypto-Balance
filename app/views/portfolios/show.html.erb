@@ -12,36 +12,39 @@
       <h2>Total value <%= number_to_currency(@portfolio.current_value * btc_price) unless @portfolio.current_value.nil? %></h2>
     </div>
   </div>
+  <div class="row">
+    <div class="col-lg-6">
+      <table class="table table-responsive w-auto table-dark">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Coin</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Value (BTC)</th>
+            <th scope="col">Value (USD)</th>
+            <th scope="col">Current</th>
+            <th scope="col">Target</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @positions.each_with_index do |position, index| %>
+          <% coin = position.coin %>
+            <tr>
+              <th scope="row"><%= index + 1 %></th>
+              <td><%= coin.name %></td>
+              <td><%= sprintf('%.6f', position.current_quantity) %></td>
+              <td><%= sprintf('%.6f', (position.current_quantity * coin.btc_price)) %></td>
+              <td><%= sprintf('%.2f', (position.current_quantity * coin.usdt_price)) %></td>
+              <td><%= (((position.current_quantity * coin.usdt_price)/(@portfolio.current_value * btc_price))*100).round(1) %>%</td>
+              <td><%= @allocations.find{|a| a[:coin_id] == coin.id}.allocation_pct %>%</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-lg-6" id="chart_div"></div>
+  </div>
 
-  <table class="table table-responsive w-auto table-dark">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Coin</th>
-        <th scope="col">Amount</th>
-        <th scope="col">Value (BTC)</th>
-        <th scope="col">Value (USD)</th>
-        <th scope="col">Current</th>
-        <th scope="col">Target</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @positions.each_with_index do |position, index| %>
-      <% coin = position.coin %>
-        <tr>
-          <th scope="row"><%= index + 1 %></th>
-          <td><%= coin.name %></td>
-          <td><%= sprintf('%.6f', position.current_quantity) %></td>
-          <td><%= sprintf('%.6f', (position.current_quantity * coin.btc_price)) %></td>
-          <td><%= sprintf('%.2f', (position.current_quantity * coin.usdt_price)) %></td>
-          <td><%= (((position.current_quantity * coin.usdt_price)/(@portfolio.current_value * btc_price))*100).round(1) %>%</td>
-          <td><%= @allocations.find{|a| a[:coin_id] == coin.id}.allocation_pct %>%</td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-
-  <div id="chart_div"></div>
 
   <% json_positions = @positions.as_json %>
   <% json_coins = @coins.as_json %>
