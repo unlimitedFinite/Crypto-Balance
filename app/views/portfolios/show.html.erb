@@ -48,7 +48,7 @@
           <% @positions.each_with_index do |position, index| %>
             <% coin = position.coin %>
             <tr>
-              <td><%= index + 1 %></td>
+              <td><%= image_tag coin.image, alt: "#{coin.name}" %></td>
               <td><%= coin.name %></td>
               <td><%= sprintf('%.6f', position.quantity) %></td>
               <td><%= sprintf('%.6f', (position.quantity * coin.price_btc)) %></td>

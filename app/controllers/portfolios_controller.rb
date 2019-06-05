@@ -167,11 +167,11 @@ class PortfoliosController < ApplicationController
 
   # adjusts the minimum lot size per order - need to set in the schema
   def round_value(coin)
-    # @coin_instance = Coin.find_by(symbol: coin[:name])
-    if coin[:amount] / 0.01 < 1 #@coin_instance[:lot_size] < 1
-      required_amount = 0.01 #@coin_instance[:lot_size]
+    @coin_instance = Coin.find_by(symbol: coin[:name])
+    if coin[:amount] / @coin_instance[:lot_size] < 1
+      required_amount = @coin_instance[:lot_size]
     else
-      required_amount = (coin[:amount] / 0.01).round * 0.01 #@coin_instance[:lot_size]).round * @coin_instance[:lot_size]
+      required_amount = (coin[:amount] / @coin_instance[:lot_size]).round * @coin_instance[:lot_size]
     end
     return required_amount
   end

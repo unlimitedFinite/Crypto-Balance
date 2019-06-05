@@ -13,8 +13,10 @@ require 'pry-byebug'
 
 puts 'Destroying db contents'
 # Delete records
-Coin.destroy_all
 User.destroy_all
+Portfolio.destroy_all
+Allocation.destroy_all
+Coin.destroy_all
 
 puts 'creating test user'
 
@@ -42,6 +44,19 @@ lots = {
   TRX: 1,
   XLM: 1,
   ZEC: 0.001
+}
+images = {
+  BTC: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749966/crypto-balance/btc_vjj2fj.svg',
+  ETH: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749964/crypto-balance/eth_vdvw3n.svg',
+  XRP: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749966/crypto-balance/xrp_rh5xm5.svg',
+  BCHABC: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749966/crypto-balance/bch_e8tpwh.svg',
+  LTC: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749967/crypto-balance/ltc_ru9yju.svg',
+  EOS: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749964/crypto-balance/eos_vkfxcq.svg',
+  ADA: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749965/crypto-balance/ada_t52cdf.svg',
+  USDT: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749964/crypto-balance/usd_dt2gbs.svg',
+  TRX: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749967/crypto-balance/trx_n6rkew.svg',
+  XLM: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749964/crypto-balance/xlm_grrgrn.svg',
+  ZEC: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749967/crypto-balance/zec_ajbvsu.svg'
 }
 
 base_coins = ['BTC','USDT']
@@ -87,7 +102,8 @@ coins.each do |coin|
     price_usdt: price_usdt,
     price_btc: price_btc,
     is_base_coin: is_base_coin,
-    lot_size: lots.fetch(symbol.to_sym)
+    lot_size: lots.fetch(symbol.to_sym),
+    image: images.fetch(symbol.to_sym)
   )
 end
 
