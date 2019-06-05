@@ -1,0 +1,5 @@
+:schedule:
+  get_price_job:
+    cron: '0 */5 * * * *'   # Runs once per minute
+    class: GetPriceJob
+
