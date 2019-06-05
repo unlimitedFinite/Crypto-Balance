@@ -20,20 +20,23 @@ function drawChart() {
   data.addColumn('number', 'Value');
   console.log(positions);
   console.log(coins);
-  //
-  var coin = coins.find( c => {
-      return c.id === positions[0]['coin_id'];
-    })
-  data.addRows([
-    [coin['name'], positions[0]['current_value']],
-    [positions[1]['coin_id'].toString(), positions[1]['current_value']],
-    [positions[2]['coin_id'].toString(), positions[2]['current_value']],
-    [positions[3]['coin_id'].toString(), positions[3]['current_value']],
-    [positions[4]['coin_id'].toString(), positions[4]['current_value']],
-    [positions[5]['coin_id'].toString(), positions[5]['current_value']],
-    [positions[6]['coin_id'].toString(), positions[6]['current_value']],
-    [positions[7]['coin_id'].toString(), positions[7]['current_value']]
-  ]);
+
+  function findCoinName(coinId) {
+    let coin = coins.find(function(c) {
+      return c['id'] === coinId;
+    });
+    return coin['name'];
+  }
+
+  var dataArray = [];
+
+  var count = Object.keys(positions).length;
+  for(var i = 0 ; i < count ; i++ ){
+    // coin = coin(id);
+    dataArray.push( [ findCoinName(positions[i]['coin_id']), positions[i]['current_value'] ]);
+  };
+  // console.log(dataArray)
+  data.addRows(dataArray)
 
   // Set chart options
   var options = {'title':'Current Positions In Portfolio',
