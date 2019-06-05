@@ -106,6 +106,7 @@ class PortfoliosController < ApplicationController
     #     @portfolio.current_value += (position[:free].to_f * coin.price_btc)
     #   end
     # end
+
     # find the position and portfolio stats
     @rebalance_hash = {}
     @coins_arr = []

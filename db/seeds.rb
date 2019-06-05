@@ -1,5 +1,6 @@
 require 'open-uri'
 require 'json'
+require 'pry-byebug'
 
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
@@ -17,6 +18,20 @@ Coin.destroy_all
 puts 'Creating coins'
 
 coins = ['Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tether','Tron','Stellar','Zcash']
+lots = {
+  BTC: 0.000001,
+  ETH: 0.001,
+  XRP: 1,
+  BCHABC: 0.001,
+  LTC: 0.01,
+  EOS: 1,
+  ADA: 1,
+  USDT: 10,
+  TRX: 1,
+  XLM: 1,
+  ZEC: 0.001
+}
+
 base_coins = ['BTC','USDT']
 
 
@@ -60,7 +75,7 @@ coins.each do |coin|
     price_usdt: price_usdt,
     price_btc: price_btc,
     is_base_coin: is_base_coin,
-    lot_size: rand(0.1..1).round(2)
+    lot_size: lots.fetch(symbol.to_sym)
   )
 end
 
