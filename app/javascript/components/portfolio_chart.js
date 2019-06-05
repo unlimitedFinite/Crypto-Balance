@@ -11,7 +11,6 @@ google.charts.setOnLoadCallback(drawChart);
 // draws it.
 }
 
-
 function drawChart() {
 
   // Create the data table.
@@ -32,17 +31,15 @@ function drawChart() {
 
   var count = Object.keys(positions).length;
   for(var i = 0 ; i < count ; i++ ){
-    // coin = coin(id);
-    dataArray.push( [ findCoinName(positions[i]['coin_id']), positions[i]['current_value'] ]);
+    dataArray.push( [ findCoinName(positions[i]['coin_id']),  Math.round(positions[i]['value_usdt']) ]);
   };
-  // console.log(dataArray)
-  data.addRows(dataArray)
+  data.addRows(dataArray);
 
   // Set chart options
   var options = {
     'title':'Portfolio Positions',
-    'height': 400,
-    'legend' : {position: 'none'}
+    'height': 500,
+    'legend' : {position: 'bottom'}
   };
 
   // Instantiate and draw our chart, passing in some options.

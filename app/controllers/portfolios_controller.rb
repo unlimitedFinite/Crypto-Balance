@@ -4,7 +4,7 @@ require 'date'
 
 class PortfoliosController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_portfolio, only: [:show, :create_positions]
+  before_action :set_portfolio, only: [:show, :edit, :update, :create_positions]
 
   def new
     @portfolio = Portfolio.new
@@ -26,12 +26,20 @@ class PortfoliosController < ApplicationController
   end
 
   def update
+    @portfolio.coin_id = Coin.find_by(symbol: params['portfolio']['coin_id'])
+    @portfolio.update(portfolio_params)
+    raise
+    if @portfolio.update(portfolio_params)
+      redirect_to portfolio_path(@portfolio)
+    else
+      render :edit
+    end
   end
 
   def show
     @coins = Coin.all
     @allocations = Allocation.where(portfolio: @portfolio)
-    @positions = Position.where(portfolio: @portfolio).where(as_of_dt_end: nil).order(current_value: :desc)
+    @positions = Position.where(portfolio: @portfolio).where(as_of_dt_end: nil).order(value_usdt: :desc)
   end
 
   def create_positions
