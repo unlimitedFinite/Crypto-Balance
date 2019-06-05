@@ -1,5 +1,6 @@
 require 'open-uri'
 require 'json'
+require 'pry-byebug'
 
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
@@ -12,12 +13,54 @@ require 'json'
 
 puts 'Destroying db contents'
 # Delete records
+User.destroy_all
+Portfolio.destroy_all
+Allocation.destroy_all
 Coin.destroy_all
+
+puts 'creating test user'
+
+User.create(
+  first_name: 'Testing',
+  last_name: 'Tester',
+  email: 'test@testing.com',
+  password: 'secret',
+  api_key: 'S1zgR71EfhvPCObCe4FhO0Fl79Cqlh4fWYEuUZVAu7YysNXutTwZsdJf5Xz5Ho7K',
+  secret_key: 'SE5vnFHHEUFpZGNoALl4ANhE3mntrFe5UIHeRNRukm8mGK0jF4oMR4MOovIsd7bR'
+)
 
 puts 'Creating coins'
 
 coins = ['Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tether','Tron','Stellar','Zcash']
+lots = {
+  BTC: 0.000001,
+  ETH: 0.001,
+  XRP: 1,
+  BCHABC: 0.001,
+  LTC: 0.01,
+  EOS: 1,
+  ADA: 1,
+  USDT: 10,
+  TRX: 1,
+  XLM: 1,
+  ZEC: 0.001
+}
+images = {
+  BTC: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749966/crypto-balance/btc_vjj2fj.svg',
+  ETH: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749964/crypto-balance/eth_vdvw3n.svg',
+  XRP: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749966/crypto-balance/xrp_rh5xm5.svg',
+  BCHABC: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749966/crypto-balance/bch_e8tpwh.svg',
+  LTC: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749967/crypto-balance/ltc_ru9yju.svg',
+  EOS: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749964/crypto-balance/eos_vkfxcq.svg',
+  ADA: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749965/crypto-balance/ada_t52cdf.svg',
+  USDT: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749964/crypto-balance/usd_dt2gbs.svg',
+  TRX: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749967/crypto-balance/trx_n6rkew.svg',
+  XLM: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749964/crypto-balance/xlm_grrgrn.svg',
+  ZEC: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749967/crypto-balance/zec_ajbvsu.svg'
+}
+
 base_coins = ['BTC','USDT']
+
 
 coins.each do |coin|
   coin_name_url = "https://api.99cryptocoin.com/v1/ticker/#{coin}"
@@ -60,6 +103,28 @@ coins.each do |coin|
     price_btc: price_btc,
     is_base_coin: is_base_coin,
     lot_size: rand(0.1..1).round(2)
+    lot_size: lots.fetch(symbol.to_sym),
+    image: images.fetch(symbol.to_sym)
+  )
+end
+
+puts 'creating portfolio for test user'
+
+Portfolio.create(
+  rebalance_freq: 'Daily',
+  next_rebalance_dt: '3/7/19',
+  user_id: 1,
+  current_value_usdt: 0,
+  coin_id: 1
+  )
+
+puts 'making allocations for test user test portfolio'
+
+10.times do
+  Allocation.create(
+    allocation_pct: 10,
+    coin_id: rand(1..11),
+    portfolio_id: 1
   )
 end
 

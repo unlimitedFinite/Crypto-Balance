@@ -7,7 +7,11 @@
         <%= form_tag create_positions_path(@portfolio) do %>
           <%= submit_tag 'Create Positions', class: 'trigger btn-primary' %>
         <% end %>
+<<<<<<< HEAD
         <%= form_tag rebalance_positions_path(@portfolio) do %>
+=======
+        <%= form_tag rebalance_positions_path(@portfolio.id) do %>
+>>>>>>> afcff30f8104b8ccc06c8b0870ecd2e17d348a0f
           <%= submit_tag 'Rebalance Positions', class: 'trigger btn-success' %>
         <% end %>
         <%= form_tag '' do %>
@@ -48,7 +52,7 @@
           <% @positions.each_with_index do |position, index| %>
             <% coin = position.coin %>
             <tr>
-              <td><%= index + 1 %></td>
+              <td><%= image_tag coin.image, alt: "#{coin.name}" %></td>
               <td><%= coin.name %></td>
               <td><%= sprintf('%.6f', position.quantity) %></td>
               <td><%= sprintf('%.6f', (position.quantity * coin.price_btc)) %></td>

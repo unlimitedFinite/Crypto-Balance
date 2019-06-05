@@ -106,16 +106,19 @@ class PortfoliosController < ApplicationController
       coin = Coin.find_by(symbol: position[:asset])
 
       unless coin.nil?
+
         price_btc = Coin.find_by(symbol: 'BTC').price_usdt
         # calculates each position value in both btc and usdt
         position_value_btc = position[:free].to_f * coin.price_btc
         position_value_usdt = position[:free].to_f * coin.price_usdt
+        # calculates usdt value of the total portfolio from the btc quantity
+        portfolio_value_usdt = @portfolio.current_value_usdt
         # calculates the pct difference between target and current allocations
         current_pct = ((position_value_usdt / @portfolio.current_value_usdt) * 100).round(2)
         target_pct = @allocations.find { |a| a[:coin_id] == coin.id }.allocation_pct
         rebalance_pct = target_pct - current_pct
         # rebalance amount in USD
-        rebalance_amount_usd = (rebalance_pct / 100) * @portfolio.current_value_usdt
+        rebalance_amount_usd = (rebalance_pct / 100) * portfolio_value_usdt
         rebalance_amount_coins = rebalance_amount_usd / coin.price_usdt
         # set min order size to 0.001 BTC
         min_trade_amount = 0.001 / coin.price_btc
@@ -153,6 +156,8 @@ class PortfoliosController < ApplicationController
 
         quantity = round_value(coinhash)
 
+      unless coin[:name] == 'BTC' || coin[:amount] <= coin[:min_size]
+
         order = Binance::Api::Order.create!(
           quantity: quantity,
           side: side,
@@ -166,7 +171,18 @@ class PortfoliosController < ApplicationController
     end
   end
 
-  # some useful api calls
+  # adjusts the minimum lot size per order - need to set in the schema
+  def round_value(coin)
+    @coin_instance = Coin.find_by(symbol: coin[:name])
+    if coin[:amount] / @coin_instance[:lot_size] < 1
+      required_amount = @coin_instance[:lot_size]
+    else
+      required_amount = (coin[:amount] / @coin_instance[:lot_size]).round * @coin_instance[:lot_size]
+    end
+    return required_amount
+  end
+
+
   def get_api_data(coin)
     @info = Binance::Api::Account.info!
     @depth = Binance::Api.depth!(symbol: "#{coin}BTC")
