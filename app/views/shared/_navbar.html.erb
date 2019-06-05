@@ -10,7 +10,7 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <% if user_signed_in? %>
+      <% if user_signed_in? && current_user.portfolio %>
         <li class="nav-item active">
           <%= link_to "My Portfolio", portfolio_path(current_user.portfolio), class: "nav-link" %>
         </li>
@@ -20,7 +20,7 @@
             <%= link_to "Log out", destroy_user_session_path, method: :delete, class: "dropdown-item" %>
           </div>
         </li>
-      <% else %>
+      <% elsif current_user.nil? %>
         <li class="nav-item">
           <%= link_to "Login", new_user_session_path, class: "nav-link" %>
         </li>
