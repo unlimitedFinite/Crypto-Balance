@@ -11,24 +11,36 @@ google.charts.setOnLoadCallback(drawChart);
 // draws it.
 }
 
-
 function drawChart() {
 
   // Create the data table.
   var data = new google.visualization.DataTable();
   data.addColumn('string', 'Coin');
   data.addColumn('number', 'Value');
+  console.log(positions);
+  console.log(coins);
 
-  //
-  data.addRows([
-    ['Ethereum', 0.018417066586],
-    ['Stellar', 0.004678317]
-  ]);
+  function findCoinName(coinId) {
+    let coin = coins.find(function(c) {
+      return c['id'] === coinId;
+    });
+    return coin['name'];
+  }
+
+  var dataArray = [];
+
+  var count = Object.keys(positions).length;
+  for(var i = 0 ; i < count ; i++ ){
+    dataArray.push( [ findCoinName(positions[i]['coin_id']),  Math.round(positions[i]['value_usdt']) ]);
+  };
+  data.addRows(dataArray);
 
   // Set chart options
-  var options = {'title':'Current Positions In Portfolio',
-                 'width':400,
-                 'height':300};
+  var options = {
+    'title':'Portfolio Positions',
+    'height': 500,
+    'legend' : {position: 'bottom'}
+  };
 
   // Instantiate and draw our chart, passing in some options.
   var chart = new google.visualization.PieChart(document.getElementById('chart_div'));

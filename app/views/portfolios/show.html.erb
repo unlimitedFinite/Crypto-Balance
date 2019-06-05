@@ -1,63 +1,92 @@
 <div class="container">
   <h1>Portfolio<small> for <%= current_user.email %></small></h1>
   <div class="row">
-    <div class="col-6 d-flex">
 
-      <%= form_tag create_positions_path(@portfolio) do %>
-        <%= submit_tag 'Update Positions', class: 'btn btn-primary' %>
-      <% end %>
-
-      <%= form_tag rebalance_positions_path(@portfolio) do %>
-        <%= submit_tag 'Rebalance Positions', class: 'btn btn-primary', method: 'post' %>
-      <% end %>
+    <div class="col">
+      <div class="control-panel">
+        <%= form_tag create_positions_path(@portfolio) do %>
+          <%= submit_tag 'Create Positions', class: 'trigger btn-primary' %>
+        <% end %>
+        <%= form_tag '' do %>
+          <%= submit_tag 'Rebalance Positions', class: 'trigger btn-success' %>
+        <% end %>
+        <%= form_tag '' do %>
+          <%= submit_tag 'Panic Sell', class: 'trigger btn-danger' %>
+        <% end %>
+        <%= link_to "Edit Portfolio", edit_portfolio_path, class: 'trigger btn-secondary' %>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <% price_btc = Coin.find_by(symbol: 'BTC').price_usdt %>
+      <h2>BTC <%= @portfolio.current_value_btc %></h2>
 
     </div>
 
     <div class="col-6 text-right">
-      <% btc_price = Coin.find_by(symbol: 'BTC').usdt_price %>
 
+      <h2>Total value <%= number_to_currency(@portfolio.current_value_btc.to_f * price_btc) %></h2>
 
     </div>
   </div>
+  <div class="row">
+    <div class="col-lg-7">
+      <table class="table table-responsive w-auto table-dark">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Coin</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Value (BTC)</th>
+            <th scope="col">Value (USD)</th>
+            <th scope="col">Current</th>
+            <th scope="col">Target</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @positions.each_with_index do |position, index| %>
+            <% coin = position.coin %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td><%= coin.name %></td>
+              <td><%= sprintf('%.6f', position.quantity) %></td>
+              <td><%= sprintf('%.6f', (position.quantity * coin.price_btc)) %></td>
+              <td><%= sprintf('%.2f', (position.quantity * coin.price_usdt)) %></td>
+              <td><%= sprintf('%.1f', ((position.quantity * coin.price_usdt)/(@portfolio.current_value_btc * price_btc))*100) %>%</td>
+              <td><%= @allocations.find{|a| a[:coin_id] == coin.id}.allocation_pct %>%</td>
+            </tr>
+          <% end %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>Totals</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="col-lg-5" id="chart_div">
+    </div>
+  </div>
 
-  <table class="table table-dark" width="80%">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Coin</th>
-        <th scope="col">Amount</th>
-        <th scope="col">Value (BTC)</th>
-        <th scope="col">Value (USD)</th>
-        <th scope="col">Current</th>
-        <th scope="col">Target</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @positions.each_with_index do |position, index| %>
-      <% coin = position.coin %>
-        <tr>
-          <th scope="row"><%= index + 1 %></th>
-          <td><%= coin.name %></td>
-          <td><%= position.current_quantity %></td>
-          <td><%= position.current_quantity * coin.btc_price %></td>
-          <td><%= position.current_quantity * coin.usdt_price %></td>
-          <td><%= ((position.current_quantity * coin.usdt_price) * 100/(@portfolio.current_value * btc_price)).round(2)%>%</td>
 
-          <td><%= @allocations.find{|a| a[:coin_id] == coin.id}.allocation_pct %>%</td>
-        </tr>
-      <% end %>
-    </tbody>
-
-  </table>
-
-<!-- <%= @hsh %> -->
+  <% json_positions = @positions.as_json %>
+  <% json_coins = @coins.as_json %>
 
 
-<a href="/portfolios/1/create_positions" method="post">/portfolios/1/create_positions</a>
+  <script>
+    var json_positions = '<%= raw json_positions.to_json %>';
+    var json_coins = '<%= raw json_coins.to_json %>';
+    var positions = JSON.parse(json_positions);
+    var coins = JSON.parse(json_coins);
+  </script>
 
 
-<a href="/portfolios/1/check_base_ccy" method="patch">/portfolios/1/check_base_ccy</a>
-
-  <div id="chart_div"></div>
 </div>
 

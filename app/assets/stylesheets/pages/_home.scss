@@ -1,1 +1,13 @@
 // Specific CSS for your home-page
+#landing-header {
+  z-index: 1;
+  position: relative;
+  text-align: center;
+  padding-top: 40vh;
+}
+
+.container {
+  background-color: white;
+  border-radius: 10px;
+}
+
