@@ -86,10 +86,10 @@ Portfolio.create(
 
 puts 'making allocations for test user test portfolio'
 
-5.times do
+10.times do
   Allocation.create(
-    allocation_pct: 20,
-    coin_id: rand(1..8),
+    allocation_pct: 10,
+    coin_id: rand(1..11),
     portfolio_id: 1
   )
 end
