@@ -7,7 +7,7 @@
         <%= form_tag create_positions_path(@portfolio) do %>
           <%= submit_tag 'Create Positions', class: 'trigger btn-primary' %>
         <% end %>
-        <%= form_tag '' do %>
+        <%= form_tag rebalance_positions_path(@portfolio.id) do %>
           <%= submit_tag 'Rebalance Positions', class: 'trigger btn-success' %>
         <% end %>
         <%= form_tag '' do %>
