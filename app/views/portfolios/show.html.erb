@@ -1,6 +1,7 @@
 <div class="container">
   <h1>Portfolio<small> for <%= current_user.email %></small></h1>
   <div class="row">
+
     <div class="col">
       <div class="control-panel">
         <%= form_tag create_positions_path(@portfolio) do %>
@@ -20,9 +21,13 @@
     <div class="col-6">
       <% price_btc = Coin.find_by(symbol: 'BTC').price_usdt %>
       <h2>BTC <%= @portfolio.current_value_btc %></h2>
+
     </div>
+
     <div class="col-6 text-right">
+
       <h2>Total value <%= number_to_currency(@portfolio.current_value_btc.to_f * price_btc) %></h2>
+
     </div>
   </div>
   <div class="row">
@@ -74,6 +79,7 @@
   <% json_positions = @positions.as_json %>
   <% json_coins = @coins.as_json %>
 
+
   <script>
     var json_positions = '<%= raw json_positions.to_json %>';
     var json_coins = '<%= raw json_coins.to_json %>';
@@ -83,3 +89,4 @@
 
 
 </div>
+

@@ -41,7 +41,7 @@ class AllocationsController < ApplicationController
 
   def update
     if @allocation.update(allocation_params)
-      redirect_to portfolio_path
+      redirect_to portfolio_path(@portfolio)
     else
       render :edit
     end
