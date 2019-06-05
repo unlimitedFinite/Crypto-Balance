@@ -14,6 +14,18 @@ require 'pry-byebug'
 puts 'Destroying db contents'
 # Delete records
 Coin.destroy_all
+User.destroy_all
+
+puts 'creating test user'
+
+User.create(
+  first_name: 'Testing',
+  last_name: 'Tester',
+  email: 'test@testing.com',
+  password: 'secret',
+  api_key: 'S1zgR71EfhvPCObCe4FhO0Fl79Cqlh4fWYEuUZVAu7YysNXutTwZsdJf5Xz5Ho7K',
+  secret_key: 'SE5vnFHHEUFpZGNoALl4ANhE3mntrFe5UIHeRNRukm8mGK0jF4oMR4MOovIsd7bR'
+)
 
 puts 'Creating coins'
 
@@ -76,6 +88,26 @@ coins.each do |coin|
     price_btc: price_btc,
     is_base_coin: is_base_coin,
     lot_size: lots.fetch(symbol.to_sym)
+  )
+end
+
+puts 'creating portfolio for test user'
+
+Portfolio.create(
+  rebalance_freq: 'Daily',
+  next_rebalance_dt: '3/7/19',
+  user_id: 1,
+  current_value_usdt: 0,
+  coin_id: 1
+  )
+
+puts 'making allocations for test user test portfolio'
+
+10.times do
+  Allocation.create(
+    allocation_pct: 10,
+    coin_id: rand(1..11),
+    portfolio_id: 1
   )
 end
 
