@@ -1,20 +1,32 @@
 <div class="container">
   <h1>Portfolio<small> for <%= current_user.email %></small></h1>
   <div class="row">
-    <div class="col-6">
-      <%= form_tag create_positions_path(@portfolio) do %>
-        <%= submit_tag 'Update Positions', class: 'btn btn-primary' %>
-      <% end %>
-      <%= link_to "Edit Portfolio", edit_portfolio_path, class: 'btn btn-secondary' %>
+    <div class="col">
+      <div class="control-panel">
+        <%= form_tag create_positions_path(@portfolio) do %>
+          <%= submit_tag 'Create Positions', class: 'trigger btn-primary' %>
+        <% end %>
+        <%= form_tag '' do %>
+          <%= submit_tag 'Rebalance Positions', class: 'trigger btn-success' %>
+        <% end %>
+        <%= form_tag '' do %>
+          <%= submit_tag 'Panic Sell', class: 'trigger btn-danger' %>
+        <% end %>
+        <%= link_to "Edit Portfolio", edit_portfolio_path, class: 'trigger btn-secondary' %>
+      </div>
     </div>
-    <div class="col-6 text-right">
+  </div>
+  <div class="row">
+    <div class="col-6">
       <% price_btc = Coin.find_by(symbol: 'BTC').price_usdt %>
       <h2>BTC <%= @portfolio.current_value_btc %></h2>
+    </div>
+    <div class="col-6 text-right">
       <h2>Total value <%= number_to_currency(@portfolio.current_value_btc.to_f * price_btc) %></h2>
     </div>
   </div>
   <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-7">
       <table class="table table-responsive w-auto table-dark">
         <thead>
           <tr>
@@ -41,9 +53,20 @@
             </tr>
           <% end %>
         </tbody>
+        <tfoot>
+          <tr>
+            <td>Totals</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tfoot>
       </table>
     </div>
-    <div class="col-lg-6" id="chart_div">
+    <div class="col-lg-5" id="chart_div">
     </div>
   </div>
 
