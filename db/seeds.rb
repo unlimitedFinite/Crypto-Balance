@@ -58,7 +58,8 @@ coins.each do |coin|
     symbol: symbol,
     price_usdt: price_usdt,
     price_btc: price_btc,
-    is_base_coin: is_base_coin
+    is_base_coin: is_base_coin,
+    lot_size: rand(0.1..1).round(2)
   )
 end
 

@@ -44,7 +44,7 @@ def check_base_ccy
   balance = account_info[:balances]
   raise
   @portfolio.coin_id = Coin.find_by(symbol: params['portfolio']['coin_id']).id
-    if @portfolio.coin_id == 'BTC'
+
 
 end
 
@@ -57,7 +57,7 @@ def portfolio_setup(balance_in_USDT, live_bid_price, live_offer_price, bid_depth
 
 end
 
-check_base_ccy
+
 
 
 
