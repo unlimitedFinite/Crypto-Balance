@@ -53,7 +53,6 @@ class PortfoliosController < ApplicationController
       end
     end
     @portfolio.save
-    rebalance_positions
 
     redirect_to portfolio_path(@portfolio)
   end
@@ -71,7 +70,6 @@ class PortfoliosController < ApplicationController
       # DO NOT USE current_value! use quantity then convert when needed!
       as_of_dt: DateTime.now.to_date
     )
-    # raise
     return new_position_record
   end
 
@@ -92,6 +90,7 @@ class PortfoliosController < ApplicationController
     end
     # find the position and portfolio stats
     @rebalance_hash = {}
+    @coins_arr = []
     @allocations = Allocation.where(portfolio: @portfolio)
 
     @positions.each do |position|
@@ -112,35 +111,53 @@ class PortfoliosController < ApplicationController
         # rebalance amount in USD
         rebalance_amount_usd = (rebalance_pct / 100) * portfolio_value_usdt
         rebalance_amount_coins = rebalance_amount_usd / coin.usdt_price
+        # set min order size to 0.001 BTC
+        min_trade_amount = 0.001 / coin.btc_price
         # create hash of coins with rebalance amounts in USD
-        @rebalance_hash[position[:asset]] = rebalance_amount_coins
-        # reference coin price is mid, bid or offer?
+        @coins_arr << { name: position[:asset], amount: rebalance_amount_coins, min_size: min_trade_amount }
       end
     end
     # call order execution function
-    execute_rebalance_orders(@rebalance_hash)
+    execute_rebalance_orders
   end
 
   def execute_rebalance_orders
-    orders_array
-    @rebalance_hash.each do |coin, amount|
-      if amount.positive?
+    orders_array = []
+    @coins_arr.each do |coin|
+      if coin[:amount].positive?
         side = 'BUY'
       else
         side = 'SELL'
       end
-      order = Binance::Api::Order.create!(
-        quantity: amount,
-        side: side,
-        symbol: "#{coin}BTC",
-        type: 'MARKET',
-        test: true
-      )
+      coin[:amount] = coin[:amount].abs
+      # skip BTC execution since all coins are against BTC
+      unless coin[:name] == 'BTC' || coin[:amount] <= coin[:min_size]
+        byebug
+        order = Binance::Api::Order.create!(
+          quantity: round_value(coin),
+          side: side,
+          symbol: "#{coin[:name]}BTC",
+          type: 'MARKET',
+          test: true
+        )
+      end
       # store order response confirmation
       orders_array << order
-      # Binance::Api::Order.create!(quantity: 100, side: 'SELL', symbol: 'XLMBTC', type: 'MARKET')
+      # Binance::Api::Order.create!(quantity: 0.07, side: 'SELL', symbol: 'LTCBTC', type: 'MARKET', test: true)
     end
   end
+
+  # adjusts the minimum lot size per order - need to set in the schema
+  def round_value(coin)
+    # @coin_instance = Coin.find_by(symbol: coin[:name])
+    if coin[:amount] / 0.01 < 1 #@coin_instance[:lot_size] < 1
+      required_amount = 0.01 #@coin_instance[:lot_size]
+    else
+      required_amount = (coin[:amount] / 0.01).round * 0.01 #@coin_instance[:lot_size]).round * @coin_instance[:lot_size]
+    end
+    return required_amount
+  end
+
 
   def get_api_data(coin)
     @info = Binance::Api::Account.info!
