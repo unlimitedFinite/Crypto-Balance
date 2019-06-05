@@ -50,7 +50,7 @@ class PortfoliosController < ApplicationController
 
     @portfolio.current_value_usdt = 0.0
     @portfolio.current_value_btc = 0.0
-    positions.each do |position|
+    @positions.each do |position|
 
       coin = Coin.find_by(symbol: position[:asset])
 
