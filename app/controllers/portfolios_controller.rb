@@ -50,7 +50,7 @@ class PortfoliosController < ApplicationController
 
     @portfolio.current_value_usdt = 0.0
     @portfolio.current_value_btc = 0.0
-    positions.each do |position|
+    @positions.each do |position|
 
       coin = Coin.find_by(symbol: position[:asset])
 
@@ -67,9 +67,6 @@ class PortfoliosController < ApplicationController
 
     redirect_to portfolio_path(@portfolio)
   end
-
-
-  private
 
   def close_prior_position_record(position_record, new_position_record)
     unless position_record.nil?
@@ -102,13 +99,13 @@ class PortfoliosController < ApplicationController
       balance[:free] == "0.00000000"
     end
     # sum the btc value of each position
-    @portfolio.current_value = 0.0
-    @positions.each do |position|
-      coin = Coin.find_by(symbol: position[:asset])
-      unless coin.nil?
-        @portfolio.current_value += (position[:free].to_f * coin.btc_price)
-      end
-    end
+    # @portfolio.current_value_usdt = 0.0
+    # @positions.each do |position|
+    #   coin = Coin.find_by(symbol: position[:asset])
+    #   unless coin.nil?
+    #     @portfolio.current_value += (position[:free].to_f * coin.price_btc)
+    #   end
+    # end
     # find the position and portfolio stats
     @rebalance_hash = {}
     @coins_arr = []
@@ -119,21 +116,21 @@ class PortfoliosController < ApplicationController
       # avoids error when there are coin positions that are not in our list
       unless coin.nil?
         # finds BTC price
-        btc_price = Coin.find_by(symbol: 'BTC').usdt_price
+        price_btc = Coin.find_by(symbol: 'BTC').price_usdt
         # calculates each position value in both btc and usdt
-        position_value_btc = position[:free].to_f * coin.btc_price
-        position_value_usdt = position[:free].to_f * coin.usdt_price
+        position_value_btc = position[:free].to_f * coin.price_btc
+        position_value_usdt = position[:free].to_f * coin.price_usdt
         # calculates usdt value of the total portfolio from the btc quantity
-        portfolio_value_usdt = @portfolio.current_value * btc_price
+        portfolio_value_usdt = @portfolio.current_value_usdt
         # calculates the pct difference between target and current allocations
         current_pct = ((position_value_usdt / portfolio_value_usdt) * 100).round(2)
         target_pct = @allocations.find { |a| a[:coin_id] == coin.id }.allocation_pct
         rebalance_pct = target_pct - current_pct
         # rebalance amount in USD
         rebalance_amount_usd = (rebalance_pct / 100) * portfolio_value_usdt
-        rebalance_amount_coins = rebalance_amount_usd / coin.usdt_price
+        rebalance_amount_coins = rebalance_amount_usd / coin.price_usdt
         # set min order size to 0.001 BTC
-        min_trade_amount = 0.001 / coin.btc_price
+        min_trade_amount = 0.001 / coin.price_btc
         # create hash of coins with rebalance amounts in USD
         @coins_arr << { name: position[:asset], amount: rebalance_amount_coins, min_size: min_trade_amount }
       end
@@ -153,7 +150,6 @@ class PortfoliosController < ApplicationController
       coin[:amount] = coin[:amount].abs
       # skip BTC execution since all coins are against BTC
       unless coin[:name] == 'BTC' || coin[:amount] <= coin[:min_size]
-        byebug
         order = Binance::Api::Order.create!(
           quantity: round_value(coin),
           side: side,

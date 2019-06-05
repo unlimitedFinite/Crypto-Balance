@@ -19,6 +19,7 @@ puts 'Creating coins'
 coins = ['Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tether','Tron','Stellar','Zcash']
 base_coins = ['BTC','USDT']
 
+
 coins.each do |coin|
   coin_name_url = "https://api.99cryptocoin.com/v1/ticker/#{coin}"
   coin_name_json = open(coin_name_url).read
@@ -58,7 +59,8 @@ coins.each do |coin|
     symbol: symbol,
     price_usdt: price_usdt,
     price_btc: price_btc,
-    is_base_coin: is_base_coin
+    is_base_coin: is_base_coin,
+    lot_size: rand(0.1..1).round(2)
   )
 end
 
