@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_04_095135) do
+ActiveRecord::Schema.define(version: 2019_06_05_023418) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,11 +28,11 @@ ActiveRecord::Schema.define(version: 2019_06_04_095135) do
   create_table "coins", force: :cascade do |t|
     t.string "name"
     t.string "symbol"
-    t.float "usdt_price"
+    t.float "price_usdt"
     t.boolean "is_base_coin"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.float "btc_price"
+    t.float "price_btc"
   end
 
   create_table "orders", force: :cascade do |t|
@@ -55,23 +55,25 @@ ActiveRecord::Schema.define(version: 2019_06_04_095135) do
     t.string "rebalance_freq"
     t.date "next_rebalance_dt"
     t.bigint "user_id"
-    t.float "current_value"
+    t.float "current_value_usdt"
     t.bigint "coin_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "current_value_btc"
     t.index ["coin_id"], name: "index_portfolios_on_coin_id"
     t.index ["user_id"], name: "index_portfolios_on_user_id"
   end
 
   create_table "positions", force: :cascade do |t|
     t.bigint "coin_id"
-    t.float "current_quantity"
-    t.float "current_value"
+    t.float "quantity"
+    t.float "value_usdt"
     t.date "as_of_dt"
     t.date "as_of_dt_end"
     t.bigint "portfolio_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "value_btc"
     t.index ["coin_id"], name: "index_positions_on_coin_id"
     t.index ["portfolio_id"], name: "index_positions_on_portfolio_id"
   end

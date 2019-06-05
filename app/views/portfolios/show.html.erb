@@ -7,9 +7,9 @@
       <% end %>
     </div>
     <div class="col-6 text-right">
-      <% btc_price = Coin.find_by(symbol: 'BTC').usdt_price %>
-      <h2>BTC <%= @portfolio.current_value %></h2>
-      <h2>Total value <%= number_to_currency(@portfolio.current_value * btc_price) %></h2>
+      <% price_btc = Coin.find_by(symbol: 'BTC').price_usdt %>
+      <h2>BTC <%= @portfolio.current_value_btc %></h2>
+      <h2>Total value <%= number_to_currency(@portfolio.current_value_btc.to_f * price_btc) %></h2>
     </div>
   </div>
 
@@ -31,10 +31,10 @@
         <tr>
           <th scope="row"><%= index + 1 %></th>
           <td><%= coin.name %></td>
-          <td><%= position.current_quantity %></td>
-          <td><%= position.current_quantity * coin.btc_price %></td>
-          <td><%= position.current_quantity * coin.usdt_price %></td>
-          <td><%= ((@portfolio.current_value * btc_price)/(position.current_quantity * coin.usdt_price)).to_i %>%</td>
+          <td><%= position.quantity %></td>
+          <td><%= position.quantity * coin.price_btc %></td>
+          <td><%= position.quantity * coin.price_usdt %></td>
+          <td><%= ((@portfolio.current_value_btc.to_f * price_btc)/(position.quantity * coin.price_usdt)).to_i %>%</td>
           <td><%= @allocations.find{|a| a[:coin_id] == coin.id}.allocation_pct %>%</td>
         </tr>
       <% end %>
