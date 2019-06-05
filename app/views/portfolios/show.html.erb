@@ -1,15 +1,22 @@
 <div class="container">
   <h1>Portfolio<small> for <%= current_user.email %></small></h1>
   <div class="row">
-    <div class="col-6">
+    <div class="col-6 d-flex">
+
       <%= form_tag create_positions_path(@portfolio) do %>
         <%= submit_tag 'Update Positions', class: 'btn btn-primary' %>
       <% end %>
+
+      <%= form_tag rebalance_positions_path(@portfolio) do %>
+        <%= submit_tag 'Rebalance Positions', class: 'btn btn-primary', method: 'post' %>
+      <% end %>
+
     </div>
+
     <div class="col-6 text-right">
       <% btc_price = Coin.find_by(symbol: 'BTC').usdt_price %>
-      <h2>BTC <%= @portfolio.current_value %></h2>
-      <h2>Total value <%= number_to_currency(@portfolio.current_value * btc_price) %></h2>
+
+
     </div>
   </div>
 
@@ -34,41 +41,22 @@
           <td><%= position.current_quantity %></td>
           <td><%= position.current_quantity * coin.btc_price %></td>
           <td><%= position.current_quantity * coin.usdt_price %></td>
-          <td><%= ((@portfolio.current_value * btc_price)/(position.current_quantity * coin.usdt_price)).to_i %>%</td>
+          <td><%= ((position.current_quantity * coin.usdt_price) * 100/(@portfolio.current_value * btc_price)).round(2)%>%</td>
+
           <td><%= @allocations.find{|a| a[:coin_id] == coin.id}.allocation_pct %>%</td>
         </tr>
       <% end %>
     </tbody>
+
   </table>
-  <% @allocations.each do |a| %>
 
-
-<ul>
-  <%= form_tag create_positions_path(@portfolio) do %>
-    <%= submit_tag 'Update Positions', class: 'btn btn-primary' %>
-  <% end %>
-</ul>
-
-<ul>
-  <% @portfolio.positions.each do |position| %>
-    <li><%= position.current_quantity %> <%= position.current_value %></li>
-
-
-  <% end %>
-
-
-<ul>
-  <%= form_tag rebalance_positions_path(@portfolio) do %>
-    <%= submit_tag 'Rebalance Positions', class: 'btn btn-primary' %>
-  <% end %>
-</ul>
+<!-- <%= @hsh %> -->
 
 
 <a href="/portfolios/1/create_positions" method="post">/portfolios/1/create_positions</a>
 
 
-<a href="/portfolios/1/check_base_ccy" method="post">/
-portfolios/1/check_base_ccy</a>
+<a href="/portfolios/1/check_base_ccy" method="patch">/portfolios/1/check_base_ccy</a>
 
   <div id="chart_div"></div>
 </div>

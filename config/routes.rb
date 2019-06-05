@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   resources :coins, only: [:index, :update]
   resources :positions, only: [:index, :create]
   post "portfolios/:id/create_positions", to: "portfolios#create_positions", as: "create_positions"
-  patch "portfolios/:id/update_positions", to: "portolio#update_positions", as: "rebalance_positions"
+  post "portfolios/:id/rebalance_positions", to: "portfolios#rebalance_positions", as: "rebalance_positions"
   resources :portfolios, except: [:index, :destroy] do
     resources :allocations, except: [:index, :show, :destroy]
   end
