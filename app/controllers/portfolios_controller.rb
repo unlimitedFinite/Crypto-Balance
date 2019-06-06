@@ -63,6 +63,7 @@ class PortfoliosController < ApplicationController
         @portfolio.current_value_btc += new_position_record.value_btc
       end
     end
+
     @portfolio.save
 
     redirect_to portfolio_path(@portfolio)
@@ -114,11 +115,11 @@ class PortfoliosController < ApplicationController
   end
 
 
-  def order_lot_size_btc(position_value_btc, min_lot_size)
-    if position_value_btc / min_lot_size < 1
-      required_amount = min_lot_size
+  def order_size_btc(number_of_btc, min_trade_unit)
+    if number_of_btc / min_trade_unit < 1
+      required_amount = min_trade_unit
     else
-      required_amount = (position_value_btc / min_lot_size).round * min_lot_size
+      required_amount = (number_of_btc / min_trade_unit).round * min_trade_unit
     end
     return required_amount
   end
@@ -133,16 +134,17 @@ class PortfoliosController < ApplicationController
 
     @positions.each do |position|
       coin = Coin.find_by(symbol: position[:asset])
-
+      # sell down USDT to buy BTC first
       if position[:symbol] == 'USDT'
-        position_value_btc = position[:free].to_f / price_btc
-        min_lot_size = Coin.find_by(symbol: 'USDT').lot_size
-        min_trade_amount = 0.000001
+        number_of_usdt = position[:free]
+        number_of_btc = position[:free].to_f / price_btc
+        min_trade_unit = Coin.find_by(symbol: 'USDT').lot_size
+        min_trade_amount = 10
 
-        unless position_value_btc <= min_trade_amount \
-          || position_value_btc < order_lot_size_btc(position_value_btc, min_lot_size)
+        unless number_of_usdt <= min_trade_amount \
+          || number_of_btc < order_size_btc(number_of_btc, min_trade_unit)
 
-          quantity = order_lot_size_btc(position_value_btc, min_lot_size)
+          quantity = order_size_btc(number_of_btc, min_trade_unit)
 
           Binance::Api::Order.create!(
             quantity: quantity,
@@ -151,6 +153,7 @@ class PortfoliosController < ApplicationController
             type: 'MARKET',
             test: true
           )
+
         end
 
       else
@@ -173,12 +176,12 @@ class PortfoliosController < ApplicationController
         end
       end
     end
-    execute_rebalance_orders
+    execute_orders
+    #create_positions
   end
 
 
-  def execute_rebalance_orders
-    orders_array = []
+  def execute_orders
     @coins_arr.each do |coinhash|
 
       if coinhash[:amount].positive?
@@ -186,6 +189,7 @@ class PortfoliosController < ApplicationController
       else
         side = 'SELL'
       end
+
       coinhash[:amount] = coinhash[:amount].abs
       # skip BTC execution since all coins are against BTC
       unless coinhash[:name] == 'BTC' || coinhash[:amount] <= coinhash[:min_size] \
@@ -193,7 +197,7 @@ class PortfoliosController < ApplicationController
 
         quantity = order_lot_size(coinhash)
 
-        order = Binance::Api::Order.create!(
+        Binance::Api::Order.create!(
           quantity: quantity,
           side: side,
           symbol: "#{coinhash[:name]}BTC",
@@ -201,23 +205,53 @@ class PortfoliosController < ApplicationController
           test: true
         )
       end
-      # store order response confirmation...not working yet
-      orders_array << order
     end
   end
 
-  # liquidate portfolio into USDt including BTC
-  def panic_sell
-    read_portfolio_info
 
-    order = Binance::Api::Order.create!(
-          quantity: quantity,
-          side: 'SELL',
-          symbol: "#{coinhash[:name]}BTC",
-          type: 'MARKET',
-          test: true
-        )
+  def panic_sell
+    @coins_arr = []
+    read_portfolio_info
+    price_btc = Coin.find_by(symbol: 'BTC').price_usdt
+
+    @positions.each do |position|
+      coin = Coin.find_by(symbol: position[:asset])
+
+      if position[:symbol] == 'BTC'
+
+        number_of_btc = position[:free]
+        number_of_usdt = position[:free] / price_btc
+        min_trade_unit = 0.000001
+        min_trade_amount_usdt = 10
+
+        unless number_of_usdt <= min_trade_amount_usdt \
+          || number_of_btc < order_size_btc(number_of_btc, min_trade_unit)
+
+          quantity = order_size_btc(number_of_btc, min_trade_unit)
+
+          Binance::Api::Order.create!(
+            quantity: quantity,
+            side: 'SELL',
+            symbol: 'BTCUSDT',
+            type: 'MARKET',
+            test: true
+          )
+        end
+
+      else
+
+        unless coin.nil?
+          min_trade_amount = 0.001 / coin.price_btc
+          coinhash = { name: position[:asset], amount: -position[:free].to_f.abs, min_size: min_trade_amount }
+          byebug
+          @coins_arr << coinhash
+        end
+      end
+    end
+    execute_orders
+    #create_positions
   end
+
 
 
   def get_api_data(coin)
