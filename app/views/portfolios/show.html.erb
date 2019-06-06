@@ -7,10 +7,11 @@
         <%= form_tag create_positions_path(@portfolio) do %>
           <%= submit_tag 'Create Positions', class: 'trigger btn-primary' %>
         <% end %>
-        <%= form_tag rebalance_positions_path(@portfolio.id) do %>
+
+        <%= form_tag rebalance_positions_path(@portfolio) do %>
           <%= submit_tag 'Rebalance Positions', class: 'trigger btn-success' %>
         <% end %>
-        <%= form_tag '' do %>
+        <%= form_tag sell_positions_path(@portfolio) do %>
           <%= submit_tag 'Panic Sell', class: 'trigger btn-danger' %>
         <% end %>
         <%= link_to "Edit Portfolio", edit_portfolio_path, class: 'trigger btn-secondary' %>
