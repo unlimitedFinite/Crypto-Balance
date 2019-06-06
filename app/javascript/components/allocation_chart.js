@@ -10,36 +10,32 @@ google.charts.setOnLoadCallback(drawChart);
 // instantiates the pie chart, passes in the data and
 // draws it.
 }
+console.log(coins);
+
+function updateChart(){
+  document.querySelectorAll('.num_input').forEach( (input) => {
+    input.addEventListener('change', (evt) => {
+      dataHash[evt.target.id] = evt.target.value;
+      console.log(dataHash);
+    });
+  });
+};
+
+
 
 function drawChart() {
 
-  // Create the data table.
   var data = new google.visualization.DataTable();
   data.addColumn('string', 'Coin');
   data.addColumn('number', 'Value');
-  console.log(positions);
-  console.log(coins);
 
-  function findCoinName(coinId) {
-    let coin = coins.find(function(c) {
-      return c['id'] === coinId;
-    });
-    return coin['name'];
-  }
-
-  var dataArray = [];
-
-  var count = Object.keys(positions).length;
-  for(var i = 0 ; i < count ; i++ ){
-    dataArray.push( [ findCoinName(positions[i]['coin_id']),  Math.round(positions[i]['value_usdt']) ]);
-  };
-  data.addRows(dataArray);
+  data.addRows(dataHash);
 
   // Set chart options
   var options = {
-    'title':'Allocation Spread',
+    'title':'Allocations',
     'height': 500,
-    'legend' : {position: ''}
+    'legend' : {position: 'bottom'}
   };
 
   // Instantiate and draw our chart, passing in some options.
@@ -47,4 +43,4 @@ function drawChart() {
   chart.draw(data, options);
 };
 
-export {allocationChart}
+export {allocationChart, updateChart}

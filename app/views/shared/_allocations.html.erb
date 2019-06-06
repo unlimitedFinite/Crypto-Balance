@@ -1,27 +1,41 @@
+<%= simple_form_for [@portfolio, @allocation] do |f| %>
 
-
-      <%= simple_form_for [@portfolio, @allocation] do |f| %>
-
-        <% if @allocation.errors.any? %>
-          <div class="errors-container">
-            <ul>
-              <% @allocation.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
-              <% end %>
-            </ul>
-          </div>
+  <% if @allocation.errors.any? %>
+    <div class="errors-container">
+      <ul>
+        <% @allocation.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
         <% end %>
+      </ul>
+    </div>
+  <% end %>
 
-        <div class="form-group">
-          <div class="row justify-content-center">
-            <% ['Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tron','Stellar','Zcash'].each do |currency| %>
-            <div class="col-lg-4 col-md-6 text-center">
-              <%= f.label "#{currency} ", class: "input-control col-form-label" %>
-              <input type="number", name="crypto[<%= currency %>]", class= "form-control num_input">
-            </div>
-            <% end %>
-          </div>
-          <%= f.submit "Submit", class: "btn btn-primary mt-4 w-100" %>
-        </div>
+  <!-- Need to set event listeners on each input field to listen for a change in value
+        Then, these values should go into a hash that has currency: value
+          This hash should then be sent to JS Chart so that the information is displayed in real time -->
 
+  <% hash = {} %>
+
+  <div class="form-group">
+    <div class="row justify-content-center" id="listener">
+      <% @coins = ['Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tron','Stellar','Zcash'] %>
+      <% @coins.each do |currency| %>
+      <div class="col-lg-4 col-md-6 text-center">
+        <%= f.label "#{currency} ", class: "input-control col-form-label" %>
+        <input type="number" name="crypto[<%= currency %>]" class= "form-control num_input" id="<%= currency %>">
+        <% hash[currency] = 0 %>
+      </div>
       <% end %>
+    </div>
+    <%= f.submit "Submit", class: "btn btn-primary mt-4 w-100" %>
+  </div>
+<% end %>
+<% @coins.class %>
+<% json_coins = @coins.as_json %>
+
+
+<script>
+  var json_coins = '<%= raw hash.to_json %>';
+  var coins = JSON.parse(json_coins);
+  var dataHash = {};
+</script>
