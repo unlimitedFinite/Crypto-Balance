@@ -158,10 +158,9 @@ class PortfoliosController < ApplicationController
 
       else
         unless coin.nil?
-          # calculates each position value in both btc and usdt
-          # position_value_btc = position[:free].to_f * coin.price_btc
+
           position_value_usdt = position[:free].to_f * coin.price_usdt
-          # calculates the pct difference between target and current allocations
+
           current_pct = (position_value_usdt / @portfolio.current_value_usdt).round(2)
           target_pct = @allocations.find { |a| a[:coin_id] == coin.id }.allocation_pct
           rebalance_pct = target_pct - current_pct
@@ -177,7 +176,7 @@ class PortfoliosController < ApplicationController
       end
     end
     execute_orders
-    #create_positions
+    create_positions
   end
 
 
@@ -248,7 +247,7 @@ class PortfoliosController < ApplicationController
       end
     end
     execute_orders
-    #create_positions
+    create_positions
   end
 
 

@@ -40,7 +40,7 @@ lots = {
   LTC: 0.01,
   EOS: 1,
   ADA: 1,
-  USDT: 10,
+  USDT: 0.000001,
   TRX: 1,
   XLM: 1,
   ZEC: 0.001
