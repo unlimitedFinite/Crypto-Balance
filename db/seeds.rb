@@ -45,6 +45,21 @@ lots = {
   XLM: 1,
   ZEC: 0.001
 }
+
+colors = {
+  BTC: '#F7931A',
+  ETH: '#627EEA',
+  XRP: '#00AAE4',
+  BCHABC: '#8dc351',
+  LTC: '#CBC6C6',
+  EOS: '#000000',
+  ADA: '#3CC8C8',
+  USDT: '#26A17B',
+  TRX: '#000000',
+  XLM: '#14B6E7',
+  ZEC: '#ECB244'
+}
+
 images = {
   BTC: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749966/crypto-balance/btc_vjj2fj.svg',
   ETH: 'https://res.cloudinary.com/deyw9z6tu/image/upload/v1559749964/crypto-balance/eth_vdvw3n.svg',
@@ -103,7 +118,8 @@ coins.each do |coin|
     price_btc: price_btc,
     is_base_coin: is_base_coin,
     lot_size: lots.fetch(symbol.to_sym),
-    image: images.fetch(symbol.to_sym)
+    image: images.fetch(symbol.to_sym),
+    color: colors.fetch(symbol.to_sym)
   )
 end
 
