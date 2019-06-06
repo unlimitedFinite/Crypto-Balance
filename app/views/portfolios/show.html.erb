@@ -55,7 +55,8 @@
               <td><%= sprintf('%.6f', (position.quantity * coin.price_btc)) %></td>
               <td><%= sprintf('%.2f', (position.quantity * coin.price_usdt)) %></td>
               <td><%= sprintf('%.1f', ((position.quantity * coin.price_usdt)/(@portfolio.current_value_btc * price_btc))*100) %>%</td>
-              <td><%= @allocations.find{|a| a[:coin_id] == coin.id}.allocation_pct %>%</td>
+
+              <td><%= @allocations.find {|a| a[:coin_id] == coin.id}.allocation_pct %>%</td>
             </tr>
           <% end %>
         </tbody>

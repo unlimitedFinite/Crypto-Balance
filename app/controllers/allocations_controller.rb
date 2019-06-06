@@ -24,6 +24,7 @@ class AllocationsController < ApplicationController
         @allocation.coin_id = Coin.find_by(name: coin).id
         @allocation.allocation_pct = percentage.to_i
         @allocation.save
+        Allocation.create(allocation_pct: 0, coin_id: 8, portfolio_id: @portfolio)
       end
       unless Allocation.last.portfolio_id.nil?
         flash[:success] = "Allocations have been saved!"
@@ -34,6 +35,8 @@ class AllocationsController < ApplicationController
       end
     end
   end
+
+#allocation_pct: 10, created_at: "2019-06-06 10:09:07", updated_at: "2019-06-06 10:09:07", coin_id: 1, portfolio_id: 2
 
   def edit
     @allocation = Allocation.new
