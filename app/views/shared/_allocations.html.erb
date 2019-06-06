@@ -1,7 +1,5 @@
 
-<div class="container">
-  <div class="row">
-    <div class="col-4">
+
       <%= simple_form_for [@portfolio, @allocation] do |f| %>
 
         <% if @allocation.errors.any? %>
@@ -14,18 +12,16 @@
           </div>
         <% end %>
 
-        <div class="form-group row">
-          <% ['Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tron','Stellar','Zcash'].each do |currency| %>
-            <%= f.label "#{currency} ", class: "input-control col-sm-3 col-form-label" %>
-            <input type="number", name="crypto[<%= currency %>]", class= "form-control">
-          <% end %>
-          <%= f.submit "Submit Allocations", class: "btn btn-primary mt-3" %>
+        <div class="form-group">
+          <div class="row justify-content-center">
+            <% ['Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tron','Stellar','Zcash'].each do |currency| %>
+            <div class="col-lg-4 col-md-6 text-center">
+              <%= f.label "#{currency} ", class: "input-control col-form-label" %>
+              <input type="number", name="crypto[<%= currency %>]", class= "form-control num_input">
+            </div>
+            <% end %>
+          </div>
+          <%= f.submit "Submit", class: "btn btn-primary mt-4 w-100" %>
         </div>
 
       <% end %>
-    </div>
-    <div class="col-8">
-
-    </div>
-  </div>
-</div>

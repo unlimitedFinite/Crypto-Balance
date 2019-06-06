@@ -1,0 +1,22 @@
+// body {
+//   background-image: linear-gradient(to right, rgba(50, 50, 50, 0.32),rgba(50, 50, 50, 0.42)), url('https://res.cloudinary.com/deyw9z6tu/image/upload/v1559794760/crypto-balance/Depositphotos_163587142_l-2015_qb5vtm.jpg');
+//   background-size: cover;
+// }
+
+.form-container {
+  background-color: $gray;
+  color: $black;
+  width: 400px;
+  margin: 0px auto;
+  padding: 25px;
+  border-radius: 25px;
+  font-size: 11px;
+}
+
+.form-header {
+  color: white;
+}
+
+.form-container .info {
+  font-size: 1rem;
+}
