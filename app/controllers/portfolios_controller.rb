@@ -243,7 +243,6 @@ class PortfoliosController < ApplicationController
         unless coin.nil?
           min_trade_amount = 0.001 / coin.price_btc
           coinhash = { name: position[:asset], amount: -position[:free].to_f.abs, min_size: min_trade_amount }
-          byebug
           @coins_arr << coinhash
         end
       end
