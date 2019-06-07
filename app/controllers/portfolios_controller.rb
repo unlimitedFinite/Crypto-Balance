@@ -176,6 +176,7 @@ class PortfoliosController < ApplicationController
       end
     end
     execute_orders
+    flash[:success] = "Portfolio has been rebalanced!"
     create_positions
   end
 
@@ -247,6 +248,7 @@ class PortfoliosController < ApplicationController
       end
     end
     execute_orders
+    flash[:failure] = "Portfolio has been liquidated!"
     create_positions
   end
 
