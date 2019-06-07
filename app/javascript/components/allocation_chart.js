@@ -1,13 +1,22 @@
-function sumAllocations(value){
+function sumAllocations(oldValue, newValue){
   var span = document.getElementById("allocations");
-  console.log(span);
-  sum += value;
-  // span.textContent(`Allocated: ${sum}/100 shares`)
+  oldValue = oldValue || 0;
+  if (newValue >= oldValue){
+    sum += newValue;
+  }
+  else {
+    sum = (sum - oldValue) + newValue;
+  }
+
   if (sum > 100){
-    span.innerText = (`Please deduct ${sum - 100} shares!`)
+    span.innerText = (`Please deduct ${sum - 100} shares!`);
+    document.getElementById("submit-alloc").disabled = true;
+  } else if (sum < 100){
+    span.innerText = (`Please add ${100 - sum} more shares`);
     document.getElementById("submit-alloc").disabled = true;
   } else {
-    span.innerText = (`Please add ${100 - sum} more shares`)
+    span.innerText = (`That's perfect!`);
+    document.getElementById("submit-alloc").disabled = false;
   }
 }
 
@@ -32,7 +41,8 @@ function initdataArray(){
 function setListeners(){
   document.querySelectorAll('.num_input').forEach( (input) => {
     input.addEventListener('change', (evt) => {
-      sumAllocations(evt.target.valueAsNumber);
+      console.log(evt);
+      sumAllocations(parseInt(evt.target.oldvalue), evt.target.valueAsNumber);
       dataHash[evt.target.id] = evt.target.value;
       updateChart();
     });
@@ -74,7 +84,7 @@ function drawChart() {
   };
 
   // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+  var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
   chart.draw(data, options);
 };
 
