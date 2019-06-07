@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   end
 
 def after_sign_in_path_for(resource)
-  stored_location_for(resource) || portfolio_path(current_user)
+  stored_location_for(resource) || portfolio_path(current_user.portfolio)
 end
 
   def configure_permitted_parameters
