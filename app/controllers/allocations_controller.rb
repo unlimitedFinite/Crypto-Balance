@@ -36,7 +36,6 @@ class AllocationsController < ApplicationController
     end
   end
 
-#allocation_pct: 10, created_at: "2019-06-06 10:09:07", updated_at: "2019-06-06 10:09:07", coin_id: 1, portfolio_id: 2
 
   def edit
     @allocation = Allocation.new

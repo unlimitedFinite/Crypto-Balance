@@ -33,7 +33,7 @@
   </div>
   <div class="row">
     <div class="col-lg-7">
-      <table class="table table-responsive w-auto table-dark">
+      <table class="table table-responsive w-auto">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -48,7 +48,7 @@
         <tbody>
           <% @positions.each_with_index do |position, index| %>
             <% coin = position.coin %>
-            <tr>
+            <tr style="border: 2px solid <%= coin.color %>;">
               <td><%= image_tag coin.image, alt: "#{coin.name}" %></td>
               <td><%= coin.name %></td>
               <td><%= sprintf('%.6f', position.quantity) %></td>

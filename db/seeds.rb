@@ -121,6 +121,7 @@ coins.each do |coin|
     image: images.fetch(symbol.to_sym),
     color: colors.fetch(symbol.to_sym)
   )
+
 end
 
 puts 'creating portfolio for test user'
