@@ -1,8 +1,15 @@
 .control-panel {
   display: flex;
-  justify-content: space-between;
+  width: 100%;
 }
 
-.trigger {
+.dashboard {
+  background-color: $gray;
+  padding: 30px 20px;
+}
 
+.price-container {
+  color: black;
+  width: 100%;
+  padding: 24px;
 }

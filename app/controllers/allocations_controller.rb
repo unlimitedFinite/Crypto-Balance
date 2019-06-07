@@ -38,7 +38,8 @@ class AllocationsController < ApplicationController
 
 
   def edit
-    @allocation = Allocation.new
+    @portfolio = Portfolio.find(params[:portfolio_id])
+    @allocations = Allocation.where(portfolio_id: @portfolio.id)
   end
 
   def update
