@@ -11,6 +11,8 @@ google.charts.setOnLoadCallback(drawChart);
 // draws it.
 }
 
+
+
 function drawChart() {
 
   // Create the data table.
@@ -20,18 +22,39 @@ function drawChart() {
   console.log(positions);
   console.log(coins);
 
-  function findCoinName(coinId) {
+// is coin found in position? pass coin id from
+
+// if yes, add coin.color to array
+// if no, move on
+
+  // function findColor(coin_id) {
+  //   let coin = coins.find(function(c) {
+  //     return c['id'] === coinId;
+  //   });
+  //   colors.push(coin.color);
+  // }
+  const colors = []
+
+  function findCoin(coinId) {
     let coin = coins.find(function(c) {
       return c['id'] === coinId;
     });
+    colors.push(coin['color']);
     return coin['name'];
   }
+
+  console.log(colors);
+
+  // coins.forEach(function(c){
+  //   if findColor(c) == true
+  //   colors.push(c.color);
+  // });
 
   var dataArray = [];
 
   var count = Object.keys(positions).length;
   for(var i = 0 ; i < count ; i++ ){
-    dataArray.push( [ findCoinName(positions[i]['coin_id']),  Math.round(positions[i]['value_usdt']) ]);
+    dataArray.push( [ findCoin(positions[i]['coin_id']),  Math.round(positions[i]['value_usdt']) ]);
   };
   data.addRows(dataArray);
 
@@ -39,7 +62,8 @@ function drawChart() {
   var options = {
     'title':'Portfolio Positions',
     'height': 500,
-    'legend' : {position: 'bottom'}
+    'legend' : {position: 'bottom'},
+    'colors': colors
   };
 
   // Instantiate and draw our chart, passing in some options.
