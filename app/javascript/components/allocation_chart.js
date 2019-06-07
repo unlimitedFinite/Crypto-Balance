@@ -4,15 +4,10 @@ function allocationChart(){
 google.charts.load('current', {'packages':['corechart']});
 
 // Set a callback to run when the Google Visualization API is loaded.
-google.charts.setOnLoadCallback(drawChart);
-
-// Callback that creates and populates a data table,
-// instantiates the pie chart, passes in the data and
-// draws it.
+// google.charts.setOnLoadCallback(drawChart);
 }
-console.log(coins);
 
-function updateChart(){
+function setListeners(){
   document.querySelectorAll('.num_input').forEach( (input) => {
     input.addEventListener('change', (evt) => {
       dataHash[evt.target.id] = evt.target.value;
@@ -21,7 +16,19 @@ function updateChart(){
   });
 };
 
+function updateChart(){
+  document.querySelector('#update').addEventListener('click', (e) => {
+    for (let [key, value] of Object.entries(dataHash)) {
+      console.log(typeof(key) + ' ' + typeof(value));
+      dataArray.push([key.toString(), parseInt(value)]);
+      drawChart();
+    };
+  })
+}
 
+function resetdataArray(){
+
+}
 
 function drawChart() {
 
@@ -29,7 +36,7 @@ function drawChart() {
   data.addColumn('string', 'Coin');
   data.addColumn('number', 'Value');
 
-  data.addRows(dataHash);
+  data.addRows(dataArray);
 
   // Set chart options
   var options = {
@@ -39,8 +46,8 @@ function drawChart() {
   };
 
   // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+  var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
   chart.draw(data, options);
 };
 
-export {allocationChart, updateChart}
+export {allocationChart, setListeners, updateChart}
