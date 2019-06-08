@@ -1,3 +1,6 @@
+
+
+
 <div class="container">
   <div class="dashboard">
     <div class="row">
@@ -19,23 +22,39 @@
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-lg-7">
-        <table class="table table-dark table-responsive w-auto">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Coin</th>
-              <th scope="col">Amount</th>
-              <th scope="col">Value (BTC)</th>
-              <th scope="col">Value (USD)</th>
-              <th scope="col">Current</th>
-              <th scope="col">Target</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @positions.each_with_index do |position, index| %>
-              <% coin = position.coin %>
+
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <% price_btc = Coin.find_by(symbol: 'BTC').price_usdt %>
+      <h2>BTC <%= @portfolio.current_value_btc %></h2>
+
+    </div>
+
+    <div class="col-6 text-right">
+
+      <h2>Total value <%= number_to_currency(@portfolio.current_value_btc.to_f * price_btc) %></h2>
+      <h2>BCGI Index: <%= @index %></h2>
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-lg-7">
+      <table class="table table-responsive w-auto table-dark">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Coin</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Value (BTC)</th>
+            <th scope="col">Value (USD)</th>
+            <th scope="col">Current</th>
+            <th scope="col">Target</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @positions.each_with_index do |position, index| %>
+            <% coin = position.coin %>
               <tr style="border: 2px solid <%= coin.color %>;">
                 <td><%= image_tag coin.image, alt: "#{coin.name}" %></td>
                 <td><%= coin.name %></td>
