@@ -31,11 +31,10 @@ class PortfoliosController < ApplicationController
 
 
   def update
-    @portfolio.coin_id = Coin.find_by(symbol: params['portfolio']['coin_id'])
+    @portfolio.coin_id = Coin.find_by(symbol:'BTC').id
     @portfolio.update(portfolio_params)
-    raise
     if @portfolio.update(portfolio_params)
-      redirect_to portfolio_path(@portfolio)
+      redirect_to edit_portfolio_allocation_path(@portfolio)
     else
       render :edit
     end

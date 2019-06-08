@@ -28,7 +28,7 @@ class AllocationsController < ApplicationController
       end
       unless Allocation.last.portfolio_id.nil?
         flash[:success] = "Allocations have been saved!"
-        redirect_to portfolio_path(@portfolio)
+        redirect_to create_positions_path(@portfolio)
       else
         flash[:failure] = "There has been a problem allocating, Please try again!"
         redirect_to new_portfolio_allocation_path(@portfolio)
@@ -38,7 +38,8 @@ class AllocationsController < ApplicationController
 
 
   def edit
-    @allocation = Allocation.new
+    @portfolio = Portfolio.find(params[:portfolio_id])
+    @allocations = Allocation.where(portfolio_id: @portfolio.id)
   end
 
   def update

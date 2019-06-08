@@ -1,6 +1,5 @@
 require 'open-uri'
 require 'json'
-require 'pry-byebug'
 
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
@@ -47,17 +46,17 @@ lots = {
 }
 
 colors = {
-  BTC: '#F7931A',
-  ETH: '#627EEA',
-  XRP: '#00AAE4',
-  BCHABC: '#8dc351',
-  LTC: '#CBC6C6',
-  EOS: '#000000',
-  ADA: '#3CC8C8',
+  BTC: '#edc948',
+  ETH: '#76b8b2',
+  XRP: '#4e79a7',
+  BCHABC: '#59a04e',
+  LTC: '#b9b0ac',
+  EOS: '#9b745f',
+  ADA: '#b07aa1',
   USDT: '#26A17B',
-  TRX: '#000000',
-  XLM: '#14B6E7',
-  ZEC: '#ECB244'
+  TRX: '#e15658',
+  XLM: '#86bcb6',
+  ZEC: '#f28d31'
 }
 
 images = {
@@ -121,25 +120,8 @@ coins.each do |coin|
     image: images.fetch(symbol.to_sym),
     color: colors.fetch(symbol.to_sym)
   )
+
 end
 
-puts 'creating portfolio for test user'
 
-Portfolio.create(
-  rebalance_freq: 'Daily',
-  next_rebalance_dt: '3/7/19',
-  user_id: 1,
-  current_value_usdt: 0,
-  coin_id: 1
-  )
-
-puts 'making allocations for test user test portfolio'
-
-10.times do
-  Allocation.create(
-    allocation_pct: 10,
-    coin_id: rand(1..11),
-    portfolio_id: 1
-  )
-end
 
