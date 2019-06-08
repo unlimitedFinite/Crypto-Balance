@@ -1,6 +1,8 @@
 require 'open-uri'
 require 'json'
 require 'date'
+require 'nokogiri'
+
 
 class PortfoliosController < ApplicationController
   before_action :authenticate_user!
@@ -9,6 +11,7 @@ class PortfoliosController < ApplicationController
   def new
     @portfolio = Portfolio.new
   end
+
 
   def create
     @portfolio = Portfolio.new(portfolio_params)
@@ -22,8 +25,10 @@ class PortfoliosController < ApplicationController
     end
   end
 
+
   def edit
   end
+
 
   def update
     @portfolio.coin_id = Coin.find_by(symbol: params['portfolio']['coin_id'])
@@ -36,11 +41,13 @@ class PortfoliosController < ApplicationController
     end
   end
 
+
   def show
     @coins = Coin.all
     @allocations = Allocation.where(portfolio: @portfolio)
     @positions = Position.where(portfolio: @portfolio).where(as_of_dt_end: nil).order(value_usdt: :desc)
   end
+
 
   def create_positions
     account_info = Binance::Api::Account.info!
@@ -125,6 +132,25 @@ class PortfoliosController < ApplicationController
   end
 
 
+  def initialise_coin(position)
+    # only use for checking BTC or USDT, will return nil for other coins
+    if position[:asset] == 'BTC'
+      number_of_btc = position[:free]
+      number_of_usdt = position[:free] * price_btc
+
+    elsif position[:asset] == 'USDT'
+      number_of_usdt = position[:free]
+      number_of_btc = position[:free].to_f / price_btc
+
+    end
+
+    min_trade_unit = Coin.find_by(symbol: position[:asset]).lot_size
+    min_trade_amount = 10
+
+    return number_of_btc, number_of_usdt, min_trade_unit, min_trade_amount
+  end
+
+
   def rebalance_positions
     @rebalance_hash = {}
     @coins_arr = []
@@ -134,12 +160,11 @@ class PortfoliosController < ApplicationController
 
     @positions.each do |position|
       coin = Coin.find_by(symbol: position[:asset])
+
       # sell down USDT to buy BTC first
       if position[:symbol] == 'USDT'
-        number_of_usdt = position[:free]
-        number_of_btc = position[:free].to_f / price_btc
-        min_trade_unit = Coin.find_by(symbol: 'USDT').lot_size
-        min_trade_amount = 10
+
+        initialise_coin(position)
 
         unless number_of_usdt <= min_trade_amount \
           || number_of_btc < order_size_btc(number_of_btc, min_trade_unit)
@@ -175,9 +200,30 @@ class PortfoliosController < ApplicationController
         end
       end
     end
+
     execute_orders
     flash[:success] = "Portfolio has been rebalanced!"
     create_positions
+
+  end
+
+
+  def get_trade_confirmation(ticker)
+
+    if ticker == "BTC"
+      order = Binance::Api::Account.trades!(symbol: "BTCUSDT")
+    else
+      order = Binance::Api::Account.trades!(symbol: "#{ticker}BTC")
+    end
+
+    @symbol = order[0][:symbol]
+    @trade_id = order[0][:orderId]
+    @price = order[0][:price]
+    @quantity = order[0][:qty]
+    @commission = order[0][:commission]
+    @commissionAsset = order[0][:commissionAsset]
+    @order_time = order[0][:time]
+
   end
 
 
@@ -204,6 +250,10 @@ class PortfoliosController < ApplicationController
           type: 'MARKET',
           test: true
         )
+        # doesnot work for test trade as it returns {} and has nil error
+        # uncomment below line in real testing
+        # get_trade_confirmation(coinhash[:name])
+
       end
     end
   end
@@ -218,11 +268,7 @@ class PortfoliosController < ApplicationController
       coin = Coin.find_by(symbol: position[:asset])
 
       if position[:symbol] == 'BTC'
-
-        number_of_btc = position[:free]
-        number_of_usdt = position[:free] / price_btc
-        min_trade_unit = 0.000001
-        min_trade_amount_usdt = 10
+        initialise_coin('BTC')
 
         unless number_of_usdt <= min_trade_amount_usdt \
           || number_of_btc < order_size_btc(number_of_btc, min_trade_unit)
@@ -253,7 +299,7 @@ class PortfoliosController < ApplicationController
   end
 
 
-
+  # useful api calls - do not remove yet
   def get_api_data(coin)
     @info = Binance::Api::Account.info!
     @depth = Binance::Api.depth!(symbol: "#{coin}BTC")
@@ -263,8 +309,27 @@ class PortfoliosController < ApplicationController
     @ask_quantity = @depth[:asks][0][1].to_f
     @trade_history = Binance::Api.historical_trades!(symbol: "#{coin}BTC")
     @price_change = Binance::Api.ticker!(symbol: "#{coin}BTC")
-    @trades = Binance::Api.trades!(symbol: "#{coin}BTC")
+    @trades = Binance::Api::Account.trades!(symbol: "#{coin}BTC")
+
+    [{:symbol=>"XLMBTC",
+  :orderId=>101810246,
+  :price=>"0.00001583",
+  :qty=>"100.00000000",
+  :quoteQty=>"0.00158300",
+  :commission=>"0.00031272",
+  :commissionAsset=>"BNB",
+  :time=>1559711013403}]
+
+  @symbol = order[0][:symbol]
+  @trade_id = order[0][:Id]
+  @price = order[0][:qty]
+  @commission = order[0][:commission]
+  @commissionAsset = order[0][:commissionAsset]
+  @order_time = @order[0][:time]
+
   end
+
+
 end
 
 private

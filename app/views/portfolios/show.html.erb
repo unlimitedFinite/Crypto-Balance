@@ -1,3 +1,6 @@
+
+
+
 <div class="container">
   <h1>Portfolio<small> for <%= current_user.email %></small></h1>
   <div class="row">
@@ -28,8 +31,9 @@
     <div class="col-6 text-right">
 
       <h2>Total value <%= number_to_currency(@portfolio.current_value_btc.to_f * price_btc) %></h2>
-
+      <h2>BCGI Index: <%= @index %></h2>
     </div>
+
   </div>
   <div class="row">
     <div class="col-lg-7">
