@@ -127,6 +127,7 @@ class PortfoliosController < ApplicationController
     else
       required_amount = (number_of_btc / min_trade_unit).round * min_trade_unit
     end
+
     return required_amount
   end
 
@@ -153,7 +154,6 @@ class PortfoliosController < ApplicationController
   def rebalance_positions
     @rebalance_hash = {}
     @coins_arr = []
-
     price_btc = Coin.find_by(symbol: 'BTC').price_usdt
     read_portfolio_info
 
@@ -174,8 +174,7 @@ class PortfoliosController < ApplicationController
             quantity: quantity,
             side: 'BUY',
             symbol: 'BTCUSDT',
-            type: 'MARKET',
-            test: true
+            type: 'MARKET'
           )
 
         end
@@ -241,17 +240,19 @@ class PortfoliosController < ApplicationController
         || coinhash[:amount] < order_lot_size(coinhash)
 
         quantity = order_lot_size(coinhash)
+          ## should be sell order but code trying to set buy order
+    raise
 
         Binance::Api::Order.create!(
           quantity: quantity,
           side: side,
           symbol: "#{coinhash[:name]}BTC",
-          type: 'MARKET',
-          test: true
+          type: 'MARKET'
+          # test: true
         )
         # doesnot work for test trade as it returns {} and has nil error
         # uncomment below line in real testing
-        # get_trade_confirmation(coinhash[:name])
+        get_trade_confirmation(coinhash[:name])
 
       end
     end
@@ -278,8 +279,7 @@ class PortfoliosController < ApplicationController
             quantity: quantity,
             side: 'SELL',
             symbol: 'BTCUSDT',
-            type: 'MARKET',
-            test: true
+            type: 'MARKET'
           )
         end
 

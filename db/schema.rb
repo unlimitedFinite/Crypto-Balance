@@ -33,7 +33,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_095834) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "price_btc"
-    t.decimal "lot_size"
+    t.float "lot_size"
     t.string "color"
     t.string "image"
   end
