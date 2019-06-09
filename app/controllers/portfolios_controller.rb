@@ -144,8 +144,9 @@ class PortfoliosController < ApplicationController
     if coinhash[:amount] / @coin_instance[:lot_size] < 1
       required_amount = @coin_instance[:lot_size]
     else
-      required_amount = (coinhash[:amount] / @coin_instance[:lot_size]).round * @coin_instance[:lot_size]
+      required_amount = (coinhash[:amount] * @coin_instance[:lot_size]).round / @coin_instance[:lot_size]
     end
+
     return required_amount
   end
 
@@ -182,7 +183,8 @@ class PortfoliosController < ApplicationController
 
   def rebalance_positions
     @rebalance_hash = {}
-    @coins_arr = []
+    @sell_coins_arr = []
+    @buy_coins_arr = []
     price_btc = Coin.find_by(symbol: 'BTC').price_usdt
     read_portfolio_info
 
@@ -213,7 +215,7 @@ class PortfoliosController < ApplicationController
 
           position_value_usdt = position[:free].to_f * coin.price_usdt
 
-          current_pct = (position_value_usdt / @portfolio.current_value_usdt).round(2)
+          current_pct = ((position_value_usdt / @portfolio.current_value_usdt) * 100).round(2)
           target_pct = @allocations.find { |a| a[:coin_id] == coin.id }.allocation_pct
           rebalance_pct = target_pct - current_pct
           # rebalance amount in USD
@@ -223,39 +225,44 @@ class PortfoliosController < ApplicationController
           min_trade_amount = 0.001 / coin.price_btc
           # create hash of coins with rebalance amounts in USD
           coinhash = { name: position[:asset], amount: rebalance_amount_coins, min_size: min_trade_amount }
-          @coins_arr << coinhash
+          if coinhash[:amount].positive?
+            @buy_coins_arr << coinhash
+          else
+            @sell_coins_arr << coinhash
+          end
+
         end
       end
     end
-
-    execute_orders
+    execute_orders(@sell_coins_arr)
+    execute_orders(@buy_coins_arr)
     flash[:success] = "Portfolio has been rebalanced!"
     create_positions
-
   end
 
+  @orders = []
 
   def get_trade_confirmation(ticker)
-
+    order = {}
     if ticker == "BTC"
       order = Binance::Api::Account.trades!(symbol: "BTCUSDT")
     else
       order = Binance::Api::Account.trades!(symbol: "#{ticker}BTC")
     end
 
-    @symbol = order[0][:symbol]
-    @trade_id = order[0][:orderId]
-    @price = order[0][:price]
-    @quantity = order[0][:qty]
-    @commission = order[0][:commission]
-    @commissionAsset = order[0][:commissionAsset]
-    @order_time = order[0][:time]
-
+    order[:symbol] = order[0][:symbol]
+    order[:trade_id] = order[0][:orderId]
+    order[:price] = order[0][:price]
+    order[:quantity] = order[0][:qty]
+    order[:commission] = order[0][:commission]
+    order[:commissionAsset] = order[0][:commissionAsset]
+    order[:order_time] = order[0][:time]
+    @orders << order
   end
 
 
-  def execute_orders
-    @coins_arr.each do |coinhash|
+  def execute_orders(array)
+    array.each do |coinhash|
 
       if coinhash[:amount].positive?
         side = 'BUY'
@@ -263,10 +270,10 @@ class PortfoliosController < ApplicationController
         side = 'SELL'
       end
 
+
       coinhash[:amount] = coinhash[:amount].abs
       # skip BTC execution since all coins are against BTC
-      unless coinhash[:name] == 'BTC' || coinhash[:amount] <= coinhash[:min_size] \
-        || coinhash[:amount] < order_lot_size(coinhash)
+      unless coinhash[:name] == 'BTC' || coinhash[:amount] <= coinhash[:min_size] || coinhash[:amount] < order_lot_size(coinhash)
 
         quantity = order_lot_size(coinhash)
 
@@ -318,7 +325,7 @@ class PortfoliosController < ApplicationController
         end
       end
     end
-    execute_orders
+    execute_orders(@coins_arr)
     flash[:failure] = "Portfolio has been liquidated!"
     create_positions
   end

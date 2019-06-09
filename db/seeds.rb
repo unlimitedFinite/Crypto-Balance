@@ -31,18 +31,32 @@ User.create(
 puts 'Creating coins'
 
 coins = ['Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tether','Tron','Stellar','Zcash']
+# lots = {
+#   BTC: 0.000001,
+#   ETH: 0.001,
+#   XRP: 1,
+#   BCHABC: 0.001,
+#   LTC: 0.01,
+#   EOS: 1,
+#   ADA: 1,
+#   USDT: 0.000001,
+#   TRX: 1,
+#   XLM: 1,
+#   ZEC: 0.001
+# }
+
 lots = {
-  BTC: 0.000001,
-  ETH: 0.001,
+  BTC: 1000000,
+  ETH: 1000,
   XRP: 1,
-  BCHABC: 0.001,
-  LTC: 0.01,
+  BCHABC: 1000,
+  LTC: 100,
   EOS: 1,
   ADA: 1,
-  USDT: 0.000001,
+  USDT: 1000000,
   TRX: 1,
   XLM: 1,
-  ZEC: 0.001
+  ZEC: 1000
 }
 
 colors = {
