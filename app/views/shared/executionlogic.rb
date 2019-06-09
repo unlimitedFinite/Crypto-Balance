@@ -51,6 +51,12 @@
 # Sell all USDt to BTC first
 # Then use BTC to perform rebalance as normal
 
+# order = Binance::Api::Order.create!(quantity: 1, side: 'BUY', symbol: "BTC", type: 'MARKET', test: true)
+
+
+
+
+
 
 
 
