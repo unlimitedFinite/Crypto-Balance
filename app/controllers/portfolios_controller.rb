@@ -2,7 +2,6 @@ require 'open-uri'
 require 'json'
 require 'date'
 require 'nokogiri'
-require 'bigdecimal'
 
 
 class PortfoliosController < ApplicationController
@@ -18,7 +17,7 @@ class PortfoliosController < ApplicationController
     @portfolio = Portfolio.new(portfolio_params)
     @portfolio.user = current_user
     @portfolio.coin_id = Coin.find_by(symbol:'BTC').id
-    @portfolio.next_rebalance_dt = Date.new(params["portfolio"]['next_rebalance_dt(1i)'].to_i,params["portfolio"]['next_rebalance_dt(2i)'].to_i,params["portfolio"]['next_rebalance_dt(3i)'].to_i)
+    @portfolio.next_rebalance_dt = Date.new(params["portfolio"]['next_rebalance_dt(1i)'].to_i, params["portfolio"]['next_rebalance_dt(2i)'].to_i, params["portfolio"]['next_rebalance_dt(3i)'].to_i)
     if @portfolio.save
       redirect_to new_portfolio_allocation_path(@portfolio.id)
     else
@@ -134,7 +133,7 @@ class PortfoliosController < ApplicationController
 
 
   def initialise_coin(position)
-    # only use for checking BTC or USDT, will return nil for other coins
+    # settings for BTC or USDT
 
     if position[:asset] == 'BTC'
       @number_of_btc = position[:free].to_f
@@ -147,7 +146,6 @@ class PortfoliosController < ApplicationController
     end
 
     @min_order_value_usdt = 10
-    # @min_order_value_btc = 0.000001
     @min_trade_unit = Coin.find_by(symbol: position[:asset]).lot_size
 
   end
@@ -160,12 +158,11 @@ class PortfoliosController < ApplicationController
     @price_btc = Coin.find_by(symbol: 'BTC').price_usdt
     read_portfolio_info
 
-    # sell down any USDT to BTC first
+    # Loop to check and sell down any USDT to BTC first
     @positions.each do |position|
 
       if position[:asset] == 'USDT'
         initialise_coin(position)
-
 
         unless @number_of_usdt <= @min_order_value_usdt \
           || @number_of_btc < order_size_btc(@number_of_btc, @min_trade_unit)
@@ -187,6 +184,7 @@ class PortfoliosController < ApplicationController
 
     puts "starting alt coin loop"
 
+    # Loop to iterate through remaining coins
     @positions.each do |position|
       coin = Coin.find_by(symbol: position[:asset])
 
@@ -262,11 +260,13 @@ class PortfoliosController < ApplicationController
         || coinhash[:amount] <= coinhash[:min_order_value] \
         || coinhash[:amount] <= order_size(coinhash) \
         || order_size(coinhash) == @coin_instance[:lot_size]
-        # above line does not allow one lot executions!
-        quantity = order_size(coinhash)
-        # fails for EOS since order size = minimum lot size
-        # do not allow min quanity amounts, * scale factor?, check binance tables or chnange in seed.
+        # above line prevents one lot executions!
+        # now does not fail for EOS where order size = minimum lot size
+        # check binance tables or change in seed?
         # error catch the response and skip error :400
+
+        quantity = order_size(coinhash)
+
         puts "executing trade for #{coinhash[:name]}"
 
         Binance::Api::Order.create!(
@@ -295,6 +295,7 @@ class PortfoliosController < ApplicationController
 
       # sell down BCTUSD first
       if position[:asset] == 'BTC'
+
         initialise_coin(position)
 
         unless @number_of_usdt <= @min_order_value_usdt \
@@ -341,24 +342,22 @@ class PortfoliosController < ApplicationController
     @price_change = Binance::Api.ticker!(symbol: "#{coin}BTC")
     @trades = Binance::Api::Account.trades!(symbol: "#{coin}BTC")
 
-  #   [{:symbol=>"XLMBTC",
-  # :orderId=>101810246,
-  # :price=>"0.00001583",
-  # :qty=>"100.00000000",
-  # :quoteQty=>"0.00158300",
-  # :commission=>"0.00031272",
-  # :commissionAsset=>"BNB",
-  # :time=>1559711013403}]
+    #   [{:symbol=>"XLMBTC",
+    # :orderId=>101810246,
+    # :price=>"0.00001583",
+    # :qty=>"100.00000000",
+    # :quoteQty=>"0.00158300",
+    # :commission=>"0.00031272",
+    # :commissionAsset=>"BNB",
+    # :time=>1559711013403}]
 
-  # @symbol = order[0][:symbol]
-  # @trade_id = order[0][:Id]
-  # @price = order[0][:qty]
-  # @commission = order[0][:commission]
-  # @commissionAsset = order[0][:commissionAsset]
-  # @order_time = @order[0][:time]
-
+    # @symbol = order[0][:symbol]
+    # @trade_id = order[0][:Id]
+    # @price = order[0][:qty]
+    # @commission = order[0][:commission]
+    # @commissionAsset = order[0][:commissionAsset]
+    # @order_time = @order[0][:time]
   end
-
 
 end
 
