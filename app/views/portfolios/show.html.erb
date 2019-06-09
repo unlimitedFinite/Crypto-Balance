@@ -40,7 +40,11 @@
       <table class="table table-responsive w-auto table-dark">
         <thead>
           <tr>
-            <th scope="col">#</th>
+            <th scope="col">
+              <%= link_to create_positions_path do %>
+                <i class="fas fa-sync-alt"></i>
+              <% end %>
+            </th>
             <th scope="col">Coin</th>
             <th scope="col">Amount</th>
             <th scope="col">Value (BTC)</th>
@@ -58,21 +62,28 @@
                 <td><%= sprintf('%.6f', position.quantity) %></td>
                 <td><%= sprintf('%.6f', (position.quantity * coin.price_btc)) %></td>
                 <td><%= sprintf('%.2f', (position.quantity * coin.price_usdt)) %></td>
-                <td><%= sprintf('%.1f', ((position.quantity * coin.price_usdt)/(@portfolio.current_value_btc * price_btc))*100) %>%</td>
-
+                <td><%= sprintf('%.1f', ((position.quantity * coin.price_usdt)/@usdt_total)*100) %>%</td>
                 <td><%= @allocations.find {|a| a[:coin_id] == coin.id}.allocation_pct %>%</td>
               </tr>
             <% end %>
           </tbody>
           <tfoot>
             <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+              <td></td> <!-- image -->
+              <td></td> <!-- name -->
+              <td></td> <!-- quantity -->
+              <td><!-- total btc -->
+                <%= @btc_total %>
+              </td>
+              <td> <!-- total usdt -->
+                $<%= @usdt_total %>
+              </td>
+              <td> <!-- total % -->
+                <%= @percentage %>%
+              </td>
+              <td> <!-- alloc % -->
+
+              </td>
             </tr>
           </tfoot>
         </table>

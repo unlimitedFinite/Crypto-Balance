@@ -45,8 +45,37 @@ class PortfoliosController < ApplicationController
     @coins = Coin.all
     @allocations = Allocation.where(portfolio: @portfolio)
     @positions = Position.where(portfolio: @portfolio).where(as_of_dt_end: nil).order(value_usdt: :desc)
+    @btc_total = get_total_btc
+    @usdt_total = get_total_usdt
+    @percentage = get_total_percent
   end
 
+  def get_total_usdt
+    sum = 0
+    @positions.each do |p|
+      coin = p.coin
+      sum += (p.quantity * coin.price_usdt)
+    end
+    return sum.round(2)
+  end
+
+  def get_total_btc
+    sum = 0
+    @positions.each do |p|
+      coin = p.coin
+      sum += (p.quantity * coin.price_btc)
+    end
+    return sum.round(6)
+  end
+
+  def get_total_percent
+    sum = 0
+    @positions.each do |p|
+      coin = p.coin
+      sum += ((p.quantity * coin.price_usdt)/@usdt_total) * 100
+    end
+    return sum.round
+  end
 
   def create_positions
     account_info = Binance::Api::Account.info!
@@ -240,8 +269,6 @@ class PortfoliosController < ApplicationController
         || coinhash[:amount] < order_lot_size(coinhash)
 
         quantity = order_lot_size(coinhash)
-          ## should be sell order but code trying to set buy order
-    raise
 
         Binance::Api::Order.create!(
           quantity: quantity,
@@ -253,7 +280,6 @@ class PortfoliosController < ApplicationController
         # doesnot work for test trade as it returns {} and has nil error
         # uncomment below line in real testing
         get_trade_confirmation(coinhash[:name])
-
       end
     end
   end
