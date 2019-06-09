@@ -166,6 +166,7 @@ class PortfoliosController < ApplicationController
       if position[:asset] == 'USDT'
         initialise_coin(position)
 
+
         unless @number_of_usdt <= @min_order_value_usdt \
           || @number_of_btc < order_size_btc(@number_of_btc, @min_trade_unit)
 
@@ -204,6 +205,7 @@ class PortfoliosController < ApplicationController
         # create hash of coins with rebalance amounts in USD
         coinhash = { name: position[:asset], amount: rebalance_amount_coins, min_order_value: min_order_value }
         @coins_arr << coinhash
+
       end
     end
     # byebug
@@ -232,7 +234,6 @@ class PortfoliosController < ApplicationController
         commissionAsset: order[0][:commissionAsset], \
         order_time: order[0][:time]
       }
-
 # byebug
       @confirmations_arr << confirmations_hash
 
@@ -242,6 +243,9 @@ class PortfoliosController < ApplicationController
 
   def execute_orders
     # sell method for non BTCUSDT coins
+    # sorts array to do sell orders first
+    @coins_arr.sort_by! { |hsh| hsh[:amount] }
+
     @coins_arr.each do |coinhash|
       # byebug
 
@@ -315,6 +319,7 @@ class PortfoliosController < ApplicationController
           min_order_value = 0.001 / coin.price_btc
           coinhash = { name: position[:asset], amount: -position[:free].to_f.abs, min_order_value: min_order_value }
           @coins_arr << coinhash
+          @coins_arr.sort_by { |hsh| hsh[:amount] }
         end
       end
     end
@@ -336,21 +341,21 @@ class PortfoliosController < ApplicationController
     @price_change = Binance::Api.ticker!(symbol: "#{coin}BTC")
     @trades = Binance::Api::Account.trades!(symbol: "#{coin}BTC")
 
-    [{:symbol=>"XLMBTC",
-  :orderId=>101810246,
-  :price=>"0.00001583",
-  :qty=>"100.00000000",
-  :quoteQty=>"0.00158300",
-  :commission=>"0.00031272",
-  :commissionAsset=>"BNB",
-  :time=>1559711013403}]
+  #   [{:symbol=>"XLMBTC",
+  # :orderId=>101810246,
+  # :price=>"0.00001583",
+  # :qty=>"100.00000000",
+  # :quoteQty=>"0.00158300",
+  # :commission=>"0.00031272",
+  # :commissionAsset=>"BNB",
+  # :time=>1559711013403}]
 
-  @symbol = order[0][:symbol]
-  @trade_id = order[0][:Id]
-  @price = order[0][:qty]
-  @commission = order[0][:commission]
-  @commissionAsset = order[0][:commissionAsset]
-  @order_time = @order[0][:time]
+  # @symbol = order[0][:symbol]
+  # @trade_id = order[0][:Id]
+  # @price = order[0][:qty]
+  # @commission = order[0][:commission]
+  # @commissionAsset = order[0][:commissionAsset]
+  # @order_time = @order[0][:time]
 
   end
 
