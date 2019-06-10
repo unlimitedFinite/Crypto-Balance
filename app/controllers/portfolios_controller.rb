@@ -143,13 +143,20 @@ class PortfoliosController < ApplicationController
     return data
   end
 
+  def lastest_btc_price
+    @depth = Binance::Api.depth!(symbol: "#{coin}BTC")
+    @bid_quantity = @depth[:bids][0][1].to_f
+    @ask_quantity = @depth[:asks][0][1].to_f
+    return @ask_quantity
+  end
+
   def rebalance_positions
 
     @coins_arr = []
     @confirmations_arr = []
     # fetch lastest price for btc
-    price_update
-    @price_btc = Coin.find_by(symbol: 'BTC').price_usdt
+    # @price_btc = Coin.find_by(symbol: 'BTC').price_usdt
+    @price_btc = lastest_btc_price
     read_portfolio_info
 
     # Loop to check and sell down any USDT to BTC first
@@ -176,14 +183,6 @@ class PortfoliosController < ApplicationController
         end
       end
     end
-
-    Binance::Api::Order.create!(
-      quantity: quantity,
-      side: 'BUY',
-      symbol: 'BTCUSDT',
-      type: 'MARKET',
-      test: true
-    )
 
     puts "starting alt coin loop"
 
