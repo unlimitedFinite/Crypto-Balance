@@ -37,7 +37,7 @@ lots = {
   XRP: 1,
   BCHABC: 0.001,
   LTC: 0.01,
-  EOS: 1,
+  EOS: 0.01,
   ADA: 1,
   USDT: 0.000001,
   TRX: 1,

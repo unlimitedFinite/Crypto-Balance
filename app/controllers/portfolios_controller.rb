@@ -96,10 +96,10 @@ class PortfoliosController < ApplicationController
   def order_size(coinhash)
     @coin_instance = Coin.find_by(symbol: coinhash[:name])
 
-    if coinhash[:amount] / @coin_instance[:lot_size] < 1
+    if coinhash[:rebalance_amount] / @coin_instance[:lot_size] < 1
       required_amount = @coin_instance[:lot_size]
     else
-      required_amount = (coinhash[:amount] / @coin_instance[:lot_size]).truncate * @coin_instance[:lot_size]
+      required_amount = (coinhash[:rebalance_amount] / @coin_instance[:lot_size]).truncate * @coin_instance[:lot_size]
     end
     return required_amount
   end
@@ -117,7 +117,6 @@ class PortfoliosController < ApplicationController
 
   def initialise_coin(position)
     # settings for BTC or USDT
-
     if position[:asset] == 'BTC'
       @number_of_btc = position[:free].to_f
       @number_of_usdt = position[:free].to_f * @price_btc
@@ -134,53 +133,15 @@ class PortfoliosController < ApplicationController
   end
 
 
-  def price_update
-    coins = Coin.all
-    coins.each do |coin|
-      puts "Calling Binance API for #{coin.name}..."
-
-      unless coin.symbol == 'USDT'
-        usdt_data = get_parsed_data("https://www.binance.com/api/v3/ticker/price?symbol=#{coin.symbol}USDT")
-      end
-
-      unless coin.is_base_coin
-        btc_data = get_parsed_data("https://www.binance.com/api/v3/ticker/price?symbol=#{coin.symbol}BTC")
-      end
-
-      if coin.symbol == 'USDT'
-        price_usdt = 1
-        price_btc = 0
-      elsif coin.symbol == 'BTC'
-        price_usdt = usdt_data['price']
-        price_btc = 1
-      else
-        price_usdt = usdt_data['price']
-        price_btc = btc_data['price']
-      end
-
-      coin.price_usdt = price_usdt
-      coin.price_btc = price_btc
-      coin.save
-      puts "Done! Updated #{coin.name} from Binance"
-    end
-  end
-
-
-  def get_parsed_data(url)
-    json = open(url).read
-    data = JSON.parse(json)
-    return data
-  end
-
   def lastest_btc_price
     @depth = Binance::Api.depth!(symbol: "BTCUSDT")
-    @bid_quantity = @depth[:bids][0][0].to_f
-    @ask_quantity = @depth[:asks][0][0].to_f
-    return @ask_quantity
+    @bid_price = @depth[:bids][0][0].to_f
+    @ask_price = @depth[:asks][0][0].to_f
+    return @ask_price
   end
 
-  def rebalance_positions
 
+  def rebalance_positions
     @coins_arr = []
     @confirmations_arr = []
     # fetch lastest price for btc
@@ -199,14 +160,16 @@ class PortfoliosController < ApplicationController
 
           quantity = order_size_btc(@number_of_btc, @min_trade_unit)
 
-
           Binance::Api::Order.create!(
             quantity: quantity,
             side: 'BUY',
             symbol: 'BTCUSDT',
-            type: 'MARKET'
+            type: 'MARKET',
+            test: true
+
           )
-          get_trade_confirmation('BTC')
+          # get_trade_confirmation('BTC')
+          get_trade_confirmation
           # byebug
         end
       end
@@ -231,7 +194,7 @@ class PortfoliosController < ApplicationController
         # set min order size to 0.001 BTC
         min_order_value = 0.001 / coin.price_btc
         # create hash of coins with rebalance amounts in USD
-        coinhash = { name: position[:asset], amount: rebalance_amount_coins, min_order_value: min_order_value }
+        coinhash = { name: position[:asset], rebalance_amount: rebalance_amount_coins, min_order_value: min_order_value }
         @coins_arr << coinhash
     # byebug
 
@@ -243,15 +206,15 @@ class PortfoliosController < ApplicationController
   end
 
 
-  def get_trade_confirmation(ticker)
+  def get_trade_confirmation
 
-    if ticker == "BTC"
-      order = Binance::Api::Account.trades!(symbol: "BTCUSDT")
-    else
-      order = Binance::Api::Account.trades!(symbol: "#{ticker}BTC")
-    end
+    # if ticker == "BTC"
+    #   order = Binance::Api::Account.trades!(symbol: "BTCUSDT")
+    # else
+    #   order = Binance::Api::Account.trades!(symbol: "#{ticker}BTC")
+    # end
 
-    unless order == []
+    unless @order == []
 
       confirmations_hash = {
         symbol: order[0][:symbol], \
@@ -276,7 +239,6 @@ class PortfoliosController < ApplicationController
 
     @coins_arr.each do |coinhash|
 
-      puts coinhash, @coins_arr
        # byebug
 
       if coinhash[:amount].positive?
@@ -285,34 +247,38 @@ class PortfoliosController < ApplicationController
         side = 'SELL'
       end
 
-      puts side
       # byebug
 
-      coinhash[:amount] = coinhash[:amount].abs
+      coinhash[:rebalance_amount] = coinhash[:rebalance_amount].abs
 
       # skip BTC execution since all coins are against BTC
       unless coinhash[:name] == 'BTC' \
-        || coinhash[:amount] <= coinhash[:min_order_value] \
-        || coinhash[:amount] <= order_size(coinhash) \
-        || order_size(coinhash) == @coin_instance[:lot_size]
+        || coinhash[:rebalance_amount] <= coinhash[:min_order_value] \
+        || coinhash[:rebalance_amount] <= order_size(coinhash) \
+        || order_size(coinhash) == @coin_instance[:lot_size] \
         # above line prevents one lot executions!
-        # now does not fail for EOS where order size = minimum lot size
-        # check binance tables or change in seed?
-        # error catch the response and skip error :400
+        end
 
         quantity = order_size(coinhash)
          byebug
 
+        puts @coins_arr
         puts "executing trade for #{coinhash[:name]}"
+        puts coinhash[:amount]
+        puts side
+        puts quantity
 
-        Binance::Api::Order.create!(
+        @order = Binance::Api::Order.create!(
           quantity: quantity,
           side: side,
           symbol: "#{coinhash[:name]}BTC",
-          type: 'MARKET'
-        )
+          type: 'MARKET',
+          test: true
 
-        get_trade_confirmation(coinhash[:name])
+        )
+byebug
+        # get_trade_confirmation(coinhash[:name])
+        get_trade_confirmation
       end
     end
   end
@@ -342,9 +308,11 @@ class PortfoliosController < ApplicationController
             quantity: quantity,
             side: 'SELL',
             symbol: 'BTCUSDT',
-            type: 'MARKET'
+            type: 'MARKET',
+            test: true
           )
-          get_trade_confirmation('BTC')
+          # get_trade_confirmation('BTC')
+          get_trade_confirmation
           # byebug
         end
 
