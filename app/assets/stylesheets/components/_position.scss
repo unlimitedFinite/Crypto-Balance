@@ -1,6 +1,7 @@
 .card-container {
   margin: 0 auto;
   min-width: 350px;
+  position:relative;
 }
 
 .position-card {
@@ -44,5 +45,11 @@
 .price {
   display: inline-grid;
   text-align: right;
+}
 
+.refresh {
+  position: absolute;
+  top: -16px;
+  font-size: 1.5rem;
+  left: 14px;
 }

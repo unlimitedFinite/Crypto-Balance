@@ -220,21 +220,22 @@ class PortfoliosController < ApplicationController
 
     # unless order == []
       @confirmations_arr << order
-      Order.create(
+      o = Order.new(
         status: order[:status],
         price: order[:fills][0][:price],
         quantity: order[:fills][0][:qty],
         commission: order[:fills][0][:commission],
-        commission_asset: order[:fills][0][:commissionAsset],
+        commision_asset: order[:fills][0][:commissionAsset],
         side: order[:side],
         order_type: order[:type],
         binance_id: order[:orderId],
         base_coin_id: 'BTC',
-        target_coin_id: Coin.find_by(order[:symbol].replace('BTC', '')).id
+        target_coin_id: Coin.find_by(symbol: order[:symbol].gsub('BTC', '')).id
       )
 
 
-      byebug
+      raise
+      o.save
 
 
     end
