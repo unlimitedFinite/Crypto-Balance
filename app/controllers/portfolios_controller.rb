@@ -7,7 +7,7 @@ require 'nokogiri'
 class PortfoliosController < ApplicationController
   before_action :authenticate_user!
   before_action :set_portfolio, only: [:show, :edit, :update, :create_positions]
-
+  include ApplicationHelper
   def new
     @portfolio = Portfolio.new
   end
@@ -200,14 +200,15 @@ class PortfoliosController < ApplicationController
           quantity = order_size_btc(@number_of_btc, @min_trade_unit)
 
 
-          Binance::Api::Order.create!(
+          order = Binance::Api::Order.create!(
             quantity: quantity,
             side: 'BUY',
             symbol: 'BTCUSDT',
             type: 'MARKET'
           )
-          get_trade_confirmation('BTC')
-          # byebug
+
+          get_trade_confirmation(order)
+
         end
       end
     end
@@ -243,27 +244,32 @@ class PortfoliosController < ApplicationController
   end
 
 
-  def get_trade_confirmation(ticker)
+  def get_trade_confirmation(order)
+    @confirmations_arr << order
+    Order.create(
+      status: order[:status],
+      price: order[:fills][0][:price],
+      quantity: order[:fills][0][:qty],
+      commision: order[:fills][0][:commision],
+      side: order[:side],
+      type: order[:type],
+      binance_id: order[:orderId],
+      base_coin_id: 'BTC',
+      target_coin_id: Coin.find_by(order[:symbol].replace('BTC', '')).id
+    )
 
-    if ticker == "BTC"
-      order = Binance::Api::Account.trades!(symbol: "BTCUSDT")
-    else
-      order = Binance::Api::Account.trades!(symbol: "#{ticker}BTC")
-    end
+    # unless order == []
 
-    unless order == []
+    #   confirmations_hash = {
+    #     symbol: order[0][:symbol], \
+    #     trade_id: order[0][:orderId], \
+    #     price: order[0][:price], \
+    #     quantity: order[0][:qty], \
+    #     commission: order[0][:commission], \
+    #     commissionAsset: order[0][:commissionAsset], \
+    #     order_time: order[0][:time]
 
-      confirmations_hash = {
-        symbol: order[0][:symbol], \
-        trade_id: order[0][:orderId], \
-        price: order[0][:price], \
-        quantity: order[0][:qty], \
-        commission: order[0][:commission], \
-        commissionAsset: order[0][:commissionAsset], \
-        order_time: order[0][:time]
-      }
-      # byebug
-      @confirmations_arr << confirmations_hash
+      byebug
 
     end
   end
@@ -301,18 +307,18 @@ class PortfoliosController < ApplicationController
         # error catch the response and skip error :400
 
         quantity = order_size(coinhash)
-         byebug
+
 
         puts "executing trade for #{coinhash[:name]}"
 
-        Binance::Api::Order.create!(
+        byebug
+        order = Binance::Api::Order.create!(
           quantity: quantity,
           side: side,
           symbol: "#{coinhash[:name]}BTC",
           type: 'MARKET'
         )
-
-        get_trade_confirmation(coinhash[:name])
+        get_trade_confirmation(order)
       end
     end
   end
@@ -338,13 +344,14 @@ class PortfoliosController < ApplicationController
 
           quantity = order_size_btc(@number_of_btc, @min_trade_unit)
 
-          Binance::Api::Order.create!(
+          order = Binance::Api::Order.create!(
             quantity: quantity,
             side: 'SELL',
             symbol: 'BTCUSDT',
             type: 'MARKET'
           )
-          get_trade_confirmation('BTC')
+
+          get_trade_confirmation(order)
           # byebug
         end
 
@@ -376,6 +383,7 @@ class PortfoliosController < ApplicationController
     @price_change = Binance::Api.ticker!(symbol: "#{coin}BTC")
     @trades = Binance::Api::Account.trades!(symbol: "#{coin}BTC")
 
+
     #   [{:symbol=>"XLMBTC",
     # :orderId=>101810246,
     # :price=>"0.00001583",
@@ -392,8 +400,6 @@ class PortfoliosController < ApplicationController
     # @commissionAsset = order[0][:commissionAsset]
     # @order_time = @order[0][:time]
   end
-
-end
 
 private
 

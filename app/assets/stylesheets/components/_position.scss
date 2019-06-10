@@ -1,0 +1,34 @@
+.card-container {
+  margin: 0 auto;
+  width: 700px;
+}
+
+.position-card {
+  background: white;
+  border-bottom-left-radius: 20px;
+  border-top-left-radius: 20px;
+  border-bottom-right-radius: 15px;
+  border-top-right-radius: 15px;
+  margin: 8px 8px;
+  padding: 8px 16px;
+}
+
+.position-card-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.3rem;
+  border-bottom: 1px solid grey;
+}
+
+.position-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: gray;
+  padding: 0 8px;
+}
+
+.position-card p {
+  margin-bottom: 0;
+}
+

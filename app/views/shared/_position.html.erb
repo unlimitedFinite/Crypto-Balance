@@ -1,0 +1,24 @@
+<div class="card-container">
+  <% @positions.each_with_index do |position, _index| %>
+    <% coin = position.coin %>
+    <div class="position-card" style="border-left: 15px solid <%= coin.color %>;">
+      <div class="position-card-top">
+        <span class="title">
+          <%= image_tag coin.image, alt: "#{coin.name}" %>
+          <%= coin.name %>
+        </span>
+      <p>$<%= sprintf('%.2f', (position.quantity * coin.price_usdt)) %></p>
+      </div>
+      <div class="position-card-bottom text-right">
+        <p><span id="<%= coin.symbol %>percent24">24 hours: %</span>
+          <br>
+          <span id="<%= coin.symbol %>value24" class="binance-symbols">24 hours: $</span>
+        </p>
+        <p>Distribution: <%= sprintf('%.0f', ((position.quantity * coin.price_usdt)/@usdt_total)*100) %>%
+        <br>
+        Target <%= @allocations.find {|a| a[:coin_id] == coin.id}.allocation_pct %>%</p>
+      </div>
+    </div>
+  <% end %>
+</div>
+

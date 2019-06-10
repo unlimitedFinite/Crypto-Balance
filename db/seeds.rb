@@ -82,7 +82,7 @@ coins.each do |coin|
   coin_name_data = JSON.parse(coin_name_json)
 
   symbol = coin_name_data['result']['symbol']
-  symbol = 'BCHABC' if symbol == 'BCH'
+  symbol = 'BCH' if symbol == 'BCHABC'
 
   is_base_coin = true if base_coins.include?(symbol)
 

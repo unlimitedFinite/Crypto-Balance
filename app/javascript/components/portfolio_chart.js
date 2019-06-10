@@ -19,8 +19,6 @@ function drawChart() {
   var data = new google.visualization.DataTable();
   data.addColumn('string', 'Coin');
   data.addColumn('number', 'Value');
-  console.log(positions);
-  console.log(coins);
 
 // is coin found in position? pass coin id from
 
@@ -42,9 +40,7 @@ function drawChart() {
     colors.push(coin['color']);
     return coin['name'];
   }
-
-  console.log(colors);
-
+  
   // coins.forEach(function(c){
   //   if findColor(c) == true
   //   colors.push(c.color);
