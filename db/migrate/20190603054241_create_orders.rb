@@ -6,7 +6,7 @@ class CreateOrders < ActiveRecord::Migration[5.2]
       t.integer :quantity
       t.float :commision
       t.string :side
-      t.string :type
+      t.string :order_type
       t.string :binance_id
 
       t.timestamps

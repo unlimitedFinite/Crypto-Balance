@@ -1,0 +1,84 @@
+<div class="dashboard">
+  <div class="row">
+    <div class="col">
+      <div class="price-container d-flex justify-content-between">
+        <% price_btc = Coin.find_by(symbol: 'BTC').price_usdt %>
+        <span class="display-4">BTC <%= (@portfolio.current_value_btc).round(5) %></span>
+        <span class="display-4"><%= number_to_currency(@portfolio.current_value_btc.to_f * price_btc) %></span>
+      </div>
+    </div>
+  </div>
+  <div class="control-panel justify-content-between">
+    <%= form_tag rebalance_positions_path(@portfolio) do %>
+      <%= submit_tag 'Rebalance Positions', class: 'btn trigger btn-success' %>
+    <% end %>
+    <%= form_tag sell_positions_path(@portfolio) do %>
+      <%= submit_tag 'Panic Sell', class: 'btn trigger btn-danger' %>
+    <% end %>
+  </div>
+  <div class="row">
+    <div class="col-lg-7">
+      <table class="table table-responsive w-auto table-dark">
+        <thead>
+          <tr>
+            <th scope="col">
+              <%= link_to create_positions_path do %>
+                <i class="fas fa-sync-alt"></i>
+              <% end %>
+            </th>
+            <th scope="col">Coin</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Value (BTC)</th>
+            <th scope="col">Value (USD)</th>
+            <th scope="col">Current</th>
+            <th scope="col">Target</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @positions.each_with_index do |position, index| %>
+            <% coin = position.coin %>
+            <tr style="border: 2px solid <%= coin.color %>;">
+              <td><%= image_tag coin.image, alt: "#{coin.name}" %></td>
+              <td><%= coin.name %></td>
+              <td><%= sprintf('%.6f', position.quantity) %></td>
+              <td><%= sprintf('%.6f', (position.quantity * coin.price_btc)) %></td>
+              <td><%= sprintf('%.2f', (position.quantity * coin.price_usdt)) %></td>
+              <td><%= sprintf('%.1f', ((position.quantity * coin.price_usdt)/@usdt_total)*100) %>%</td>
+              <td><%= @allocations.find {|a| a[:coin_id] == coin.id}.allocation_pct %>%</td>
+            </tr>
+          <% end %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td></td> <!-- image -->
+            <td></td> <!-- name -->
+            <td></td> <!-- quantity -->
+            <td><!-- total btc -->
+              <%= @btc_total %>
+            </td>
+            <td> <!-- total usdt -->
+              $<%= @usdt_total %>
+            </td>
+            <td> <!-- total % -->
+              <%= @percentage %>%
+            </td>
+            <td> <!-- alloc % -->
+
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="col-lg-5" id="chart_div">
+    </div>
+  </div>
+  <% json_positions = @positions.as_json %>
+  <% json_coins = @coins.as_json %>
+  <script>
+    var json_positions = '<%= raw json_positions.to_json %>';
+    var json_coins = '<%= raw json_coins.to_json %>';
+    var positions = JSON.parse(json_positions);
+    var coins = JSON.parse(json_coins);
+  </script>
+</div>
