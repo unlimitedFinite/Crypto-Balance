@@ -12,9 +12,10 @@ require 'json'
 
 puts 'Destroying db contents'
 # Delete records
-User.destroy_all
-Portfolio.destroy_all
+Position.destroy_all
 Allocation.destroy_all
+Portfolio.destroy_all
+User.destroy_all
 Coin.destroy_all
 
 puts 'creating test user'

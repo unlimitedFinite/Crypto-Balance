@@ -4,17 +4,29 @@
   </div>
 
   <div class="row justify-content-center">
-    <div class="d-flex col-lg-6 col-md-8">
-      <div class="form-container">
+    <div class="d-flex col-lg-10 col-md-10">
+      <div class="allocations">
         <p class="info">Set up some automation for your portfolio here. Remember you can always manually rebalance in your dashboard!</p>
-          <%= simple_form_for @portfolio, url: {action:"create"} do |f| %>
-          <%= f.input :rebalance_freq, collection: %w(Daily Weekly Biweekly Monthly Quarterly), selected: "Weekly",  prompt: "Choose frequency" %>
-          <div class="mb-3">
-            <%= f.label :next_rebalance_dt, "Set initial rebalance date*", :class => 'd-block' %>
-            <%= f.date_select :next_rebalance_dt, order: [:day, :month, :year], selected: Date.today + 7 , :class => 'align-right w-100'%>
+      <%= simple_form_for @portfolio, url: {action:"create"} do |f| %>
+        <%= f.input :rebalance_freq, collection: %w(Daily Weekly Biweekly Monthly Quarterly), selected: "Weekly",  prompt: "Choose frequency" %>
+        <div class="mb-3">
+          <%= f.label :next_rebalance_dt, "Set initial rebalance date*", :class => 'd-block' %>
+          <%= f.date_select :next_rebalance_dt, order: [:day, :month, :year], selected: Date.today + 7 , :class => 'align-right w-100'%>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <h2 class="text-center">Allocations</h2>
+            <span class="alert" id="allocations"></span>
+            <%= render 'shared/allocations' %>
           </div>
-          <%= f.submit "Create", :class => 'btn btn-success w-100' %>
-        <% end %>
+          <div class="col-8">
+            <div id="chart_div">
+            </div>
+          </div>
+        </div>
+        <%= f.submit "Create", :class => 'btn trigger btn-success', id: "submit-alloc" %>
+      </div>
     </div>
+    <% end %>
   </div>
 </div>
