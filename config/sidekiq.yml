@@ -2,4 +2,7 @@
   get_price_job:
     cron: '0 */5 * * * *'   # Runs once per minute
     class: GetPriceJob
+  get_positions_job:
+    cron: '0 0 * * * *'
+    class: GetPositionsJob
 

@@ -1,4 +1,6 @@
 require 'sidekiq-scheduler'
+require 'open-uri'
+require 'json'
 
 class GetPriceJob < ApplicationJob
   queue_as :default
@@ -7,19 +9,13 @@ class GetPriceJob < ApplicationJob
     coins = Coin.all
     coins.each do |coin|
       puts "Calling Binance API for #{coin.name}..."
-      require 'open-uri'
-      require 'json'
 
       unless coin.symbol == 'USDT'
-        usdt_url = "https://www.binance.com/api/v3/ticker/price?symbol=#{coin.symbol}USDT"
-        usdt_json = open(usdt_url).read
-        usdt_data = JSON.parse(usdt_json)
+        usdt_data = get_parsed_data("https://www.binance.com/api/v3/ticker/price?symbol=#{coin.symbol}USDT")
       end
 
       unless coin.is_base_coin
-        btc_url = "https://www.binance.com/api/v3/ticker/price?symbol=#{coin.symbol}BTC"
-        btc_json = open(btc_url).read
-        btc_data = JSON.parse(btc_json)
+        btc_data = get_parsed_data("https://www.binance.com/api/v3/ticker/price?symbol=#{coin.symbol}BTC")
       end
 
       if coin.symbol == 'USDT'
@@ -37,6 +33,14 @@ class GetPriceJob < ApplicationJob
       coin.price_btc = price_btc
       coin.save
       puts "Done! Updated #{coin.name} from Binance"
-      end
+    end
+  end
+
+  private
+
+  def get_parsed_data(url)
+    json = open(url).read
+    data = JSON.parse(json)
+    return data
   end
 end
