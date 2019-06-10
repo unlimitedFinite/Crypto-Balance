@@ -12,9 +12,10 @@ require 'json'
 
 puts 'Destroying db contents'
 # Delete records
-User.destroy_all
-Portfolio.destroy_all
+Position.destroy_all
 Allocation.destroy_all
+Portfolio.destroy_all
+User.destroy_all
 Coin.destroy_all
 
 puts 'creating test user'
@@ -37,7 +38,7 @@ lots = {
   XRP: 1,
   BCHABC: 0.001,
   LTC: 0.01,
-  EOS: 1,
+  EOS: 0.01,
   ADA: 1,
   USDT: 0.000001,
   TRX: 1,

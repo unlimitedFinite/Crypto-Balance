@@ -1,14 +1,6 @@
-<%= simple_form_for [@portfolio, @allocation] do |f| %>
+<%= simple_fields_for :allocations do |p| %>
 
-  <% if @allocation.errors.any? %>
-    <div class="errors-container">
-      <ul>
-        <% @allocation.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+
 
   <% hash = {} %>
 
@@ -18,15 +10,17 @@
       <% @coins = ['Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tron','Stellar','Zcash'] %>
       <% @coins.each do |currency| %>
       <div class="col-lg-4 col-md-6 text-center">
-        <%= f.label "#{currency} ", class: "input-control col-form-label" %>
-        <%= number_field_tag "crypto[#{currency}]", nil, min: 0, max: 100, class: 'form-control num_input', onfocus: "this.oldvalue = this.value;", onchange: "onChangeTest(this);this.oldvalue = this.value;" %>
+        <% coin = Coin.find_by(name: currency) %>
+        <% allocation = @portfolio.allocations.find_by(coin_id: coin.id) %>
+        <% default_value = allocation.nil? ? 0 : allocation.allocation_pct %>
+        <%= p.label "#{currency} ", class: "input-control col-form-label" %>
+        <%= number_field_tag "crypto[#{currency}]", nil, min: 0, max: 100, value: default_value, class: 'form-control num_input', onfocus: "this.oldvalue = this.value;", onchange: "onChangeTest(this);this.oldvalue = this.value;" %>
 
         <!-- <input type="number" name="crypto[<%#= currency %>]" value="0" class= "form-control num_input" id="<%#= currency %>"> -->
         <% hash[currency] = 0 %>
       </div>
       <% end %>
     </div>
-    <%= f.submit "Submit", class: "btn btn-primary mt-4 w-100", id: "submit-alloc" %>
   </div>
 <% end %>
 

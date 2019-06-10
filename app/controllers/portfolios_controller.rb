@@ -3,15 +3,16 @@ require 'json'
 require 'date'
 require 'nokogiri'
 
-
 class PortfoliosController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_portfolio, only: [:show, :edit, :update, :create_positions]
-  include ApplicationHelper
+
+  before_action :set_portfolio, only: [:show, :edit, :update, :create_positions, :rebalance_positions]
+
+
   def new
     @portfolio = Portfolio.new
+    @portfolio.allocations.build
   end
-
 
   def create
     @portfolio = Portfolio.new(portfolio_params)
@@ -19,27 +20,29 @@ class PortfoliosController < ApplicationController
     @portfolio.coin_id = Coin.find_by(symbol: 'BTC').id
     @portfolio.next_rebalance_dt = Date.new(params["portfolio"]['next_rebalance_dt(1i)'].to_i, params["portfolio"]['next_rebalance_dt(2i)'].to_i, params["portfolio"]['next_rebalance_dt(3i)'].to_i)
     if @portfolio.save
-      redirect_to new_portfolio_allocation_path(@portfolio.id)
+      create_allocations
     else
       render :new
     end
   end
 
-
   def edit
   end
-
 
   def update
     @portfolio.coin_id = Coin.find_by(symbol: 'BTC').id
     @portfolio.update(portfolio_params)
     if @portfolio.update(portfolio_params)
-      redirect_to edit_portfolio_allocation_path(@portfolio)
+      @portfolio.allocations.each do |allocation|
+        coin_name = Coin.find(allocation.coin_id).name
+        allocation.allocation_pct = params[:crypto][coin_name]
+        allocation.save
+      end
+      redirect_to portfolio_path(@portfolio)
     else
       render :edit
     end
   end
-
 
   def show
     @coins = Coin.all
@@ -49,7 +52,6 @@ class PortfoliosController < ApplicationController
     @usdt_total = get_total_usdt
     @percentage = get_total_percent
   end
-
 
   def create_positions
     @portfolio.update_positions
@@ -96,10 +98,10 @@ class PortfoliosController < ApplicationController
   def order_size(coinhash)
     @coin_instance = Coin.find_by(symbol: coinhash[:name])
 
-    if coinhash[:amount] / @coin_instance[:lot_size] < 1
+    if coinhash[:rebalance_amount] / @coin_instance[:lot_size] < 1
       required_amount = @coin_instance[:lot_size]
     else
-      required_amount = (coinhash[:amount] / @coin_instance[:lot_size]).truncate * @coin_instance[:lot_size]
+      required_amount = (coinhash[:rebalance_amount] / @coin_instance[:lot_size]).truncate * @coin_instance[:lot_size]
     end
     return required_amount
   end
@@ -117,7 +119,6 @@ class PortfoliosController < ApplicationController
 
   def initialise_coin(position)
     # settings for BTC or USDT
-
     if position[:asset] == 'BTC'
       @number_of_btc = position[:free].to_f
       @number_of_usdt = position[:free].to_f * @price_btc
@@ -134,63 +135,25 @@ class PortfoliosController < ApplicationController
   end
 
 
-  def price_update
-    coins = Coin.all
-    coins.each do |coin|
-      puts "Calling Binance API for #{coin.name}..."
-
-      unless coin.symbol == 'USDT'
-        usdt_data = get_parsed_data("https://www.binance.com/api/v3/ticker/price?symbol=#{coin.symbol}USDT")
-      end
-
-      unless coin.is_base_coin
-        btc_data = get_parsed_data("https://www.binance.com/api/v3/ticker/price?symbol=#{coin.symbol}BTC")
-      end
-
-      if coin.symbol == 'USDT'
-        price_usdt = 1
-        price_btc = 0
-      elsif coin.symbol == 'BTC'
-        price_usdt = usdt_data['price']
-        price_btc = 1
-      else
-        price_usdt = usdt_data['price']
-        price_btc = btc_data['price']
-      end
-
-      coin.price_usdt = price_usdt
-      coin.price_btc = price_btc
-      coin.save
-      puts "Done! Updated #{coin.name} from Binance"
-    end
-  end
-
-
-  def get_parsed_data(url)
-    json = open(url).read
-    data = JSON.parse(json)
-    return data
-  end
-
   def lastest_btc_price
     @depth = Binance::Api.depth!(symbol: "BTCUSDT")
-    @bid_quantity = @depth[:bids][0][0].to_f
-    @ask_quantity = @depth[:asks][0][0].to_f
-    return @ask_quantity
+    @bid_price = @depth[:bids][0][0].to_f
+    @ask_price = @depth[:asks][0][0].to_f
+    return @ask_price
   end
 
-  def rebalance_positions
 
+  def rebalance_positions
+    @portfolio.update_positions
     @coins_arr = []
     @confirmations_arr = []
     # fetch lastest price for btc
-    # @price_btc = Coin.find_by(symbol: 'BTC').price_usdt
     @price_btc = lastest_btc_price
-    read_portfolio_info
 
     # Loop to check and sell down any USDT to BTC first
+    read_portfolio_info
     @positions.each do |position|
-
+    # byebug
       if position[:asset] == 'USDT'
         initialise_coin(position)
 
@@ -205,26 +168,34 @@ class PortfoliosController < ApplicationController
             side: 'BUY',
             symbol: 'BTCUSDT',
             type: 'MARKET'
+
           )
 
           get_trade_confirmation(order)
+          # byebug
 
         end
       end
+    @portfolio.update_positions
     end
 
     puts "starting alt coin loop"
 
-    # Loop to iterate through remaining coins
-    @positions.each do |position|
-      coin = Coin.find_by(symbol: position[:asset])
 
-      unless coin.nil?
+    coins_list = ['Ethereum', 'Ripple', 'Bitcoin-Cash', 'Litecoin', 'EOS', 'Cardano', 'Tether', 'Tron', 'Stellar', 'Zcash']
+    coins_list.each do |name|
+      coin = Coin.find_by(name: name)
+      position = Position.find_by(as_of_dt_end: nil, coin_id: coin.id)
 
-        position_value_usdt = position[:free].to_f * coin.price_usdt
+      # byebug
+
+      unless position.nil?
+
+        position_value_usdt = position[:quantity] * coin.price_usdt
 
         current_pct = (position_value_usdt / @portfolio.current_value_usdt).round(2) * 100
         target_pct = @allocations.find { |a| a[:coin_id] == coin.id }.allocation_pct
+        # target_amount = target_pct *
         rebalance_pct = target_pct - current_pct
         # rebalance amount in USD
         rebalance_amount_usd = (rebalance_pct / 100) * @portfolio.current_value_usdt
@@ -232,9 +203,10 @@ class PortfoliosController < ApplicationController
         # set min order size to 0.001 BTC
         min_order_value = 0.001 / coin.price_btc
         # create hash of coins with rebalance amounts in USD
-        coinhash = { name: position[:asset], amount: rebalance_amount_coins, min_order_value: min_order_value }
+        coinhash = { name: coin[:symbol], amount: position[:quantity], rebalance_amount: rebalance_amount_coins.to_f, min_order_value: min_order_value }
         @coins_arr << coinhash
-    # byebug
+
+        # byebug
 
       end
     end
@@ -245,6 +217,7 @@ class PortfoliosController < ApplicationController
 
 
   def get_trade_confirmation(order)
+<<<<<<< HEAD
     # unless order == []
       @confirmations_arr << order
       Order.create(
@@ -259,19 +232,24 @@ class PortfoliosController < ApplicationController
         base_coin_id: 'BTC',
         target_coin_id: Coin.find_by(order[:symbol].replace('BTC', '')).id
       )
-
-    # unless order == []
-
-    #   confirmations_hash = {
-    #     symbol: order[0][:symbol], \
-    #     trade_id: order[0][:orderId], \
-    #     price: order[0][:price], \
-    #     quantity: order[0][:qty], \
-    #     commission: order[0][:commission], \
-    #     commissionAsset: order[0][:commissionAsset], \
-    #     order_time: order[0][:time]
+=======
+    unless order == []
+    @confirmations_arr << order
+    Order.create(
+      status: order[:status],
+      price: order[:fills][0][:price],
+      quantity: order[:fills][0][:qty],
+      commision: order[:fills][0][:commision],
+      side: order[:side],
+      type: order[:type],
+      binance_id: order[:orderId],
+      base_coin_id: 'BTC',
+      target_coin_id: Coin.find_by(order[:symbol].replace('BTC', '')).id
+    )
+>>>>>>> 8de744bf1fbb5f23a4c2a2bcb5b06d5894f9f364
 
       byebug
+
 
     end
   end
@@ -284,42 +262,48 @@ class PortfoliosController < ApplicationController
 
     @coins_arr.each do |coinhash|
 
-      puts coinhash, @coins_arr
-       # byebug
+      # byebug
 
-      if coinhash[:amount].positive?
+      if coinhash[:rebalance_amount].positive?
         side = 'BUY'
       else
         side = 'SELL'
       end
 
-      puts side
       # byebug
 
-      coinhash[:amount] = coinhash[:amount].abs
+      coinhash[:rebalance_amount] = coinhash[:rebalance_amount].abs
 
       # skip BTC execution since all coins are against BTC
       unless coinhash[:name] == 'BTC' \
-        || coinhash[:amount] <= coinhash[:min_order_value] \
-        || coinhash[:amount] <= order_size(coinhash) \
-        || order_size(coinhash) == @coin_instance[:lot_size]
+        || coinhash[:rebalance_amount] <= coinhash[:min_order_value] \
+        || coinhash[:rebalance_amount] <= order_size(coinhash) \
+        || order_size(coinhash) == @coin_instance[:lot_size] \
         # above line prevents one lot executions!
-        # now does not fail for EOS where order size = minimum lot size
-        # check binance tables or change in seed?
-        # error catch the response and skip error :400
+        if side == 'SELL' && coinhash[:amount] < coinhash[:rebalance_amount]
+          coinhash[:rebalance_amount] = coinhash[:amount]
+        end
 
         quantity = order_size(coinhash)
 
 
+        puts @coins_arr
         puts "executing trade for #{coinhash[:name]}"
+        puts coinhash[:rebalance_amount]
+        puts coinhash[:amount]
+        puts side
+        puts quantity
 
-        byebug
+
         order = Binance::Api::Order.create!(
           quantity: quantity,
           side: side,
           symbol: "#{coinhash[:name]}BTC",
           type: 'MARKET'
+
         )
+
+
         get_trade_confirmation(order)
       end
     end
@@ -352,6 +336,8 @@ class PortfoliosController < ApplicationController
             symbol: 'BTCUSDT',
             type: 'MARKET'
           )
+
+          # get_trade_confirmation('BTC')
 
           get_trade_confirmation(order)
           # byebug
@@ -410,5 +396,29 @@ def set_portfolio
 end
 
 def portfolio_params
-  params.require(:portfolio).permit(:rebalance_freq, :next_rebalance_dt, :coin_id)
+  params.require(:portfolio).permit(:rebalance_freq, :next_rebalance_dt, :coin_id, allocations_attributes: [:crypto])
+end
+
+def create_allocations
+  if params[:crypto].values.map(&:to_i).sum != 100
+    flash[:failure] = "Allocation must total 100% !"
+    # redirect_to new_portfolio_allocation_path(@portfolio)
+  else
+    params[:crypto].each do |coin, percentage|
+      @allocation = Allocation.new
+      @allocation.portfolio_id = @portfolio.id
+      @allocation.coin_id = Coin.find_by(name: coin).id
+      @allocation.allocation_pct = percentage.to_i
+      @allocation.save
+      usdt_coin = Coin.find_by(symbol: "USDT")
+      Allocation.create(allocation_pct: 0, coin_id: usdt_coin.id, portfolio_id: @portfolio.id)
+    end
+    if Allocation.last.portfolio_id.nil?
+      flash[:failure] = "There has been a problem allocating, Please try again!"
+      render :new
+    else
+      flash[:success] = "Allocations have been saved!"
+      redirect_to create_positions_path(@portfolio)
+    end
+  end
 end
