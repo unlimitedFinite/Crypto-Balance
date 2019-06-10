@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
       if !current_user.portfolio.nil?
         portfolio_path(current_user.portfolio)
       else
-        super
+        landing_page_path(current_user)
       end
   end
 
