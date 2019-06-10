@@ -3,11 +3,9 @@ class Portfolio < ApplicationRecord
   belongs_to :coin
   has_many :positions
   has_many :allocations
-<<<<<<< HEAD
   has_many :orders
-=======
+
   accepts_nested_attributes_for :allocations
->>>>>>> 8de744bf1fbb5f23a4c2a2bcb5b06d5894f9f364
 
   validates :rebalance_freq, inclusion: { in: %w[Daily Weekly Biweekly Monthly Quarterly] }
   validates :rebalance_freq, :coin_id, presence: true

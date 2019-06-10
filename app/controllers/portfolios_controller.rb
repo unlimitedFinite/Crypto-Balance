@@ -217,7 +217,7 @@ class PortfoliosController < ApplicationController
 
 
   def get_trade_confirmation(order)
-<<<<<<< HEAD
+
     # unless order == []
       @confirmations_arr << order
       Order.create(
@@ -232,21 +232,7 @@ class PortfoliosController < ApplicationController
         base_coin_id: 'BTC',
         target_coin_id: Coin.find_by(order[:symbol].replace('BTC', '')).id
       )
-=======
-    unless order == []
-    @confirmations_arr << order
-    Order.create(
-      status: order[:status],
-      price: order[:fills][0][:price],
-      quantity: order[:fills][0][:qty],
-      commision: order[:fills][0][:commision],
-      side: order[:side],
-      type: order[:type],
-      binance_id: order[:orderId],
-      base_coin_id: 'BTC',
-      target_coin_id: Coin.find_by(order[:symbol].replace('BTC', '')).id
-    )
->>>>>>> 8de744bf1fbb5f23a4c2a2bcb5b06d5894f9f364
+
 
       byebug
 
