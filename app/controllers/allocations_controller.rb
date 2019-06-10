@@ -24,8 +24,10 @@ class AllocationsController < ApplicationController
         @allocation.coin_id = Coin.find_by(name: coin).id
         @allocation.allocation_pct = percentage.to_i
         @allocation.save
-        Allocation.create(allocation_pct: 0, coin_id: 8, portfolio_id: @portfolio)
       end
+      # set USDT default allocation to 0%
+      Allocation.create(allocation_pct: 0, coin_id: 8, portfolio_id: @portfolio)
+
       unless Allocation.last.portfolio_id.nil?
         flash[:success] = "Allocations have been saved!"
         redirect_to create_positions_path(@portfolio)
