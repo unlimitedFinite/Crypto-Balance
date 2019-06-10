@@ -3,6 +3,7 @@ class Portfolio < ApplicationRecord
   belongs_to :coin
   has_many :positions
   has_many :allocations
+  accepts_nested_attributes_for :allocations
 
   validates :rebalance_freq, inclusion: { in: %w[Daily Weekly Biweekly Monthly Quarterly] }
   validates :rebalance_freq, :coin_id, presence: true
@@ -15,6 +16,7 @@ class Portfolio < ApplicationRecord
     self.current_value_usdt = 0.0
     self.current_value_btc = 0.0
 
+
     positions.each do |position|
       coin = Coin.find_by(symbol: position[:asset])
       unless coin.nil?
@@ -25,8 +27,30 @@ class Portfolio < ApplicationRecord
         self.current_value_btc += new_position_record.value_btc
       end
     end
+
     self.save
+    insert_dummy_portfolio
   end
+
+
+  def insert_dummy_portfolio
+    coins_list = ['Bitcoin', 'Ethereum', 'Ripple', 'Bitcoin-Cash', 'Litecoin', 'EOS', 'Cardano', 'Tether', 'Tron', 'Stellar', 'Zcash']
+      coins_list.each do |name|
+        coin_record = Coin.find_by(name: name)
+
+        if Position.find_by(coin_id: coin_record.id).nil?
+          Position.create(
+            portfolio: self,
+            coin_id: coin_record.id,
+            quantity: 0.00,
+            value_usdt: 0.00,
+            value_btc: 0.00,
+            as_of_dt: DateTime.now.to_date
+          )
+        end
+      end
+  end
+
 
   private
 

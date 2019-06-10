@@ -4,9 +4,7 @@ Rails.application.routes.draw do
   get "portfolios/:id/create_positions", to: "portfolios#create_positions", as: "create_positions"
   post "portfolios/:id/rebalance_positions", to: "portfolios#rebalance_positions", as: "rebalance_positions"
   post "portfolios/:id/panic_sell", to: "portfolios#panic_sell", as: "sell_positions"
-  resources :portfolios, except: [:index, :destroy] do
-    resources :allocations, except: [:index, :show, :destroy]
-  end
+  resources :portfolios, except: [:index, :destroy]
   resources :orders, except: [:new, :edit, :show]
   devise_for :users, controllers: { registrations: "registrations" }
   get "users/:id", to: "pages#user_landing", as: "landing_page"
