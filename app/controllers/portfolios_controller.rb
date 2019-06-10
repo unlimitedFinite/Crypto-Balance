@@ -245,18 +245,20 @@ class PortfoliosController < ApplicationController
 
 
   def get_trade_confirmation(order)
-    @confirmations_arr << order
-    Order.create(
-      status: order[:status],
-      price: order[:fills][0][:price],
-      quantity: order[:fills][0][:qty],
-      commision: order[:fills][0][:commision],
-      side: order[:side],
-      type: order[:type],
-      binance_id: order[:orderId],
-      base_coin_id: 'BTC',
-      target_coin_id: Coin.find_by(order[:symbol].replace('BTC', '')).id
-    )
+    # unless order == []
+      @confirmations_arr << order
+      Order.create(
+        status: order[:status],
+        price: order[:fills][0][:price],
+        quantity: order[:fills][0][:qty],
+        commission: order[:fills][0][:commission],
+        commission_asset: order[:fills][0][:commissionAsset],
+        side: order[:side],
+        order_type: order[:type],
+        binance_id: order[:orderId],
+        base_coin_id: 'BTC',
+        target_coin_id: Coin.find_by(order[:symbol].replace('BTC', '')).id
+      )
 
     # unless order == []
 
