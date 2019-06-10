@@ -17,3 +17,4 @@ if (allocationsPage != null) {
   updateChart();
   sumAllocations();
 }
+

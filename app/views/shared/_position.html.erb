@@ -9,14 +9,15 @@
         </span>
       <p>$<%= sprintf('%.2f', (position.quantity * coin.price_usdt)) %></p>
       </div>
-      <div class="position-card-bottom text-right">
-        <p><span id="<%= coin.symbol %>percent24">24 hours: %</span>
-
-          <span id="<%= coin.symbol %>value24" class="binance-symbols">24 hours: $</span>
-        </p>
-        <p>Distribution: <%= sprintf('%.0f', ((position.quantity * coin.price_usdt)/@usdt_total)*100) %>%
-
-        Target <%= @allocations.find {|a| a[:coin_id] == coin.id}.allocation_pct %>%</p>
+      <div class="position-card-bottom">
+        <div style="display: inline-grid;">
+          <span>Distribution: <%= sprintf('%.0f', ((position.quantity * coin.price_usdt)/@usdt_total)*100) %>%</span>
+          <span>Target <%= @allocations.find {|a| a[:coin_id] == coin.id}.allocation_pct %>%</span>
+        </div>
+        <div class="price">
+          <span id="<%= coin.symbol %>percent24"></span>
+          <span id="<%= coin.symbol %>value24" class="binance-symbols"></span>
+        </div>
       </div>
     </div>
   <% end %>

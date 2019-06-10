@@ -39,18 +39,25 @@ function get_price_change(){
 
   function add_data(priceChanges){
     if (priceChanges.length > 8) {
-      var symbol = priceChanges[0]['symbol'];
-      var percentSpan = document.getElementById(`${symbol}percent24`);
-      var valueSpan = document.getElementById(`${symbol}value24`);
-      var percent = priceChanges[0]['priceChangePercent'];
-      var value = priceChanges[0]['priceChange'];
-      var price = priceChanges[0]['price'];
-      percentSpan.innerText = `24 hour: ${Math.round(percent * 100) / 100}%`;
-      valueSpan.innerText = `24 hour: $${Math.round((value / price) * 100) / 100}`;
+      priceChanges.forEach(function(coin) {
+        var symbol = coin['symbol'];
+        var percentSpan = document.getElementById(`${symbol}percent24`);
+        var valueSpan = document.getElementById(`${symbol}value24`);
+        var price = coin['price'];
+        var percent = coin['priceChangePercent'];
+        var value = Math.round((coin['priceChange'] / price) * 100) / 100;
+        if (value > 0) {
+          percentSpan.classList.add("price-up");
+          valueSpan.classList.add("price-up");
+        } else if (value < 0 ){
+          percentSpan.classList.add("price-down");
+          valueSpan.classList.add("price-down");
+        };
+        percentSpan.innerText = `${Math.round(percent * 100) / 100}%`;
+        valueSpan.innerText = `$${value}`;
+      })
     };
   }
-
-
   build_data();
 }
 

@@ -1,6 +1,6 @@
 .card-container {
   margin: 0 auto;
-  width: 700px;
+  min-width: 350px;
 }
 
 .position-card {
@@ -11,6 +11,7 @@
   border-top-right-radius: 15px;
   margin: 8px 8px;
   padding: 8px 16px;
+  box-shadow: 4px 4px #80808030;
 }
 
 .position-card-top {
@@ -32,3 +33,16 @@
   margin-bottom: 0;
 }
 
+.price-down {
+  color: $red;
+}
+
+.price-up {
+  color: $green;
+}
+
+.price {
+  display: inline-grid;
+  text-align: right;
+
+}
