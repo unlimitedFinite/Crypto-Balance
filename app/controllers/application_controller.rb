@@ -11,9 +11,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
-def after_sign_in_path_for(resource)
-  stored_location_for(resource) || portfolio_path(current_user.portfolio)
-end
+  def after_sign_in_path_for(resource)
+    stored_location_for(resource) ||
+      if !current_user.portfolio.nil?
+        portfolio_path(current_user.portfolio)
+      else
+        landing_page_path(current_user)
+      end
+  end
 
   def configure_permitted_parameters
     # For additional fields in app/views/devise/registrations/new.html.erb

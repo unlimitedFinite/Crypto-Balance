@@ -1,0 +1,22 @@
+<div class="container-home">
+  <div class="banner">
+    <div class="dashboard m-3 p-3">
+      <div class="row p-3">
+        <h2>Hello, <%= current_user.first_name %></h2>
+      </div>
+      <div class="row p-3">
+        <%= link_to 'Add New Portfolio', new_portfolio_path, class: 'btn trigger btn-primary' %>
+      </div>
+      <div class="row p-3">
+        <h3>Portfolios</h3>
+        <% unless current_user.portfolio.nil? %>
+          <div class="price-container d-flex justify-content-between">
+            <% price_btc = Coin.find_by(symbol: 'BTC').price_usdt %>
+            <span class="display-4">BTC <%= (current_user.portfolio.current_value_btc).round(5) %></span>
+            <span class="display-4"><%= number_to_currency(current_user.portfolio.current_value_btc.to_f * price_btc) %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

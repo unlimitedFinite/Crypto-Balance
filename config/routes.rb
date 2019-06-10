@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   end
   resources :orders, except: [:new, :edit, :show]
   devise_for :users, controllers: { registrations: "registrations" }
+  get "users/:id", to: "pages#user_landing", as: "landing_page"
   root to: 'pages#home'
 
   require "sidekiq/web"
