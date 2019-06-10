@@ -16,7 +16,7 @@ class PortfoliosController < ApplicationController
   def create
     @portfolio = Portfolio.new(portfolio_params)
     @portfolio.user = current_user
-    @portfolio.coin_id = Coin.find_by(symbol:'BTC').id
+    @portfolio.coin_id = Coin.find_by(symbol: 'BTC').id
     @portfolio.next_rebalance_dt = Date.new(params["portfolio"]['next_rebalance_dt(1i)'].to_i, params["portfolio"]['next_rebalance_dt(2i)'].to_i, params["portfolio"]['next_rebalance_dt(3i)'].to_i)
     if @portfolio.save
       redirect_to new_portfolio_allocation_path(@portfolio.id)
@@ -31,7 +31,7 @@ class PortfoliosController < ApplicationController
 
 
   def update
-    @portfolio.coin_id = Coin.find_by(symbol:'BTC').id
+    @portfolio.coin_id = Coin.find_by(symbol: 'BTC').id
     @portfolio.update(portfolio_params)
     if @portfolio.update(portfolio_params)
       redirect_to edit_portfolio_allocation_path(@portfolio)
@@ -105,10 +105,50 @@ class PortfoliosController < ApplicationController
   end
 
 
+  def price_update
+    coins = Coin.all
+    coins.each do |coin|
+      puts "Calling Binance API for #{coin.name}..."
+
+      unless coin.symbol == 'USDT'
+        usdt_data = get_parsed_data("https://www.binance.com/api/v3/ticker/price?symbol=#{coin.symbol}USDT")
+      end
+
+      unless coin.is_base_coin
+        btc_data = get_parsed_data("https://www.binance.com/api/v3/ticker/price?symbol=#{coin.symbol}BTC")
+      end
+
+      if coin.symbol == 'USDT'
+        price_usdt = 1
+        price_btc = 0
+      elsif coin.symbol == 'BTC'
+        price_usdt = usdt_data['price']
+        price_btc = 1
+      else
+        price_usdt = usdt_data['price']
+        price_btc = btc_data['price']
+      end
+
+      coin.price_usdt = price_usdt
+      coin.price_btc = price_btc
+      coin.save
+      puts "Done! Updated #{coin.name} from Binance"
+    end
+  end
+
+
+  def get_parsed_data(url)
+    json = open(url).read
+    data = JSON.parse(json)
+    return data
+  end
+
   def rebalance_positions
 
     @coins_arr = []
     @confirmations_arr = []
+    # fetch lastest price for btc
+    price_update
     @price_btc = Coin.find_by(symbol: 'BTC').price_usdt
     read_portfolio_info
 
@@ -123,6 +163,7 @@ class PortfoliosController < ApplicationController
 
           quantity = order_size_btc(@number_of_btc, @min_trade_unit)
 
+
           Binance::Api::Order.create!(
             quantity: quantity,
             side: 'BUY',
@@ -131,10 +172,18 @@ class PortfoliosController < ApplicationController
             test: true
           )
           get_trade_confirmation('BTC')
-      # byebug
+          # byebug
         end
       end
     end
+
+    Binance::Api::Order.create!(
+      quantity: quantity,
+      side: 'BUY',
+      symbol: 'BTCUSDT',
+      type: 'MARKET',
+      test: true
+    )
 
     puts "starting alt coin loop"
 
@@ -186,7 +235,7 @@ class PortfoliosController < ApplicationController
         commissionAsset: order[0][:commissionAsset], \
         order_time: order[0][:time]
       }
-# byebug
+      # byebug
       @confirmations_arr << confirmations_hash
 
     end
@@ -231,7 +280,7 @@ class PortfoliosController < ApplicationController
           test: true
         )
 
-      # byebug
+        # byebug
         get_trade_confirmation(coinhash[:name])
       end
     end
@@ -242,6 +291,7 @@ class PortfoliosController < ApplicationController
     @coins_arr = []
     @confirmations_arr = []
     read_portfolio_info
+    price_update
     @price_btc = Coin.find_by(symbol: 'BTC').price_usdt
 
     @positions.each do |position|
