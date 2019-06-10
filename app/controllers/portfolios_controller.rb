@@ -18,22 +18,7 @@ class PortfoliosController < ApplicationController
     @portfolio.coin_id = Coin.find_by(symbol: 'BTC').id
     @portfolio.next_rebalance_dt = Date.new(params["portfolio"]['next_rebalance_dt(1i)'].to_i, params["portfolio"]['next_rebalance_dt(2i)'].to_i, params["portfolio"]['next_rebalance_dt(3i)'].to_i)
     if @portfolio.save
-      params[:crypto].each do |coin, percentage|
-        @allocation = Allocation.new
-        @allocation.portfolio_id = @portfolio.id
-        @allocation.coin_id = Coin.find_by(name: coin).id
-        @allocation.allocation_pct = percentage.to_i
-        @allocation.save
-        usdt_coin = Coin.find_by(symbol: "USDT")
-        Allocation.create(allocation_pct: 0, coin_id: usdt_coin.id, portfolio_id: @portfolio.id)
-      end
-      if Allocation.last.portfolio_id.nil?
-        flash[:failure] = "There has been a problem allocating, Please try again!"
-        render :new
-      else
-        flash[:success] = "Allocations have been saved!"
-        redirect_to create_positions_path(@portfolio)
-      end
+      create_allocations
     else
       render :new
     end
@@ -46,7 +31,12 @@ class PortfoliosController < ApplicationController
     @portfolio.coin_id = Coin.find_by(symbol: 'BTC').id
     @portfolio.update(portfolio_params)
     if @portfolio.update(portfolio_params)
-      redirect_to portfolio_edit_allocations_path(@portfolio)
+      @portfolio.allocations.each do |allocation|
+        coin_name = Coin.find(allocation.coin_id).name
+        allocation.allocation_pct = params[:crypto][coin_name]
+        allocation.save
+      end
+      redirect_to portfolio_path(@portfolio)
     else
       render :edit
     end
@@ -408,4 +398,28 @@ end
 
 def portfolio_params
   params.require(:portfolio).permit(:rebalance_freq, :next_rebalance_dt, :coin_id, allocations_attributes: [:crypto])
+end
+
+def create_allocations
+  if params[:crypto].values.map(&:to_i).sum != 100
+    flash[:failure] = "Allocation must total 100% !"
+    # redirect_to new_portfolio_allocation_path(@portfolio)
+  else
+    params[:crypto].each do |coin, percentage|
+      @allocation = Allocation.new
+      @allocation.portfolio_id = @portfolio.id
+      @allocation.coin_id = Coin.find_by(name: coin).id
+      @allocation.allocation_pct = percentage.to_i
+      @allocation.save
+      usdt_coin = Coin.find_by(symbol: "USDT")
+      Allocation.create(allocation_pct: 0, coin_id: usdt_coin.id, portfolio_id: @portfolio.id)
+    end
+    if Allocation.last.portfolio_id.nil?
+      flash[:failure] = "There has been a problem allocating, Please try again!"
+      render :new
+    else
+      flash[:success] = "Allocations have been saved!"
+      redirect_to create_positions_path(@portfolio)
+    end
+  end
 end
