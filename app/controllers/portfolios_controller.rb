@@ -144,9 +144,9 @@ class PortfoliosController < ApplicationController
   end
 
   def lastest_btc_price
-    @depth = Binance::Api.depth!(symbol: "#{coin}BTC")
-    @bid_quantity = @depth[:bids][0][1].to_f
-    @ask_quantity = @depth[:asks][0][1].to_f
+    @depth = Binance::Api.depth!(symbol: "BTCUSDT")
+    @bid_quantity = @depth[:bids][0][0].to_f
+    @ask_quantity = @depth[:asks][0][0].to_f
     return @ask_quantity
   end
 
@@ -175,8 +175,7 @@ class PortfoliosController < ApplicationController
             quantity: quantity,
             side: 'BUY',
             symbol: 'BTCUSDT',
-            type: 'MARKET',
-            test: true
+            type: 'MARKET'
           )
           get_trade_confirmation('BTC')
           # byebug
@@ -194,7 +193,7 @@ class PortfoliosController < ApplicationController
 
         position_value_usdt = position[:free].to_f * coin.price_usdt
 
-        current_pct = (position_value_usdt / @portfolio.current_value_usdt).round(2)
+        current_pct = (position_value_usdt / @portfolio.current_value_usdt).round(2) * 100
         target_pct = @allocations.find { |a| a[:coin_id] == coin.id }.allocation_pct
         rebalance_pct = target_pct - current_pct
         # rebalance amount in USD
@@ -205,10 +204,10 @@ class PortfoliosController < ApplicationController
         # create hash of coins with rebalance amounts in USD
         coinhash = { name: position[:asset], amount: rebalance_amount_coins, min_order_value: min_order_value }
         @coins_arr << coinhash
+    # byebug
 
       end
     end
-    # byebug
     execute_orders
     flash[:success] = "Portfolio has been rebalanced!"
     create_positions
@@ -247,13 +246,18 @@ class PortfoliosController < ApplicationController
     @coins_arr.sort_by! { |hsh| hsh[:amount] }
 
     @coins_arr.each do |coinhash|
-      # byebug
+
+      puts coinhash, @coins_arr
+       # byebug
 
       if coinhash[:amount].positive?
         side = 'BUY'
       else
         side = 'SELL'
       end
+
+      puts side
+      # byebug
 
       coinhash[:amount] = coinhash[:amount].abs
 
@@ -268,6 +272,7 @@ class PortfoliosController < ApplicationController
         # error catch the response and skip error :400
 
         quantity = order_size(coinhash)
+         byebug
 
         puts "executing trade for #{coinhash[:name]}"
 
@@ -275,11 +280,9 @@ class PortfoliosController < ApplicationController
           quantity: quantity,
           side: side,
           symbol: "#{coinhash[:name]}BTC",
-          type: 'MARKET',
-          test: true
+          type: 'MARKET'
         )
 
-        # byebug
         get_trade_confirmation(coinhash[:name])
       end
     end
@@ -310,8 +313,7 @@ class PortfoliosController < ApplicationController
             quantity: quantity,
             side: 'SELL',
             symbol: 'BTCUSDT',
-            type: 'MARKET',
-            test: true
+            type: 'MARKET'
           )
           get_trade_confirmation('BTC')
           # byebug
