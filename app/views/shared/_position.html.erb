@@ -1,4 +1,7 @@
 <div class="card-container">
+  <%= link_to create_positions_path do %>
+    <i class="refresh fas fa-sync-alt"></i>
+  <% end %>
   <% @positions.each_with_index do |position, _index| %>
     <% coin = position.coin %>
     <div class="position-card" style="border-left: 15px solid <%= coin.color %>;">
