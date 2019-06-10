@@ -5,7 +5,7 @@ class OrdersController < ApplicationController
   end
 
   def index
-    @orders = Order.where(portfolio_id: )
+    @orders = Order.all
   end
 
   def update
