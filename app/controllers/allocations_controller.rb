@@ -1,5 +1,5 @@
 class AllocationsController < ApplicationController
-  before_action :set_allocation, only: [:update, :edit]
+  # before_action :set_allocation, only: [:update, :edit]
 
   def new
     @allocation = Allocation.new
@@ -37,10 +37,9 @@ class AllocationsController < ApplicationController
     end
   end
 
-
   def edit
     @portfolio = Portfolio.find(params[:portfolio_id])
-    @allocations = Allocation.where(portfolio_id: @portfolio.id)
+    @allocation = Allocation.where(portfolio_id: @portfolio.id)
   end
 
   def update
@@ -50,14 +49,14 @@ class AllocationsController < ApplicationController
       render :edit
     end
   end
-end
 
-private
+  private
 
-def set_allocation
-  @allocation = Allocation.find(params[:id])
-end
+  def set_allocation
+    @allocation = Allocation.find(params[:id])
+  end
 
-def allocation_params
-  params.require(:crypto).permit(:crypto)
+  def allocation_params
+    params.require(:crypto).permit(:crypto)
+  end
 end

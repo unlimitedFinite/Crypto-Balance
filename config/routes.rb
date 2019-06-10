@@ -5,7 +5,9 @@ Rails.application.routes.draw do
   post "portfolios/:id/rebalance_positions", to: "portfolios#rebalance_positions", as: "rebalance_positions"
   post "portfolios/:id/panic_sell", to: "portfolios#panic_sell", as: "sell_positions"
   resources :portfolios, except: [:index, :destroy] do
-    resources :allocations, except: [:index, :show, :destroy]
+    resources :allocations, except: [:index, :show, :destroy, :edit, :update]
+    get "allocations/edit", to: "allocations#edit", as: "edit_allocations"
+    patch "allocations/update", to: "allocations#update", as: "update_allocations"
   end
   resources :orders, except: [:new, :edit, :show]
   devise_for :users, controllers: { registrations: "registrations" }
