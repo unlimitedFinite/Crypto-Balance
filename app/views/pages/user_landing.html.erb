@@ -5,9 +5,7 @@
         <h2>Hello, <%= current_user.first_name %></h2>
       </div>
       <div class="row p-3">
-        <%= form_tag new_portfolio_path do %>
-          <%= submit_tag 'Add New Portfolio', class: 'btn trigger btn-primary' %>
-        <% end %>
+        <%= link_to 'Add New Portfolio', new_portfolio_path, class: 'btn trigger btn-primary' %>
       </div>
       <div class="row p-3">
         <h3>Portfolios</h3>
