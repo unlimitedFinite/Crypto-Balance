@@ -36,28 +36,28 @@
 # to make it easier just do BTC or USDT conversion via the spot rate first then
 # apply all excution logic in one standard method.
 
-def check_base_ccy
-  # check base and convert to USD
-  # portfolio_setup if not exist
-  # else portfolio_rebalance
-  account_info = Binance::Api::Account.info!
-  balance = account_info[:balances]
-  raise
-  @portfolio.coin_id = Coin.find_by(symbol: params['portfolio']['coin_id']).id
-    if @portfolio.coin_id == 'BTC'
 
-end
+# panic sell to USDt
+# api for balances
+# perform min size and lot size checks and calculate execution amounts
+# send sell orders
 
-def portfoilo_rebalance
-end
+# reblance after panic sell
+# This should use same logic as for creating a rebalanced portfolio
+# check for both USDt and BTC in portfolio
+# Get total value of portfolio including BTC and USDt
+# Calculate percentages of each coin needed
+# find oiut what needs to be adjusted to BTC
+# Sell all USDt to BTC first
+# Then use BTC to perform rebalance as normal
 
-# submit orders individually?
+# order = Binance::Api::Order.create!(quantity: 1, side: 'BUY', symbol: "BTC", type: 'MARKET', test: true)
 
-def portfolio_setup(balance_in_USDT, live_bid_price, live_offer_price, bid_depth, offer_depth)
 
-end
 
-check_base_ccy
+
+
+
 
 
 

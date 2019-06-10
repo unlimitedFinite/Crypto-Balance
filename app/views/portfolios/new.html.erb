@@ -1,8 +1,20 @@
-<h1>Portfolios#new</h1>
-  <%= simple_form_for @portfolio, url: {action:"create"} do |f| %>
-  <%= f.input :rebalance_freq, collection: %w(Daily Weekly Biweekly Monthly Quarterly), selected: "Weekly",  prompt: "Choose frequency" %>
-  <%= f.date_select :next_rebalance_dt, order: [:day, :month, :year], selected: Date.today + 7 %>
-  <%= f.collection_radio_buttons :coin_id, [["BTC", 'BTC'], ["USDT", 'USDT']], :first, :last, wrapper_html: { class: 'ml-2' }, message:'Wrong symbol' %>
+<div class="container">
+  <div class="form-header">
+    <h2 class="text-center p-3 mt-5">Portfolio Setup</h2>
+  </div>
 
-  <%= f.submit "Create" %>
-<% end %>
+  <div class="row justify-content-center">
+    <div class="d-flex col-lg-6 col-md-8">
+      <div class="form-container">
+        <p class="info">Set up some automation for your portfolio here. Remember you can always manually rebalance in your dashboard!</p>
+          <%= simple_form_for @portfolio, url: {action:"create"} do |f| %>
+          <%= f.input :rebalance_freq, collection: %w(Daily Weekly Biweekly Monthly Quarterly), selected: "Weekly",  prompt: "Choose frequency" %>
+          <div class="mb-3">
+            <%= f.label :next_rebalance_dt, "Set initial rebalance date*", :class => 'd-block' %>
+            <%= f.date_select :next_rebalance_dt, order: [:day, :month, :year], selected: Date.today + 7 , :class => 'align-right w-100'%>
+          </div>
+          <%= f.submit "Create", :class => 'btn btn-success w-100' %>
+        <% end %>
+    </div>
+  </div>
+</div>

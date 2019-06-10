@@ -2,12 +2,36 @@
 #landing-header {
   z-index: 1;
   position: relative;
-  text-align: center;
-  padding-top: 40vh;
+  padding-top: 10vh;
+  color: white;
+  text-align: left;
+  margin-left: 10%;
+  width: 500px;
+}
+
+#btn-container {
+  widows: 100%;
 }
 
 .container {
-  background-color: white;
   border-radius: 10px;
 }
+
+body {
+  margin-top: 45px;
+  background-color: $blue;
+}
+
+// .container-home {
+//   background-image: linear-gradient(to right, rgba(245, 239, 239, 0), rgba(216, 212, 212, 0.45)), url(https://res.cloudinary.com/deyw9z6tu/image/upload/v1559801430/crypto-balance/laptop_bg_lqdbjh.png);
+//   background-size: cover;
+//   height: 100vh;
+// }
+
+.banner {
+  background-image: linear-gradient(to right, rgba(245, 239, 239, 0), rgba(216, 212, 212, 0.45)), url('https://res.cloudinary.com/deyw9z6tu/image/upload/v1559802590/crypto-balance/conceptual-blockchain-crypto-currency-background-footage-088601230_prevstill_autavy.jpg');
+  background-size: cover;
+  height: 100vh
+}
+
 

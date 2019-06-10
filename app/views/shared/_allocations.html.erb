@@ -1,31 +1,45 @@
+<%= simple_form_for [@portfolio, @allocation] do |f| %>
 
-<div class="container">
-  <div class="row">
-    <div class="col-4">
-      <%= simple_form_for [@portfolio, @allocation] do |f| %>
-
-        <% if @allocation.errors.any? %>
-          <div class="errors-container">
-            <ul>
-              <% @allocation.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
-              <% end %>
-            </ul>
-          </div>
+  <% if @allocation.errors.any? %>
+    <div class="errors-container">
+      <ul>
+        <% @allocation.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
         <% end %>
+      </ul>
+    </div>
+  <% end %>
 
-        <div class="form-group row">
-          <% ['Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tron','Stellar','Zcash'].each do |currency| %>
-            <%= f.label "#{currency} ", class: "input-control col-sm-3 col-form-label" %>
-            <input type="number", name="crypto[<%= currency %>]", class= "form-control">
-          <% end %>
-          <%= f.submit "Submit Allocations", class: "btn btn-primary mt-3" %>
-        </div>
+  <% hash = {} %>
 
+
+  <div class="form-group">
+    <div class="row justify-content-center" id="listener">
+      <% @coins = ['Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tron','Stellar','Zcash'] %>
+      <% @coins.each do |currency| %>
+      <div class="col-lg-4 col-md-6 text-center">
+        <%= f.label "#{currency} ", class: "input-control col-form-label" %>
+        <%= number_field_tag "crypto[#{currency}]", nil, min: 0, max: 100, class: 'form-control num_input', onfocus: "this.oldvalue = this.value;", onchange: "onChangeTest(this);this.oldvalue = this.value;" %>
+
+        <!-- <input type="number" name="crypto[<%#= currency %>]" value="0" class= "form-control num_input" id="<%#= currency %>"> -->
+        <% hash[currency] = 0 %>
+      </div>
       <% end %>
     </div>
-    <div class="col-8">
-
-    </div>
+    <%= f.submit "Submit", class: "btn btn-primary mt-4 w-100", id: "submit-alloc" %>
   </div>
-</div>
+<% end %>
+
+
+
+<script>
+  var sum = 0;
+  var dataHash = {};
+  var dataArray = [];
+  // function onChangeTest(textbox) {
+  //       alert("Value is " + textbox.value + "\n" + "Old Value is " + textbox.oldvalue);
+  //   }
+</script>
+
+<!-- Page loads: show chart with labels but zero values -->
+<!-- Everytime user enters a value in input, the chart updates with the new value -->

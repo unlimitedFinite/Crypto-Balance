@@ -1,9 +1,19 @@
 <div class="container-home">
-  <div id="landing-header">
-    <h1>Crypto Balance</h1>
-    <div id='btn-container'>
-      <%= link_to 'Login', new_user_session_path %>
-      <%= link_to 'Register', new_user_registration_path %>
+  <div class="banner">
+    <div id="landing-header">
+      <h1 class="display-3"><span class="title-1">Crypto</span><span class="title-2">Balance</span></h1>
+      <p>CryptoBalance is a trading tool to help you to automate your trading needs. You can choose to follow an index and our system will automatically make any trades needed to rebalance to the allocations you choose</p>
+      <ul>
+        <li>Follow or setup your own crypto index</li>
+        <li>Auto-rebalance at a chosen interval</li>
+        <li>Sell all to USDT with the press of a button</li>
+        <li>Track your portfolio performance over time</li>
+      </ul>
+  <!--   We will help you setup your account to follow an index of top 10 cryptocurrencies. You can fully automate the rebalancing of your portfolio or manually rebalance at the touch of a button. We also offer a 'panic sell' button which will sell your portfolio to USDT if you would like to sit out of the market for a time.</p> -->
+      <div id='btn-container'>
+        <%= link_to 'Login', new_user_session_path, :class => 'btn btn-primary' %>
+        <%= link_to 'Register', new_user_registration_path, :class => 'btn btn-success'%>
+      </div>
     </div>
   </div>
 </div>
