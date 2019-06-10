@@ -11,11 +11,11 @@
       </div>
       <div class="position-card-bottom text-right">
         <p><span id="<%= coin.symbol %>percent24">24 hours: %</span>
-          <br>
+
           <span id="<%= coin.symbol %>value24" class="binance-symbols">24 hours: $</span>
         </p>
         <p>Distribution: <%= sprintf('%.0f', ((position.quantity * coin.price_usdt)/@usdt_total)*100) %>%
-        <br>
+
         Target <%= @allocations.find {|a| a[:coin_id] == coin.id}.allocation_pct %>%</p>
       </div>
     </div>
