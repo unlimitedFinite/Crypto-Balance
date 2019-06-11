@@ -138,7 +138,10 @@ class PortfoliosController < ApplicationController
   def lastest_btc_price
     @depth = Binance::Api.depth!(symbol: "BTCUSDT")
     @bid_price = @depth[:bids][0][0].to_f
-    @ask_price = @depth[:asks][0][0].to_f
+    @ask_price = @depth[:asks][3][0].to_f
+    # calcualtes using the 3rd live offer price in the order book to allow margin for error
+    # in execution amount in a fast market
+
     return @ask_price
   end
 
@@ -154,7 +157,7 @@ class PortfoliosController < ApplicationController
     # Loop to check and sell down any USDT to BTC first
     read_portfolio_info
     @positions.each do |position|
-    # byebug
+
       if position[:asset] == 'USDT'
         initialise_coin(position)
 
@@ -173,7 +176,6 @@ class PortfoliosController < ApplicationController
           )
 
           get_trade_confirmation(order)
-          # byebug
 
         end
       end
@@ -217,7 +219,7 @@ class PortfoliosController < ApplicationController
     create_positions
   end
 
-
+  
   def get_trade_confirmation(order)
 
     # unless order == []
@@ -234,13 +236,10 @@ class PortfoliosController < ApplicationController
     #     base_coin_id: 'BTC',
     #     target_coin_id: Coin.find_by(symbol: order[:symbol].gsub('BTC', '')).id
     #   )
-
-
     #   o.save
+    #   end
+   end
 
-
-    # end
-  end
 
 
   def execute_orders
@@ -336,7 +335,7 @@ class PortfoliosController < ApplicationController
           # get_trade_confirmation('BTC')
 
           get_trade_confirmation(order)
-          # byebug
+           byebug
         end
 
       else
@@ -351,7 +350,6 @@ class PortfoliosController < ApplicationController
     end
     @flag = 'panic_sell'
     execute_orders
-    #set allocations to zero after
     flash[:failure] = "Portfolio has been liquidated!"
     create_positions
   end
@@ -368,7 +366,6 @@ class PortfoliosController < ApplicationController
     @trade_history = Binance::Api.historical_trades!(symbol: "#{coin}BTC")
     @price_change = Binance::Api.ticker!(symbol: "#{coin}BTC")
     @trades = Binance::Api::Account.trades!(symbol: "#{coin}BTC")
-
 
     #   [{:symbol=>"XLMBTC",
     # :orderId=>101810246,
