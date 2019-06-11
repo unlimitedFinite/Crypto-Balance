@@ -6,19 +6,24 @@
   <div class="row justify-content-center">
     <div class="d-flex col-lg-10 col-md-10">
       <div class="allocations">
+      <h5 class="text-center">Portfolio Settings</h5>
+
       <%= simple_form_for @portfolio, url: {action:"update"} do |f| %>
-        <%= f.input :rebalance_freq, collection: %w(Daily Weekly Biweekly Monthly Quarterly), selected: "Weekly",  prompt: "Choose frequency" %>
-        <div class="mb-3">
-          <%= f.label :next_rebalance_dt, "Set initial rebalance date*", :class => 'd-block' %>
+        <div class="mb-3 mt-3 text-center">
+          <%= f.label :next_rebalance_dt, "Next Rebalance: " %>
           <%= f.date_select :next_rebalance_dt, order: [:day, :month, :year], selected: Date.today + 7 , :class => 'align-right w-100'%>
         </div>
-        <div class="row">
-          <div class="col-4">
+        <div class="mb-3 mt-3 text-center">
+          <%= f.label :rebalance_freq, "Frequency: " %>
+          <%= f.input_field :rebalance_freq, label: 'Frequency', class: 'freq-input', collection: %w(Daily Weekly Biweekly Monthly Quarterly), selected: @portfolio.rebalance_freq,  prompt: "Choose Frequency"  %>
+        </div>
             <h2 class="text-center">Allocations</h2>
+        <div class="row">
+          <div class="col-6">
             <span class="alert" id="allocations"></span>
             <%= render 'shared/allocations' %>
           </div>
-          <div class="col-8">
+          <div class="col-6">
             <div id="chart_div">
             </div>
           </div>
