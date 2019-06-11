@@ -5,7 +5,9 @@ function rebalanceConf(){
     e.preventDefault();
     bootbox.confirm({
       title: "Rebalance Portfolio?",
-      size: "medium",
+      size: "small",
+      centerVertical: true,
+      backdrop: true,
       message: "We will execute the required trades in order to \
       meet your set allocations. This shouldn't be done too often \
       as Binance will charge you a commision for each trade! Still want us to go ahead?",
@@ -31,8 +33,10 @@ function sellConf(){
   document.querySelector('#sell-btn').addEventListener('click', (e)=>{
     e.preventDefault();
     bootbox.confirm({
-      size: "medium",
+      size: "small",
       title: "Feeling drastic?",
+      centerVertical: true,
+      backdrop: true,
       message: "We will sell all your crypto to USD Tether. This will \
       mean you will stabilise your portfolio and miss out on any \
       gains or losses! Are you sure?",
