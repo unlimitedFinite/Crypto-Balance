@@ -72,7 +72,7 @@ function drawChart() {
   // Set chart options
   var options = {
     title     : 'Allocations',
-    height    : 500,
+    height    : 400,
     legend    : {position: 'bottom'},
     ticks     : [0, 25, 50, 75, 100],
     hAxis     : {
