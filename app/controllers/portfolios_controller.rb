@@ -64,7 +64,7 @@ class PortfoliosController < ApplicationController
 
     account_info = Binance::Api::Account.info!
     @positions = account_info[:balances].reject do |balance|
-      balance[:free] == "0.00000000"
+      Coin.find_by(symbol: balance[:asset]).nil?
     end
   end
 
@@ -234,7 +234,6 @@ class PortfoliosController < ApplicationController
       )
 
 
-      raise
       o.save
 
 
