@@ -1,53 +1,45 @@
-<div class="header">
+<div class="header container-fluid">
   <div class="row">
     <div class="col">
       <div class="price-container text-center justify-content-center">
-        <% price_btc = Coin.find_by(symbol: 'BTC').price_usdt %>
         <h5>Portfolio Value</h5>
-        <span class="display-4"><%= number_to_currency(@portfolio.current_value_btc.to_f * price_btc) %></span>
+        <span class="display-4">$187.99</span>
       </div>
     </div>
+  </div>
+  <div class="d-flex justify-content-center">
+    <%= form_tag rebalance_positions_path(@portfolio), :id => 'rebalance' do %>
+      <button class="btn trigger btn-success" id="rebalance-btn"> Rebalance</button>
+    <% end %>
+    <%= link_to create_positions_path, class:"refresh" do %>
+      <i class="refresh fas fa-sync-alt"></i>
+    <% end %>
+    <%= form_tag sell_positions_path(@portfolio), :id => 'sell' do %>
+      <button class="btn trigger btn-danger" id="sell-btn"> Panic Sell</button>
+    <% end %>
   </div>
 </div>
-<div class="dashboard">
-  <div class="control-panel">
-    <div>
-      <div>
-        <div class="d-flex">
-            <%= form_tag rebalance_positions_path(@portfolio) do %>
-              <%= submit_tag 'Rebalance', class: 'btn trigger btn-success' %>
-            <% end %>
-            <%= form_tag sell_positions_path(@portfolio) do %>
-              <%= submit_tag 'Panic Sell', class: 'btn trigger btn-danger' %>
-            <% end %>
-
-          </div>
-        <%= render "shared/position" %>
-      </div>
-      <div class="col-xs-12 col-sm-6 text-center">
-        <div id="chart_div"></div>
-      </div>
-    </div>
-  </div>
-
-
+<div class="container">
   <div class="row">
-    <div class="col-lg-6">
-
-
-
+    <div class="col-md-6">
+      <%= render "shared/position" %>
     </div>
-
-    <div class="col-lg-6" id="line_chart_div">
+    <div class="col-md-6 text-center">
+      <div id="chart_div"></div>
     </div>
   </div>
-  <% json_positions = @positions.as_json %>
-  <% json_coins = @coins.as_json %>
-  <script>
-    var json_positions = '<%= raw json_positions.to_json %>';
-    var json_coins = '<%= raw json_coins.to_json %>';
-    var positions = JSON.parse(json_positions);
-    var coins = JSON.parse(json_coins);
-    var priceChanges = [];
-  </script>
 </div>
+
+
+
+
+<% json_positions = @positions.as_json %>
+<% json_coins = @coins.as_json %>
+<script>
+  var json_positions = '<%= raw json_positions.to_json %>';
+  var json_coins = '<%= raw json_coins.to_json %>';
+  var positions = JSON.parse(json_positions);
+  var coins = JSON.parse(json_coins);
+  var priceChanges = [];
+</script>
+
