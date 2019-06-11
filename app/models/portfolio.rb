@@ -13,11 +13,10 @@ class Portfolio < ApplicationRecord
   def update_positions
     account_info = Binance::Api::Account.info!
     positions = account_info[:balances].reject do |balance|
-      balance[:free] == "0.00000000"
+      Coin.find_by(symbol: balance[:asset]).nil?
     end
     self.current_value_usdt = 0.0
     self.current_value_btc = 0.0
-
 
     positions.each do |position|
       coin = Coin.find_by(symbol: position[:asset])

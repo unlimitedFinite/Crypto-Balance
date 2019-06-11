@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 2019_06_10_151045) do
     t.bigint "base_coin_id"
     t.bigint "target_coin_id"
     t.bigint "portfolio_id"
-    t.string "commision_asset"
+    t.string "commission_asset"
     t.index ["base_coin_id"], name: "index_orders_on_base_coin_id"
     t.index ["portfolio_id"], name: "index_orders_on_portfolio_id"
     t.index ["target_coin_id"], name: "index_orders_on_target_coin_id"
