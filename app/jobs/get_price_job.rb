@@ -18,9 +18,11 @@ class GetPriceJob < ApplicationJob
         btc_data = get_parsed_data("https://www.binance.com/api/v3/ticker/price?symbol=#{coin.symbol}BTC")
       end
 
+      bitcoin_data = get_parsed_data("https://www.binance.com/api/v3/ticker/price?symbol=BTCUSDT")
+
       if coin.symbol == 'USDT'
         price_usdt = 1
-        price_btc = 0
+        price_btc = 1.0 / bitcoin_data['price'].to_f
       elsif coin.symbol == 'BTC'
         price_usdt = usdt_data['price']
         price_btc = 1

@@ -9,7 +9,7 @@
 }
 
 .dashboard {
-  padding: 15px 20px;
+  padding: 15px 5px;
   background-color: $gray;
 }
 
@@ -22,4 +22,13 @@
 
 #chart_div {
   height: 200px;
+  width: 200px;
+  display: inline-block;
+  margin: 0 auto;
+}
+
+.trigger {
+  width: 160px;
+  border-radius: 25px;
+  margin: 8px;
 }

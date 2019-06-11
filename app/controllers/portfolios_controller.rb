@@ -219,28 +219,27 @@ class PortfoliosController < ApplicationController
     create_positions
   end
 
+  
+  def get_trade_confirmation(order)
 
-   def get_trade_confirmation(order)
-
-  #   unless order == []
-  #   @confirmations_arr << order
-  #   o = Order.new(
-  #     status: order[:status],
-  #     price: order[:fills][0][:price],
-  #     quantity: order[:fills][0][:qty],
-  #     commission: order[:fills][0][:commission],
-  #     commision_asset: order[:fills][0][:commissionAsset],
-  #     side: order[:side],
-  #     order_type: order[:type],
-  #     binance_id: order[:orderId],
-  #     base_coin_id: 'BTC',
-  #     target_coin_id: Coin.find_by(symbol: order[:symbol].gsub('BTC', '')).id
-  #   )
-
-  #   o.save
-
-  #   end
+    # unless order == []
+    #   @confirmations_arr << order
+    #   o = Order.new(
+    #     status: order[:status],
+    #     price: order[:fills][0][:price],
+    #     quantity: order[:fills][0][:qty],
+    #     commission: order[:fills][0][:commission],
+    #     commision_asset: order[:fills][0][:commissionAsset],
+    #     side: order[:side],
+    #     order_type: order[:type],
+    #     binance_id: order[:orderId],
+    #     base_coin_id: 'BTC',
+    #     target_coin_id: Coin.find_by(symbol: order[:symbol].gsub('BTC', '')).id
+    #   )
+    #   o.save
+    #   end
    end
+
 
 
   def execute_orders
