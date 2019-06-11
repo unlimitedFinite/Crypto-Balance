@@ -219,7 +219,7 @@ class PortfoliosController < ApplicationController
     create_positions
   end
 
-  
+
   def get_trade_confirmation(order)
 
     # unless order == []
@@ -335,7 +335,7 @@ class PortfoliosController < ApplicationController
           # get_trade_confirmation('BTC')
 
           get_trade_confirmation(order)
-           byebug
+
         end
 
       else
