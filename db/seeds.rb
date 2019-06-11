@@ -99,10 +99,14 @@ coins.each do |coin|
     btc_data = JSON.parse(btc_json)
   end
 
+  bitcoin_url = "https://www.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
+  bitcoin_json = open(bitcoin_url).read
+  bitcoin_data = JSON.parse(bitcoin_json)
+
 
   if coin == 'Tether'
     price_usdt = 1
-    price_btc = 0
+    price_btc = 1 / bitcoin_data['price'].to_f
   elsif coin == 'Bitcoin'
     price_usdt = usdt_data['price']
     price_btc = 1
