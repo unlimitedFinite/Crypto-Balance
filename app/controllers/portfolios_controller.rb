@@ -184,7 +184,6 @@ class PortfoliosController < ApplicationController
 
     puts "starting alt coin loop"
 
-
     coins_list = ['Ethereum', 'Ripple', 'Bitcoin-Cash', 'Litecoin', 'EOS', 'Cardano', 'Tether', 'Tron', 'Stellar', 'Zcash']
     coins_list.each do |name|
       coin = Coin.find_by(name: name)
@@ -219,30 +218,53 @@ class PortfoliosController < ApplicationController
     create_positions
   end
 
-  
-  def get_trade_confirmation(order)
 
-    # unless order == []
-    #   @confirmations_arr << order
-    #   o = Order.new(
-    #     status: order[:status],
-    #     price: order[:fills][0][:price],
-    #     quantity: order[:fills][0][:qty],
-    #     commission: order[:fills][0][:commission],
-    #     commision_asset: order[:fills][0][:commissionAsset],
-    #     side: order[:side],
-    #     order_type: order[:type],
-    #     binance_id: order[:orderId],
-    #     base_coin_id: 'BTC',
-    #     target_coin_id: Coin.find_by(symbol: order[:symbol].gsub('BTC', '')).id
-    #   )
-    #   o.save
-    #   end
-   end
+
+  def get_trade_confirmation(confirmation)
+
+    unless confirmation == []
+      puts @confirmations_arr
+      # byebug
+      @confirmations_arr << confirmation
+
+      # byebug
+
+      @confirmations_arr.each do |order|
+        # sets base coin to the held coin
+        if order[:symbol] == 'BTCUSDT'
+          base_coin = Coin.find_by(symbol: 'BTC')
+          target_coin = Coin.find_by(symbol: 'USDT')
+        else
+          ticker = order[:symbol].gsub('BTC', '')
+          ticker = ticker.gsub('USDT', '')
+          base_coin = Coin.find_by(symbol: ticker)
+          target_coin = Coin.find_by(symbol: order[:symbol].gsub("#{base_coin[:symbol]}", ''))
+        end
+# byebug
+        o = Order.new(
+          status: order[:status],
+          price: order[:fills][0][:price],
+          quantity: order[:fills][0][:qty],
+          commission: order[:fills][0][:commission],
+          commission_asset: order[:fills][0][:commissionAsset],
+          side: order[:side],
+          order_type: order[:type],
+          binance_id: order[:orderId],
+          portfolio_id: @portfolio.id,
+          base_coin_id: base_coin.id,
+          target_coin_id: target_coin.id
+        )
+        o.save
+        # byebug
+      end
+    end
+  end
 
 
 
   def execute_orders
+    # clears the confirmations array
+    @confirmations_arr = []
     # sell method for non BTCUSDT coins
     # sorts array to do sell orders first
     @coins_arr.sort_by! { |hsh| hsh[:rebalance_amount] }
@@ -259,7 +281,7 @@ class PortfoliosController < ApplicationController
 
 
       coinhash[:rebalance_amount] = coinhash[:rebalance_amount].abs
-       # byebug
+      # byebug
 
       # skip BTC execution since all coins are against BTC
       unless coinhash[:name] == 'BTC' \
@@ -284,7 +306,7 @@ class PortfoliosController < ApplicationController
         puts side
         puts quantity
 
-         # byebug
+        # byebug
 
         if @flag == 'rebalance'
           ticker = "#{coinhash[:name]}BTC"
@@ -302,6 +324,7 @@ class PortfoliosController < ApplicationController
 
 
         get_trade_confirmation(order)
+        # byebug
       end
     end
   end
@@ -332,10 +355,10 @@ class PortfoliosController < ApplicationController
             symbol: 'BTCUSDT',
             type: 'MARKET'
           )
-          # get_trade_confirmation('BTC')
 
           get_trade_confirmation(order)
-           byebug
+
+          # byebug
         end
 
       else
@@ -345,7 +368,7 @@ class PortfoliosController < ApplicationController
           coinhash = { name: position[:asset], amount: position[:free].to_f.abs, rebalance_amount: -position[:free].to_f.abs, min_order_value: min_order_value }
           @coins_arr << coinhash
         end
-      # byebug
+        # byebug
       end
     end
     @flag = 'panic_sell'
