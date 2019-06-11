@@ -2,19 +2,80 @@
   background-color: $gray;
   color: $black;
   width: auto;
-  padding: 25px;
+  padding: 15px;
   border-radius: 25px;
   font-size: 13px;
 }
 
 .num_input {
-  width: 100%;
-
+  border-bottom-left-radius: 75%;
+  border-bottom-right-radius: 20px;
+  text-align: center;
 }
 
-.freq-input {
+#allocations {
+  font-size: 0.7rem;
 }
 
-.sum {
-  font-size: 2rem;
+#shares-cont {
 }
+
+#shares {
+  text-align: center;
+  border-radius: 25px;
+  padding: 8px;
+  margin: 8px 0;
+  color: white;
+  font-size: 0.8rem;
+  width:100%;
+  transition: 1s;
+}
+
+#submit-alloc {
+  width: 50%;
+}
+
+.yellow {
+  transition: 1s;
+  background-color: #f2de41b5;
+}
+
+.green {
+  transition: 1s;
+  background-color:$dark-green;
+}
+
+.red {
+  transition: 1s;
+  background-color:$dark-red;
+}
+
+#alloc_chart {
+  height: 100px;
+}
+
+.allo-card {
+  margin: 5px 0;
+  background-color: white;
+  width: 125px;
+  border-radius: 20px;
+}
+
+.allo-title {
+  font-size: 0.9rem;
+  display: flex;
+  position: relative;
+  padding-left: 4px;
+}
+
+.allo-title img {
+  position: absolute;
+  top: 2px;
+  right: 5px;
+}
+
+.status-bar {
+  background-color: $yellow;
+  display: flex;
+}
+

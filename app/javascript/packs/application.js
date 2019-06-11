@@ -25,5 +25,6 @@ const allocationsEditPage = document.querySelector('.portfolios.edit');
 if (allocationsEditPage != null) {
   addValues();
   listeners();
+  allocationChart();
 }
 

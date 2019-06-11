@@ -1,3 +1,4 @@
+
 function addValues(){
   sum = 0
   var inputs = document.querySelectorAll('.num_input');
@@ -19,16 +20,24 @@ function listeners(){
 function displaySum(sum){
   var total = document.getElementById("sum");
   var span = document.getElementById("allocations");
-  total.innerText = (sum);
+  var button = document.getElementById("submit-alloc");
+  var shares = document.getElementById('shares');
+  total.innerText = sum;
   if (sum > 100){
+    shares.classList.remove('green', 'yellow')
+    shares.classList.add('red');
     span.innerText = (`Please deduct ${sum - 100} shares!`);
-    document.getElementById("submit-alloc").disabled = true;
+    button.disabled = true;
   } else if (sum < 100){
+    shares.classList.remove('red', 'green')
+    shares.classList.add('yellow');
     span.innerText = (`Please add ${100 - sum} more shares`);
-    document.getElementById("submit-alloc").disabled = true;
+    button.disabled = true;
   } else {
-    span.innerText = (`That's perfect!`);
-    document.getElementById("submit-alloc").disabled = false;
+    button.disabled = false;
+    // shares.classList.remove('red', 'yellow')
+    shares.classList.add('green');
+    span.innerText = ('Cool! Now you can submit!')
   }
 }
 
@@ -57,12 +66,21 @@ function sumAllocations(oldValue, newValue){
 
 function allocationChart(){
 
-  // Load the Visualization API and the corechart package.
-  google.charts.load('current', {'packages':['corechart']});
+//create trigger to resizeEnd event
+  $(window).resize(function() {
+      if(this.resizeTO) clearTimeout(this.resizeTO);
+      this.resizeTO = setTimeout(function() {
+          $(this).trigger('resizeEnd');
+      }, 25);
+  });
 
-  // Set a callback to run when the Google Visualization API is loaded.
-  google.charts.setOnLoadCallback(drawChart);
+  //redraw graph when window resize is completed
+  $(window).on('resizeEnd', function() {
+      drawChart();
+      console.log('hello');
+  });
 }
+
 
 function initdataArray(){
   var coins = ['Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tron','Stellar','Zcash'];
@@ -97,29 +115,30 @@ function updateChart(){
 
 function drawChart() {
 
-  var data = new google.visualization.DataTable();
-  data.addColumn('string', 'Coin');
-  data.addColumn('number', 'Value');
-
-  data.addRows(dataArray);
+  var data = google.visualization.arrayToDataTable([
+               ['Coins','Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tron','Stellar','Zcash'],
+               ["",10,10,10,10,10,10,10,10,10,10]
+            ]);
 
   // Set chart options
   var options = {
-    title     : 'Allocations',
-    height    : 400,
-    legend    : {position: 'bottom'},
-    ticks     : [0, 25, 50, 75, 100],
-    hAxis     : {
-      viewWindow: {
-        min: 0,
-        max: 100
-      }
-    }
+    title     : '',
+    width : '94%',
+    isStacked : true,
+    'chartArea': {left:20, right:20, width:'100%'},
+    legend    : {position: 'none'},
+    backgroundColor : '#173055'
   };
 
   // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+  var chart = new google.visualization.BarChart(document.getElementById('alloc_chart'));
   chart.draw(data, options);
 };
+
+// Load the Visualization API and the corechart package.
+google.charts.load('current', {'packages':['corechart']});
+
+// Set a callback to run when the Google Visualization API is loaded.
+google.charts.setOnLoadCallback(drawChart);
 
 export {addValues, listeners, allocationChart, setListeners, updateChart, initdataArray, sumAllocations}

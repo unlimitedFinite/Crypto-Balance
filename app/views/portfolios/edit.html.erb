@@ -1,14 +1,14 @@
+<div class="form-header">
+  <h2 class="text-center p-3 mt-5">Portfolio Settings</h2>
+</div>
+
 <div class="container">
-  <div class="form-header">
-    <h2 class="text-center p-3 mt-5">Edit Portfolio</h2>
-  </div>
-
   <div class="row justify-content-center">
-    <div class="d-flex col-lg-10 col-md-10">
+    <div class="col-md-7">
       <div class="allocations">
-      <h5 class="text-center">Portfolio Settings</h5>
-
-      <%= simple_form_for @portfolio, url: {action:"update"} do |f| %>
+        <h4 class="text-center border-bottom">Rebalancing</h4>
+        <p>You current next rebalancing is due to take place on <%= @portfolio.next_rebalance_dt %>.</p>
+        <%= simple_form_for @portfolio, url: {action:"update"} do |f| %>
         <div class="mb-3 mt-3 text-center">
           <%= f.label :next_rebalance_dt, "Next Rebalance: " %>
           <%= f.date_select :next_rebalance_dt, order: [:day, :month, :year], selected: Date.today + 7 , :class => 'align-right w-100'%>
@@ -17,20 +17,25 @@
           <%= f.label :rebalance_freq, "Frequency: " %>
           <%= f.input_field :rebalance_freq, label: 'Frequency', class: 'freq-input', collection: %w(Daily Weekly Biweekly Monthly Quarterly), selected: @portfolio.rebalance_freq,  prompt: "Choose Frequency"  %>
         </div>
-            <h2 class="text-center">Allocations</h2>
-        <div class="row">
-          <div class="col-6">
-            <%= render 'shared/allocations' %>
-          </div>
-          <div class="col-6">
-            <h3 class="alert" id="sum"></h3>
-            <span class="alert" id="allocations"></span>
-          </div>
-        </div>
-        <%= f.submit "Update", :class => 'btn trigger btn-success', id: "submit-alloc" %>
       </div>
     </div>
-    <% end %>
+    <div class="col-md-5">
+      <div class="allocations">
+      <h4 class="text-center border-bottom">Allocations</h4>
+      <p>Your current target allocations are below, please make any alterations and submit your changes</p>
+        <%= f.submit "Update", :class => 'btn trigger btn-success', id: "submit-alloc" %><br>
+      <span id="allocations"></span>
+      </div>
+    </div>
+  </div>
+  <div id="shares-cont">
+    <p id="shares"><span id="sum"> </span> of 100 shares chosen</p>
   </div>
 </div>
+<div class="container">
+  <div id="alloc_chart"></div>
+</div>
+<%= render 'shared/allocations' %>
+<% end %>
+
 
