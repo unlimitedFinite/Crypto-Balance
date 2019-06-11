@@ -1,23 +1,16 @@
-.control-panel {
-
-}
-
 .header {
-  width: 100vw;
-  background-color: $blue;
-  padding: 8px;
+  padding-top: 10px;
 }
 
 .dashboard {
-  padding: 15px 5px;
-  background-color: $gray;
+  padding: 10px 5px;
 }
 
 .price-container {
   color: white;
   width: 100%;
   text-transform: uppercase;
-  margin-bottom: 16px;
+  margin-bottom: 4px;
 }
 
 #chart_div {
@@ -28,7 +21,14 @@
 }
 
 .trigger {
-  width: 160px;
+  width: 100px;
   border-radius: 25px;
   margin: 8px;
+  text-align: center;
+}
+
+.refresh {
+  border-radius: 25px;
+  margin: 8px;
+  text-align: center;
 }

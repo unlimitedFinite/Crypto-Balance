@@ -11,7 +11,7 @@ function get_price_change(){
   }
 
   function fetch_data(symbol, pair){
-    fetch(`https://www.binance.com/api/v1/ticker/24hr?symbol=${pair}`)
+    fetch(`https://cors-anywhere.herokuapp.com/https://www.binance.com/api/v1/ticker/24hr?symbol=${pair}`)
     .then(response => response.json())
     .then((data) => {
       var currency = {}
@@ -31,7 +31,7 @@ function get_price_change(){
       if (symbol === 'BTC'){
         pair = 'BTCUSDT';
       } else {
-        pair = symbol + 'BTC';
+        pair = symbol + 'USDT';
       }
       fetch_data(symbol, pair);
     });
@@ -39,13 +39,14 @@ function get_price_change(){
 
   function add_data(priceChanges){
     if (priceChanges.length > 8) {
+      console.log(priceChanges);
       priceChanges.forEach(function(coin) {
         var symbol = coin['symbol'];
         var percentSpan = document.getElementById(`${symbol}percent24`);
         var valueSpan = document.getElementById(`${symbol}value24`);
-        var price = coin['price'];
+        var price = Math.round(coin['price'] * 100) / 100;
         var percent = coin['priceChangePercent'];
-        var value = Math.round((coin['priceChange'] / price) * 100) / 100;
+        var value = coin['priceChange'];
         if (value > 0) {
           percentSpan.classList.add("price-up");
           valueSpan.classList.add("price-up");
@@ -54,7 +55,7 @@ function get_price_change(){
           valueSpan.classList.add("price-down");
         };
         percentSpan.innerText = `${Math.round(percent * 100) / 100}%`;
-        valueSpan.innerText = `$${value}`;
+        valueSpan.innerText = `$${price}`;
       })
     };
   }
