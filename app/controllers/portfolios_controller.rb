@@ -147,6 +147,7 @@ class PortfoliosController < ApplicationController
     @portfolio.update_positions
     @coins_arr = []
     @confirmations_arr = []
+
     # fetch lastest price for btc
     @price_btc = lastest_btc_price
 
@@ -176,7 +177,7 @@ class PortfoliosController < ApplicationController
 
         end
       end
-    @portfolio.update_positions
+      @portfolio.update_positions
     end
 
     puts "starting alt coin loop"
@@ -210,6 +211,7 @@ class PortfoliosController < ApplicationController
 
       end
     end
+    @flag = 'rebalance'
     execute_orders
     flash[:success] = "Portfolio has been rebalanced!"
     create_positions
@@ -244,11 +246,11 @@ class PortfoliosController < ApplicationController
   def execute_orders
     # sell method for non BTCUSDT coins
     # sorts array to do sell orders first
-    @coins_arr.sort_by! { |hsh| hsh[:amount] }
+    @coins_arr.sort_by! { |hsh| hsh[:rebalance_amount] }
 
     @coins_arr.each do |coinhash|
 
-      # byebug
+       # byebug
 
       if coinhash[:rebalance_amount].positive?
         side = 'BUY'
@@ -256,16 +258,19 @@ class PortfoliosController < ApplicationController
         side = 'SELL'
       end
 
-      # byebug
 
       coinhash[:rebalance_amount] = coinhash[:rebalance_amount].abs
+       # byebug
 
       # skip BTC execution since all coins are against BTC
       unless coinhash[:name] == 'BTC' \
-        || coinhash[:rebalance_amount] <= coinhash[:min_order_value] \
-        || coinhash[:rebalance_amount] <= order_size(coinhash) \
+        || coinhash[:rebalance_amount] < coinhash[:min_order_value] \
+        || coinhash[:rebalance_amount] < order_size(coinhash) \
         || order_size(coinhash) == @coin_instance[:lot_size] \
         # above line prevents one lot executions!
+        # below line prevents notional amount errors for sell orders
+
+        # byebug
         if side == 'SELL' && coinhash[:amount] < coinhash[:rebalance_amount]
           coinhash[:rebalance_amount] = coinhash[:amount]
         end
@@ -280,13 +285,20 @@ class PortfoliosController < ApplicationController
         puts side
         puts quantity
 
+         # byebug
+
+        if @flag == 'rebalance'
+          ticker = "#{coinhash[:name]}BTC"
+        elsif @flag == 'panic_sell'
+          ticker = "#{coinhash[:name]}USDT"
+        end
+
 
         order = Binance::Api::Order.create!(
           quantity: quantity,
           side: side,
-          symbol: "#{coinhash[:name]}BTC",
+          symbol: ticker,
           type: 'MARKET'
-
         )
 
 
@@ -300,8 +312,7 @@ class PortfoliosController < ApplicationController
     @coins_arr = []
     @confirmations_arr = []
     read_portfolio_info
-    price_update
-    @price_btc = Coin.find_by(symbol: 'BTC').price_usdt
+    @price_btc = lastest_btc_price
 
     @positions.each do |position|
       coin = Coin.find_by(symbol: position[:asset])
@@ -322,7 +333,6 @@ class PortfoliosController < ApplicationController
             symbol: 'BTCUSDT',
             type: 'MARKET'
           )
-
           # get_trade_confirmation('BTC')
 
           get_trade_confirmation(order)
@@ -331,15 +341,17 @@ class PortfoliosController < ApplicationController
 
       else
 
-        unless coin.nil?
+        unless coin.nil? || position[:asset] == 'USDT'
           min_order_value = 0.001 / coin.price_btc
-          coinhash = { name: position[:asset], amount: -position[:free].to_f.abs, min_order_value: min_order_value }
+          coinhash = { name: position[:asset], amount: position[:free].to_f.abs, rebalance_amount: -position[:free].to_f.abs, min_order_value: min_order_value }
           @coins_arr << coinhash
-          @coins_arr.sort_by { |hsh| hsh[:amount] }
         end
+      # byebug
       end
     end
+    @flag = 'panic_sell'
     execute_orders
+    #set allocations to zero after
     flash[:failure] = "Portfolio has been liquidated!"
     create_positions
   end
