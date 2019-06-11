@@ -11,3 +11,10 @@ task get_positions_job: :environment do
   GetPositionsJob.perform_now
   puts "done."
 end
+
+desc "This task is called by the Heroku scheduler add-on to auto rebalance"
+task rebalance_portfolio_job: :environment do
+  puts "Rebalancing portfolio..."
+  RebalancePortfolioJob.perform_now
+  puts "done."
+end
