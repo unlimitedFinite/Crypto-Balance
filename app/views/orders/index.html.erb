@@ -5,7 +5,9 @@
   <thead>
     <tr>
       <th scope="col">Binance ID</th>
+      <th scope="col">Transaction Time</th>
       <th scope="col">Status</th>
+      <th scope="col">Symbol</th>
       <th scope="col">Side</th>
       <th scope="col">Quantity</th>
       <th scope="col">Base Coin</th>
@@ -17,17 +19,22 @@
     </tr>
   </thead>
   <tbody>
-      <% @orders.each_with_index do |trade, index| %>
+      <% @orders.each do |trade| %>
+        <% @coin_base = Coin.find(trade[:base_coin_id]).symbol %>
+        <% @coin_target = Coin.find(trade[:target_coin_id]).symbol %>
+
     <tr>
       <td><%= trade[:binance_id] %></td>
+      <td><%= Time.at(trade[:transact_time].to_i / 1000).to_datetime %></td>
       <td><%= trade[:status] %></td>
+      <td><%= "#{@coin_base}#{@coin_target}" %></td>
       <td><%= trade[:side] %></td>
-      <td><%= trade[:quantity] %></td>
-      <td><%= trade[:base_coin_id] %></td>
-      <td><%= trade[:price] %></td>
-      <td><%= trade[:target_coin_id] %></td>
+      <td><%= "%f" % trade[:quantity] %></td>
+      <td><%= @coin_base %></td>
+      <td><%= "%f" % trade[:price] %></td>
+      <td><%= @coin_target %></td>
       <td><%= trade[:order_type] %></td>
-      <td><%= trade[:commission] %></td>
+      <td><%= "%f" % trade[:commission] %></td>
       <td><%= trade[:commission_asset] %></td>
 
     </tr>

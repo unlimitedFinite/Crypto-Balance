@@ -5,7 +5,10 @@ class OrdersController < ApplicationController
   end
 
   def index
+    @portfolios = Portfolio.all
+    @portfolio = Portfolio.find(params[:portfolio_id])
     @orders = Order.all
+    @coins = Coin.all
   end
 
   def update
@@ -13,4 +16,5 @@ class OrdersController < ApplicationController
 end
 
 private
+
 

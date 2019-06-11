@@ -12,7 +12,7 @@
     <%= form_tag rebalance_positions_path(@portfolio), :id => 'rebalance' do %>
       <button class="btn trigger btn-success" id="rebalance-btn"> Rebalance</button>
     <% end %>
-    <%= link_to create_positions_path, class:"refresh" do %>
+    <%= link_to create_positions_path(@portfolio), class:"refresh" do %>
       <i class="refresh fas fa-sync-alt"></i>
     <% end %>
     <%= form_tag sell_positions_path(@portfolio), :id => 'sell' do %>

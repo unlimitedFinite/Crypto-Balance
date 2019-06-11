@@ -45,7 +45,6 @@ class PortfoliosController < ApplicationController
   end
 
   def show
-    @orders = Order.all
     @coins = Coin.all
     @allocations = Allocation.where(portfolio: @portfolio)
     @positions = Position.where(portfolio: @portfolio).where(as_of_dt_end: nil).order(value_usdt: :desc)
