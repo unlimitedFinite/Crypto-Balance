@@ -6,6 +6,6 @@
     cron: '0 0 * * * *'
     class: GetPositionsJob
   rebalance_portfolio_job:
-    cron: '0 */2 * * * *'
+    cron: '0 0 * * * *'
     class: RebalancePortfolioJob
 
