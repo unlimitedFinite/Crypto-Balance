@@ -9,13 +9,18 @@ class Portfolio < ApplicationRecord
   validates :rebalance_freq, :coin_id, presence: true
 
   def update_positions
+    positions = []
     account_info = Binance::Api::Account.info!
-    positions = account_info[:balances].reject do |balance|
-      balance[:free] == "0.00000000"
+    coin_list = ['BTC', 'ETH', 'XRP', 'BCHABC', 'LTC', 'EOS', 'ADA', 'USDT', 'TRX', 'XLM', 'ZEC']
+    coin_list.each do |name|
+      # positions = account_info[:balances].reject do |balance|
+      # balance[:free] == "0.00000000"
+      position = account_info[:balances].select { |balance| balance[:asset] == name }
+      positions << position[0]
     end
+    # byebug
     self.current_value_usdt = 0.0
     self.current_value_btc = 0.0
-
 
     positions.each do |position|
       coin = Coin.find_by(symbol: position[:asset])
@@ -35,20 +40,20 @@ class Portfolio < ApplicationRecord
 
   def insert_dummy_portfolio
     coins_list = ['Bitcoin', 'Ethereum', 'Ripple', 'Bitcoin-Cash', 'Litecoin', 'EOS', 'Cardano', 'Tether', 'Tron', 'Stellar', 'Zcash']
-      coins_list.each do |name|
-        coin_record = Coin.find_by(name: name)
+    coins_list.each do |name|
+      coin_record = Coin.find_by(name: name)
 
-        if Position.find_by(coin_id: coin_record.id).nil?
-          Position.create(
-            portfolio: self,
-            coin_id: coin_record.id,
-            quantity: 0.00,
-            value_usdt: 0.00,
-            value_btc: 0.00,
-            as_of_dt: DateTime.now.to_date
-          )
-        end
+      if Position.find_by(coin_id: coin_record.id).nil?
+        Position.create(
+          portfolio: self,
+          coin_id: coin_record.id,
+          quantity: 0.00,
+          value_usdt: 0.00,
+          value_btc: 0.00,
+          as_of_dt: DateTime.now.to_date
+        )
       end
+    end
   end
 
 
