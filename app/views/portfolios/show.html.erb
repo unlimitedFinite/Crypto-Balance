@@ -11,30 +11,34 @@
 </div>
 <div class="dashboard">
   <div class="control-panel">
-    <div class="row">
-      <div class="col-xs-12 col-sm-6 justify-content-center">
-        <div id="chart_div">
-        </div>
+    <div>
+      <div>
+        <div class="d-flex">
+            <%= form_tag rebalance_positions_path(@portfolio) do %>
+              <%= submit_tag 'Rebalance', class: 'btn trigger btn-success' %>
+            <% end %>
+            <%= form_tag sell_positions_path(@portfolio) do %>
+              <%= submit_tag 'Panic Sell', class: 'btn trigger btn-danger' %>
+            <% end %>
+
+          </div>
+        <%= render "shared/position" %>
       </div>
-      <div class="col-xs-12 col-sm-6 justify-content-center">
-        <%= form_tag rebalance_positions_path(@portfolio) do %>
-          <%= submit_tag 'Rebalance Positions', class: 'btn trigger btn-success' %>
-        <% end %>
-        <%= form_tag sell_positions_path(@portfolio) do %>
-          <%= submit_tag 'Panic Sell', class: 'btn trigger btn-danger' %>
-        <% end %>
+      <div class="col-xs-12 col-sm-6 text-center">
+        <div id="chart_div"></div>
       </div>
     </div>
   </div>
 
 
   <div class="row">
-    <div class="col-lg-7">
-        <%= render "shared/position" %>
+    <div class="col-lg-6">
+
+
 
     </div>
 
-    <div class="col-lg-5" id="chart_div">
+    <div class="col-lg-6" id="line_chart_div">
     </div>
   </div>
   <% json_positions = @positions.as_json %>
