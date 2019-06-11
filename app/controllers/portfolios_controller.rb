@@ -35,7 +35,7 @@ class PortfoliosController < ApplicationController
     if @portfolio.update(portfolio_params)
       @portfolio.allocations.each do |allocation|
         coin_name = Coin.find(allocation.coin_id).name
-        allocation.allocation_pct = params[:crypto][coin_name]
+        allocation.allocation_pct = params['allocations']['crypto'][coin_name]
         allocation.save
       end
       redirect_to portfolio_path(@portfolio)
