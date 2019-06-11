@@ -138,7 +138,10 @@ class PortfoliosController < ApplicationController
   def lastest_btc_price
     @depth = Binance::Api.depth!(symbol: "BTCUSDT")
     @bid_price = @depth[:bids][0][0].to_f
-    @ask_price = @depth[:asks][0][0].to_f
+    @ask_price = @depth[:asks][3][0].to_f
+    # calcualtes using the 3rd live offer price in the order book to allow margin for error
+    # in execution amount in a fast market
+
     return @ask_price
   end
 
@@ -154,7 +157,7 @@ class PortfoliosController < ApplicationController
     # Loop to check and sell down any USDT to BTC first
     read_portfolio_info
     @positions.each do |position|
-    # byebug
+
       if position[:asset] == 'USDT'
         initialise_coin(position)
 
@@ -173,7 +176,6 @@ class PortfoliosController < ApplicationController
           )
 
           get_trade_confirmation(order)
-          # byebug
 
         end
       end
@@ -218,29 +220,27 @@ class PortfoliosController < ApplicationController
   end
 
 
-  def get_trade_confirmation(order)
+   def get_trade_confirmation(order)
 
-    # unless order == []
-      @confirmations_arr << order
-      o = Order.new(
-        status: order[:status],
-        price: order[:fills][0][:price],
-        quantity: order[:fills][0][:qty],
-        commission: order[:fills][0][:commission],
-        commision_asset: order[:fills][0][:commissionAsset],
-        side: order[:side],
-        order_type: order[:type],
-        binance_id: order[:orderId],
-        base_coin_id: 'BTC',
-        target_coin_id: Coin.find_by(symbol: order[:symbol].gsub('BTC', '')).id
-      )
+  #   unless order == []
+  #   @confirmations_arr << order
+  #   o = Order.new(
+  #     status: order[:status],
+  #     price: order[:fills][0][:price],
+  #     quantity: order[:fills][0][:qty],
+  #     commission: order[:fills][0][:commission],
+  #     commision_asset: order[:fills][0][:commissionAsset],
+  #     side: order[:side],
+  #     order_type: order[:type],
+  #     binance_id: order[:orderId],
+  #     base_coin_id: 'BTC',
+  #     target_coin_id: Coin.find_by(symbol: order[:symbol].gsub('BTC', '')).id
+  #   )
 
+  #   o.save
 
-      o.save
-
-
-    end
-  end
+  #   end
+   end
 
 
   def execute_orders
@@ -336,7 +336,7 @@ class PortfoliosController < ApplicationController
           # get_trade_confirmation('BTC')
 
           get_trade_confirmation(order)
-          # byebug
+           byebug
         end
 
       else
@@ -351,7 +351,6 @@ class PortfoliosController < ApplicationController
     end
     @flag = 'panic_sell'
     execute_orders
-    #set allocations to zero after
     flash[:failure] = "Portfolio has been liquidated!"
     create_positions
   end
@@ -369,7 +368,6 @@ class PortfoliosController < ApplicationController
     @price_change = Binance::Api.ticker!(symbol: "#{coin}BTC")
     @trades = Binance::Api::Account.trades!(symbol: "#{coin}BTC")
 
-
     #   [{:symbol=>"XLMBTC",
     # :orderId=>101810246,
     # :price=>"0.00001583",
@@ -386,6 +384,7 @@ class PortfoliosController < ApplicationController
     # @commissionAsset = order[0][:commissionAsset]
     # @order_time = @order[0][:time]
   end
+end
 
 private
 
