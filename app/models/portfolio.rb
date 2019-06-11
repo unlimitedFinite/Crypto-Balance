@@ -188,7 +188,7 @@ class Portfolio < ApplicationRecord
         end
 
         quantity = order_size(coinhash)
-        puts @coins_arr
+
         puts "executing trade for #{coinhash[:name]}"
         puts coinhash[:rebalance_amount]
         puts coinhash[:amount]
@@ -209,6 +209,8 @@ class Portfolio < ApplicationRecord
           symbol: ticker,
           type: 'MARKET'
         )
+
+        puts order
 
         get_trade_confirmation(order)
       end
@@ -247,7 +249,8 @@ class Portfolio < ApplicationRecord
           binance_id: order[:orderId],
           portfolio_id: self.id,
           base_coin_id: base_coin.id,
-          target_coin_id: target_coin.id
+          target_coin_id: target_coin.id,
+          transact_time: order[:transactTime]
         )
         o.save
         # byebug
