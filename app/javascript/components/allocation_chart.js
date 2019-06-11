@@ -1,3 +1,37 @@
+function addValues(){
+  sum = 0
+  var inputs = document.querySelectorAll('.num_input');
+  inputs.forEach(function(i){
+    var value = parseInt(i.value) || 0;
+    sum += value;
+  })
+  displaySum(sum);
+}
+
+function listeners(){
+  document.querySelectorAll('.num_input').forEach( (input) => {
+    input.addEventListener('change', (evt) => {
+      addValues();
+    });
+  });
+}
+
+function displaySum(sum){
+  var total = document.getElementById("sum");
+  var span = document.getElementById("allocations");
+  total.innerText = (sum);
+  if (sum > 100){
+    span.innerText = (`Please deduct ${sum - 100} shares!`);
+    document.getElementById("submit-alloc").disabled = true;
+  } else if (sum < 100){
+    span.innerText = (`Please add ${100 - sum} more shares`);
+    document.getElementById("submit-alloc").disabled = true;
+  } else {
+    span.innerText = (`That's perfect!`);
+    document.getElementById("submit-alloc").disabled = false;
+  }
+}
+
 function sumAllocations(oldValue, newValue){
   var span = document.getElementById("allocations");
   oldValue = oldValue || 0;
@@ -7,7 +41,7 @@ function sumAllocations(oldValue, newValue){
   else {
     sum = (sum - oldValue) + newValue;
   }
-
+  console.log(sum);
   if (sum > 100){
     span.innerText = (`Please deduct ${sum - 100} shares!`);
     document.getElementById("submit-alloc").disabled = true;
@@ -49,6 +83,7 @@ function setListeners(){
   });
 };
 
+
 function updateChart(){
   dataArray = [];
 
@@ -58,7 +93,6 @@ function updateChart(){
   };
   drawChart();
 }
-
 
 
 function drawChart() {
@@ -88,4 +122,4 @@ function drawChart() {
   chart.draw(data, options);
 };
 
-export {allocationChart, setListeners, updateChart, initdataArray, sumAllocations}
+export {addValues, listeners, allocationChart, setListeners, updateChart, initdataArray, sumAllocations}

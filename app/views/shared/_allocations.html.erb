@@ -1,7 +1,5 @@
 <%= simple_fields_for :allocations do |p| %>
 
-
-
   <% hash = {} %>
 
 
@@ -14,7 +12,7 @@
         <% allocation = @portfolio.allocations.find_by(coin_id: coin.id) %>
         <% default_value = allocation.nil? ? 0 : allocation.allocation_pct %>
         <%= p.label "#{currency} ", class: "input-control col-form-label" %>
-        <%= number_field_tag "crypto[#{currency}]", nil, min: 0, max: 100, value: default_value, class: 'form-control num_input', onfocus: "this.oldvalue = this.value;", onchange: "onChangeTest(this);this.oldvalue = this.value;" %>
+        <%= p.input_field "crypto[#{currency}]", value: default_value, class: 'form-control num_input', onfocus: "this.oldvalue = this.value;", onchange: "onChangeTest(this);this.oldvalue = this.value;" %>
 
         <!-- <input type="number" name="crypto[<%#= currency %>]" value="0" class= "form-control num_input" id="<%#= currency %>"> -->
         <% hash[currency] = 0 %>

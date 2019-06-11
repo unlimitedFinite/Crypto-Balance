@@ -2,8 +2,9 @@
   <div class="row">
     <div class="col">
       <div class="price-container text-center justify-content-center">
+        <% price_btc = Coin.find_by(symbol: 'BTC').price_usdt %>
         <h5>Portfolio Value</h5>
-        <span class="display-4">$187.99</span>
+        <span class="display-4"><%= number_to_currency(@portfolio.current_value_btc.to_f * price_btc) %></span>
       </div>
     </div>
   </div>
