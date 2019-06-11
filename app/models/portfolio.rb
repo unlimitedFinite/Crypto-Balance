@@ -245,7 +245,7 @@ class Portfolio < ApplicationRecord
           side: order[:side],
           order_type: order[:type],
           binance_id: order[:orderId],
-          portfolio_id: @portfolio.id,
+          portfolio_id: self.id,
           base_coin_id: base_coin.id,
           target_coin_id: target_coin.id
         )
