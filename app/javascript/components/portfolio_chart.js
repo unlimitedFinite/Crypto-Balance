@@ -9,8 +9,8 @@ google.charts.setOnLoadCallback(drawChart);
 // Callback that creates and populates a data table,
 // instantiates the pie chart, passes in the data and
 // draws it.
-}
 
+}
 
 
 function drawChart() {
@@ -19,20 +19,7 @@ function drawChart() {
   var data = new google.visualization.DataTable();
   data.addColumn('string', 'Coin');
   data.addColumn('number', 'Value');
-  console.log(positions);
-  console.log(coins);
 
-// is coin found in position? pass coin id from
-
-// if yes, add coin.color to array
-// if no, move on
-
-  // function findColor(coin_id) {
-  //   let coin = coins.find(function(c) {
-  //     return c['id'] === coinId;
-  //   });
-  //   colors.push(coin.color);
-  // }
   const colors = []
 
   function findCoin(coinId) {
@@ -42,8 +29,6 @@ function drawChart() {
     colors.push(coin['color']);
     return coin['name'];
   }
-
-  console.log(colors);
 
   // coins.forEach(function(c){
   //   if findColor(c) == true
@@ -61,9 +46,11 @@ function drawChart() {
   // Set chart options
   var options = {
     'title':'Portfolio Positions',
-    'height': 500,
+    'chartArea': {left:0, top:0, width:'100%', height:'100%'},
     'legend' : {position: 'bottom'},
-    'colors': colors
+    'colors': colors,
+    backgroundColor: '#f1f1f3',
+    is3D: true
   };
 
   // Instantiate and draw our chart, passing in some options.

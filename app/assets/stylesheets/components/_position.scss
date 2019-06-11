@@ -1,0 +1,55 @@
+.card-container {
+  margin: 0 auto;
+  min-width: 350px;
+  position:relative;
+}
+
+.position-card {
+  background: white;
+  border-bottom-left-radius: 20px;
+  border-top-left-radius: 20px;
+  border-bottom-right-radius: 15px;
+  border-top-right-radius: 15px;
+  margin: 8px 8px;
+  padding: 8px 16px;
+  box-shadow: 4px 4px #80808030;
+}
+
+.position-card-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.3rem;
+  border-bottom: 1px solid grey;
+}
+
+.position-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: gray;
+  padding: 0 8px;
+}
+
+.position-card p {
+  margin-bottom: 0;
+}
+
+.price-down {
+  color: $red;
+}
+
+.price-up {
+  color: $green;
+}
+
+.price {
+  display: inline-grid;
+  text-align: right;
+}
+
+.refresh {
+  position: absolute;
+  top: -16px;
+  font-size: 1.5rem;
+  left: 14px;
+}

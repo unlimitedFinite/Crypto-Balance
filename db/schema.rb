@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_05_095834) do
+ActiveRecord::Schema.define(version: 2019_06_10_151045) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,13 +44,16 @@ ActiveRecord::Schema.define(version: 2019_06_05_095834) do
     t.float "quantity"
     t.float "commission"
     t.string "side"
-    t.string "type"
+    t.string "order_type"
     t.string "binance_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "base_coin_id"
     t.bigint "target_coin_id"
+    t.bigint "portfolio_id"
+    t.string "commission_asset"
     t.index ["base_coin_id"], name: "index_orders_on_base_coin_id"
+    t.index ["portfolio_id"], name: "index_orders_on_portfolio_id"
     t.index ["target_coin_id"], name: "index_orders_on_target_coin_id"
   end
 
@@ -101,6 +104,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_095834) do
   add_foreign_key "allocations", "portfolios"
   add_foreign_key "orders", "coins", column: "base_coin_id"
   add_foreign_key "orders", "coins", column: "target_coin_id"
+  add_foreign_key "orders", "portfolios"
   add_foreign_key "portfolios", "coins"
   add_foreign_key "portfolios", "users"
   add_foreign_key "positions", "coins"

@@ -3,6 +3,8 @@ class Portfolio < ApplicationRecord
   belongs_to :coin
   has_many :positions
   has_many :allocations
+  has_many :orders
+
   accepts_nested_attributes_for :allocations
 
   validates :rebalance_freq, inclusion: { in: %w[Daily Weekly Biweekly Monthly Quarterly] }
@@ -12,13 +14,12 @@ class Portfolio < ApplicationRecord
     positions = []
     account_info = Binance::Api::Account.info!
     coin_list = ['BTC', 'ETH', 'XRP', 'BCHABC', 'LTC', 'EOS', 'ADA', 'USDT', 'TRX', 'XLM', 'ZEC']
+    
     coin_list.each do |name|
-      # positions = account_info[:balances].reject do |balance|
-      # balance[:free] == "0.00000000"
       position = account_info[:balances].select { |balance| balance[:asset] == name }
       positions << position[0]
     end
-    # byebug
+ 
     self.current_value_usdt = 0.0
     self.current_value_btc = 0.0
 

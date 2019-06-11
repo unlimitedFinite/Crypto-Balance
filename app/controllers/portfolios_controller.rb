@@ -5,7 +5,9 @@ require 'nokogiri'
 
 class PortfoliosController < ApplicationController
   before_action :authenticate_user!
+
   before_action :set_portfolio, only: [:show, :edit, :update, :create_positions, :rebalance_positions]
+
 
   def new
     @portfolio = Portfolio.new
@@ -62,7 +64,7 @@ class PortfoliosController < ApplicationController
 
     account_info = Binance::Api::Account.info!
     @positions = account_info[:balances].reject do |balance|
-      balance[:free] == "0.00000000"
+      Coin.find_by(symbol: balance[:asset]).nil?
     end
   end
 
@@ -161,6 +163,7 @@ class PortfoliosController < ApplicationController
 
           quantity = order_size_btc(@number_of_btc, @min_trade_unit)
 
+
           order = Binance::Api::Order.create!(
             quantity: quantity,
             side: 'BUY',
@@ -168,8 +171,10 @@ class PortfoliosController < ApplicationController
             type: 'MARKET'
 
           )
+
           get_trade_confirmation(order)
           # byebug
+
         end
       end
       @portfolio.update_positions
@@ -215,10 +220,25 @@ class PortfoliosController < ApplicationController
 
   def get_trade_confirmation(order)
 
-    unless order == []
+    # unless order == []
       @confirmations_arr << order
+      o = Order.new(
+        status: order[:status],
+        price: order[:fills][0][:price],
+        quantity: order[:fills][0][:qty],
+        commission: order[:fills][0][:commission],
+        commision_asset: order[:fills][0][:commissionAsset],
+        side: order[:side],
+        order_type: order[:type],
+        binance_id: order[:orderId],
+        base_coin_id: 'BTC',
+        target_coin_id: Coin.find_by(symbol: order[:symbol].gsub('BTC', '')).id
+      )
 
-      p @confirmations_arr
+
+      o.save
+
+
     end
   end
 
@@ -257,6 +277,7 @@ class PortfoliosController < ApplicationController
 
         quantity = order_size(coinhash)
 
+
         puts @coins_arr
         puts "executing trade for #{coinhash[:name]}"
         puts coinhash[:rebalance_amount]
@@ -272,13 +293,15 @@ class PortfoliosController < ApplicationController
           ticker = "#{coinhash[:name]}USDT"
         end
 
+
         order = Binance::Api::Order.create!(
           quantity: quantity,
           side: side,
           symbol: ticker,
           type: 'MARKET'
         )
-# byebug
+
+
         get_trade_confirmation(order)
       end
     end
@@ -310,6 +333,8 @@ class PortfoliosController < ApplicationController
             symbol: 'BTCUSDT',
             type: 'MARKET'
           )
+          # get_trade_confirmation('BTC')
+
           get_trade_confirmation(order)
           # byebug
         end
@@ -344,6 +369,7 @@ class PortfoliosController < ApplicationController
     @price_change = Binance::Api.ticker!(symbol: "#{coin}BTC")
     @trades = Binance::Api::Account.trades!(symbol: "#{coin}BTC")
 
+
     #   [{:symbol=>"XLMBTC",
     # :orderId=>101810246,
     # :price=>"0.00001583",
@@ -360,8 +386,6 @@ class PortfoliosController < ApplicationController
     # @commissionAsset = order[0][:commissionAsset]
     # @order_time = @order[0][:time]
   end
-
-end
 
 private
 
