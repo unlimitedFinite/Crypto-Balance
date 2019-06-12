@@ -4,7 +4,7 @@
 
 <div class="container">
   <div class="row justify-content-center">
-    <div class="col-md-7">
+    <div class="col-6">
       <div class="allocations">
         <h4 class="text-center border-bottom">Rebalancing</h4>
         <p>You current next rebalancing is due to take place on <%= @portfolio.next_rebalance_dt %>.</p>
@@ -19,17 +19,17 @@
         </div>
       </div>
     </div>
-    <div class="col-md-5">
+    <div class="col-6">
       <div class="allocations">
       <h4 class="text-center border-bottom">Allocations</h4>
       <p>Your current target allocations are below, please make any alterations and submit your changes</p>
         <%= f.submit "Update", :class => 'btn trigger btn-success', id: "submit-alloc" %><br>
+      <p id="shares">
+        <span id="allocations"></span>
+      </p>
       <span id="allocations"></span>
       </div>
     </div>
-  </div>
-  <div id="shares-cont">
-    <p id="shares"><span id="sum"> </span> of 100 shares chosen</p>
   </div>
 </div>
 <div class="container">
