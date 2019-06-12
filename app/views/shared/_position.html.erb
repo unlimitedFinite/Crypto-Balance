@@ -11,8 +11,8 @@
       </div>
       <div class="position-card-bottom">
         <div class="helper2" style="display: inline-grid;">
-          <span>Distribution: <%= sprintf('%.0f', ((position.quantity * coin.price_usdt)/@usdt_total)*100) %>%</span>
-          <span>Target <%= @allocations.find {|a| a[:coin_id] == coin.id}.allocation_pct %>%</span>
+          <span>Current holdings: <%= sprintf('%.0f', ((position.quantity * coin.price_usdt)/@usdt_total)*100) %>%</span>
+          <span>My target: <%= @allocations.find {|a| a[:coin_id] == coin.id}.allocation_pct %>%</span>
         </div>
         <div class="price helper4">
           <span id="<%= coin.symbol %>value24" class="binance-symbols"></span>
