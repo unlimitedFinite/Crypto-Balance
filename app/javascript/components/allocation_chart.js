@@ -1,3 +1,8 @@
+// Load the Visualization API and the corechart package.
+google.charts.load('current', {'packages':['corechart']});
+
+// Set a callback to run when the Google Visualization API is loaded.
+google.charts.setOnLoadCallback(drawChart);
 
 function addValues(){
   sum = 0
@@ -125,7 +130,7 @@ function drawChart() {
     title     : '',
     width : '94%',
     isStacked : true,
-    'chartArea': {left:20, right:20, width:'100%'},
+    chartArea: {left:20, right:20, width:'100%'},
     legend    : {position: 'none'},
     backgroundColor : '#173055'
   };
@@ -135,10 +140,5 @@ function drawChart() {
   chart.draw(data, options);
 };
 
-// Load the Visualization API and the corechart package.
-google.charts.load('current', {'packages':['corechart']});
-
-// Set a callback to run when the Google Visualization API is loaded.
-google.charts.setOnLoadCallback(drawChart);
 
 export {addValues, listeners, allocationChart, setListeners, updateChart, initdataArray, sumAllocations}
