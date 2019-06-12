@@ -1,3 +1,8 @@
+// Load the Visualization API and the corechart package.
+google.charts.load('current', {'packages':['corechart']});
+
+// Set a callback to run when the Google Visualization API is loaded.
+google.charts.setOnLoadCallback(drawChart);
 
 function addValues(){
   sum = 0
@@ -18,24 +23,22 @@ function listeners(){
 }
 
 function displaySum(sum){
-  var total = document.getElementById("sum");
   var span = document.getElementById("allocations");
   var button = document.getElementById("submit-alloc");
   var shares = document.getElementById('shares');
-  total.innerText = sum;
   if (sum > 100){
     shares.classList.remove('green', 'yellow')
     shares.classList.add('red');
-    span.innerText = (`Please deduct ${sum - 100} shares!`);
+    span.innerText = (`You've selected ${sum}, deduct ${sum - 100}!`);
     button.disabled = true;
   } else if (sum < 100){
     shares.classList.remove('red', 'green')
     shares.classList.add('yellow');
-    span.innerText = (`Please add ${100 - sum} more shares`);
+    span.innerText = (`You've selected ${sum}, add ${100 - sum} more!`);
     button.disabled = true;
   } else {
     button.disabled = false;
-    // shares.classList.remove('red', 'yellow')
+    shares.classList.remove('red', 'yellow')
     shares.classList.add('green');
     span.innerText = ('Cool! Now you can submit!')
   }
@@ -125,7 +128,7 @@ function drawChart() {
     title     : '',
     width : '94%',
     isStacked : true,
-    'chartArea': {left:20, right:20, width:'100%'},
+    chartArea: {left:20, right:20, width:'100%'},
     legend    : {position: 'none'},
     backgroundColor : '#173055'
   };
@@ -135,10 +138,5 @@ function drawChart() {
   chart.draw(data, options);
 };
 
-// Load the Visualization API and the corechart package.
-google.charts.load('current', {'packages':['corechart']});
-
-// Set a callback to run when the Google Visualization API is loaded.
-google.charts.setOnLoadCallback(drawChart);
 
 export {addValues, listeners, allocationChart, setListeners, updateChart, initdataArray, sumAllocations}
