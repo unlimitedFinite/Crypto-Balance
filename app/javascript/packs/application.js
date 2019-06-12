@@ -8,10 +8,10 @@ import { drawChart } from 'components/portfolio_chart';
 
 const portfolioPage = document.querySelector('.portfolios.show');
 if (portfolioPage != null) {
+  get_price_change();
   dashboardHelper();
   drawChart();
   prepareData();
-  get_price_change();
   rebalanceConf();
   sellConf();
 }

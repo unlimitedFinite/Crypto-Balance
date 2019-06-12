@@ -238,6 +238,8 @@ class Portfolio < ApplicationRecord
           base_coin = Coin.find_by(symbol: ticker)
           target_coin = Coin.find_by(symbol: order[:symbol].gsub("#{base_coin[:symbol]}", ''))
         end
+
+        logger.info order
 # byebug
         o = Order.new(
           status: order[:status],
