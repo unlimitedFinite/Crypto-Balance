@@ -11,7 +11,10 @@
   width: 100%;
   text-transform: uppercase;
   margin-bottom: 4px;
+  position: relative;
 }
+
+
 
 #chart_div {
   height: 200px;
@@ -31,4 +34,13 @@
   border-radius: 25px;
   margin: 8px;
   text-align: center;
+}
+
+#guide {
+  background-color: #ccecca6b;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: #ffffffd6;
+  border: 1px solid #ffffff82;
 }

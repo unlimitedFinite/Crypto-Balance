@@ -54,6 +54,62 @@ function portfolioHelper(){
   // });
 }
 
+function dashboardHelper(){
+
+  var introGuide = introJs();
+
+  introGuide.setOptions({
+    steps: [
+      {
+        element: '.price-container',
+        intro: `Here you can see your current portfolio balance in USD value`,
+        position: 'bottom'
+      },
+      {
+        element: '.helper2',
+        intro: 'Here you can see the coins current weight, and the portfolio target',
+        position: 'right'
+      },
+      {
+        element: '.helper3',
+        intro: 'This is current value of the coin in USD',
+        position: 'left'
+      },
+      {
+        element: '.helper4',
+        intro: 'This section shows the latest price and the change over last 24 hours',
+        position: 'left'
+      },
+      {
+        element: '.helper5',
+        intro: 'This button will manually force a rebalance of your portfolio, which is advised if there has been some big changes in the market',
+        position: 'left'
+      },
+      {
+        element: '.helper6',
+        intro: 'Simple refresh to get latest prices',
+        position: 'bottom'
+      },
+      {
+        element: '.helper7',
+        intro: 'If you have a feeling the market is about to tumble, you can quickly sell your positions to USDT',
+        position: 'right'
+      },
+      {
+        element: '.helper8',
+        intro: 'Need to make some changes to your portfolio? All the settings are here',
+        position: 'left'
+      }
+    ]
+  })
+  document.querySelector('#guide').addEventListener('click', (e) => {
+    console.log(e);
+    e.preventDefault();
+    introGuide.start();
+  });
+}
 
 
-export {apiHelper, portfolioHelper}
+
+
+export {apiHelper, portfolioHelper, dashboardHelper}
