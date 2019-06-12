@@ -4,7 +4,7 @@
 
 <div class="container">
   <div class="row justify-content-center">
-    <div class="col-md-7">
+    <div class="col-6">
       <div class="allocations">
         <h4 class="text-center border-bottom">Rebalancing</h4>
         <p>Choose your next rebalancing date and frequency below</p>
@@ -19,17 +19,18 @@
         </div>
       </div>
     </div>
-    <div class="col-md-5">
+    <div class="col-6">
       <div class="allocations">
       <h4 class="text-center border-bottom">Allocations</h4>
-      <p>Choose your allocations below, make sure they add up to 100</p>
-        <%= f.submit "Update", :class => 'btn trigger btn-success', id: "submit-alloc" %><br>
+      <p>You can add a total of 100 shares, choose how you would like to spread your coins or prefill with our recommended amounts</p>
+      <span id="index-container"></span>
+        <%= f.submit "Create", :class => 'btn trigger btn-success', id: "submit-alloc" %><br>
+      <p id="shares">
+        <span id="allocations"></span>
+      </p>
       <span id="allocations"></span>
       </div>
     </div>
-  </div>
-  <div id="shares-cont">
-    <p id="shares"><span id="sum"> </span> of 100 shares chosen</p>
   </div>
 </div>
 <div class="container">
