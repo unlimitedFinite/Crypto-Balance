@@ -1,25 +1,27 @@
 import "bootstrap";
 
-import {apiHelper, portfolioHelper, dashboardHelper} from 'components/onboarding'
+import { apiHelper, portfolioHelper, dashboardHelper } from 'components/onboarding'
 import { rebalanceConf, sellConf } from 'components/button_confirms';
 import { get_price_change } from 'components/price_changes';
-import { allocationChart, listeners, setListeners, updateChart, initdataArray, sumAllocations, addValues} from 'components/allocation_chart';
+import { addValues, listeners, allocationChart, prepareData } from 'components/allocation_chart';
 import { loadChart } from 'components/portfolio_chart';
 
 const portfolioPage = document.querySelector('.portfolios.show');
 if (portfolioPage != null) {
   dashboardHelper();
-  loadChart();
+  prepareData();
   get_price_change();
   rebalanceConf();
   sellConf();
 }
+
 const allocationsNewPage = document.querySelector('.portfolios.new');
 if (allocationsNewPage != null) {
+  listeners();
   portfolioHelper();
   addValues();
-  listeners();
   allocationChart();
+  // loadIndex();
 }
 
 const allocationsEditPage = document.querySelector('.portfolios.edit');
