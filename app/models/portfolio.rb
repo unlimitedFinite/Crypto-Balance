@@ -76,7 +76,7 @@ class Portfolio < ApplicationRecord
     coins_list = ['Ethereum', 'Ripple', 'Bitcoin-Cash', 'Litecoin', 'EOS', 'Cardano', 'Tether', 'Tron', 'Stellar', 'Zcash']
     coins_list.each do |name|
       coin = Coin.find_by(name: name)
-      position = Position.find_by(as_of_dt_end: nil, coin_id: coin.id)
+      position = Position.find_by(as_of_dt_end: nil, coin_id: coin.id, portfolio: self)
 
       # byebug
 

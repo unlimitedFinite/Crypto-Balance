@@ -1,8 +1,12 @@
-// Load the Visualization API and the corechart package.
-google.charts.load('current', {'packages':['corechart']});
+const allocationsEditPage = document.querySelector('.portfolios.edit');
+if (allocationsEditPage != null) {
+  // Load the Visualization API and the corechart package.
+  google.charts.load('current', {'packages':['corechart']});
 
-// Set a callback to run when the Google Visualization API is loaded.
-google.charts.setOnLoadCallback(loadIndex);
+  // Set a callback to run when the Google Visualization API is loaded.
+  google.charts.setOnLoadCallback(loadIndex);
+}
+
 
 
 // function sumAllocations(oldValue, newValue){
@@ -70,7 +74,7 @@ function loadIndex(){
 
 
 function addValues(){
-  sum = 0
+  var sum = 0
   var inputs = document.querySelectorAll('.num_input');
   inputs.forEach(function(i){
     var value = parseInt(i.value) || 0;
