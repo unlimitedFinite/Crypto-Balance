@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_10_151045) do
+ActiveRecord::Schema.define(version: 2019_06_12_015433) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,6 +52,9 @@ ActiveRecord::Schema.define(version: 2019_06_10_151045) do
     t.bigint "target_coin_id"
     t.bigint "portfolio_id"
     t.string "commission_asset"
+    t.string "transact_time"
+    t.string "description"
+    t.string "transaction_id"
     t.index ["base_coin_id"], name: "index_orders_on_base_coin_id"
     t.index ["portfolio_id"], name: "index_orders_on_portfolio_id"
     t.index ["target_coin_id"], name: "index_orders_on_target_coin_id"

@@ -11,8 +11,17 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <% if user_signed_in? && current_user.portfolio %>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="portfolioDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Portfolio</a>
+
+          <div class="dropdown-menu" aria-labelledby="portfolioDropdown">
+            <%= link_to "View", portfolio_path(current_user.portfolio), class: "dropdown-item" %>
+            <%= link_to "Edit", edit_portfolio_path(current_user.portfolio), class: "dropdown-item" %>
+          </div>
+
+        </li>
         <li class="nav-item active">
-          <%= link_to "My Portfolio", portfolio_path(current_user.portfolio), class: "nav-link nav-link" %>
+          <%= link_to "Trade History", portfolio_orders_path(current_user.portfolio), class: "nav-link nav-link" %>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

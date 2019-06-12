@@ -23,6 +23,16 @@ function rebalanceConf(){
       callback: function(result){
        if(result === true){
         document.querySelector('#rebalance').submit();
+        var dialog = bootbox.dialog({
+            title: 'Rebalancing Portfolio',
+            message: '<p><i class="fa fa-spin fa-spinner"></i> Rebalancing at work...</p>'
+        });
+
+        dialog.init(function(){
+            setTimeout(function(){
+                dialog.find('.bootbox-body').html('I was loaded after the dialog was shown!');
+            }, 60000);
+        });
         }
       }
     })
@@ -52,6 +62,16 @@ function sellConf(){
       callback: function(result){
        if(result === true){
         document.querySelector('#sell').submit();
+        var dialog = bootbox.dialog({
+            title: "Don't Panic",
+            message: '<p><i class="fa fa-spin fa-spinner"></i> Positions being sold...</p>'
+        });
+
+        dialog.init(function(){
+            setTimeout(function(){
+                dialog.find('.bootbox-body').html('I was loaded after the dialog was shown!');
+            }, 60000);
+        });
         }
       }
     })
