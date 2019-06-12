@@ -108,11 +108,11 @@ def portfolio_params
 end
 
 def create_allocations
-  if params[:crypto].values.map(&:to_i).sum != 100
+  if params[:allocations][:crypto].values.map(&:to_i).sum != 100
     flash[:failure] = "Allocation must total 100% !"
     # redirect_to new_portfolio_allocation_path(@portfolio)
   else
-    params[:crypto].each do |coin, percentage|
+    params[:allocations][:crypto].each do |coin, percentage|
       @allocation = Allocation.new
       @allocation.portfolio_id = @portfolio.id
       @allocation.coin_id = Coin.find_by(name: coin).id
