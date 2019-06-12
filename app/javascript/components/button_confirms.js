@@ -31,7 +31,7 @@ function rebalanceConf(){
         dialog.init(function(){
             setTimeout(function(){
                 dialog.find('.bootbox-body').html('I was loaded after the dialog was shown!');
-            }, 15000);
+            }, 60000);
         });
         }
       }
@@ -70,7 +70,7 @@ function sellConf(){
         dialog.init(function(){
             setTimeout(function(){
                 dialog.find('.bootbox-body').html('I was loaded after the dialog was shown!');
-            }, 15000);
+            }, 60000);
         });
         }
       }
