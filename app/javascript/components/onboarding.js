@@ -94,11 +94,6 @@ function dashboardHelper(){
         element: '.helper7',
         intro: 'If you have a feeling the market is about to tumble, you can quickly sell your positions to USDT',
         position: 'right'
-      },
-      {
-        element: '.helper8',
-        intro: 'Need to make some changes to your portfolio? All the settings are here',
-        position: 'left'
       }
     ]
   })
