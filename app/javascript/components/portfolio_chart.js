@@ -46,11 +46,12 @@ function drawChart() {
   // Set chart options
   var options = {
     'title':'Portfolio Positions',
+    width: '100%',
+    height: 400,
     'chartArea': {left:0, top:0, width:'100%', height:'100%'},
     'legend' : {position: 'bottom'},
     'colors': colors,
-    backgroundColor: '#f1f1f3',
-    is3D: true
+    backgroundColor: '#173055'
   };
 
   // Instantiate and draw our chart, passing in some options.
