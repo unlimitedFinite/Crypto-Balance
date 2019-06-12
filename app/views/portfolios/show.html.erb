@@ -2,6 +2,7 @@
   <div class="row">
     <div class="col">
       <div class="price-container text-center justify-content-center">
+        <button id="guide">Help?</button>
         <% price_btc = Coin.find_by(symbol: 'BTC').price_usdt %>
         <h5>Portfolio Value</h5>
         <span class="display-4"><%= number_to_currency(@portfolio.current_value_btc.to_f * price_btc) %></span>
@@ -10,13 +11,14 @@
   </div>
   <div class="d-flex justify-content-center">
     <%= form_tag rebalance_positions_path(@portfolio), :id => 'rebalance' do %>
-      <button class="btn trigger btn-success" id="rebalance-btn"> Rebalance</button>
+      <button class="btn trigger helper5 btn-success" id="rebalance-btn"> Rebalance</button>
     <% end %>
+
     <%= link_to create_positions_path(@portfolio), class:"refresh" do %>
       <i class="refresh fas fa-sync-alt"></i>
     <% end %>
     <%= form_tag sell_positions_path(@portfolio), :id => 'sell' do %>
-      <button class="btn trigger btn-danger" id="sell-btn"> Panic Sell</button>
+      <button class="helper7 btn trigger btn-danger" id="sell-btn"> Panic Sell</button>
     <% end %>
   </div>
 </div>

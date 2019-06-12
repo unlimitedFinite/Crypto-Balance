@@ -33,9 +33,9 @@
                         required: true,
                         input_html: { autocomplete: "new-password" } %>
             </div>
-            <p class="text-center">We need your Binance API keys in order to access your trading. Check our guide <a href="#">here</a> for more information on this.</p>
+            <p class="text-center apiInfo">We need your Binance API keys in order to access your trading. Check our guide <a href="#" id="api">here</a> for more information on this.</p>
 
-            <div class="form-inputs">
+            <div class="form-inputs apikeys">
               <%= f.input :api_key,
                           required: true,
                           input_html: { autocomplete: "Binance API Key" } %>
