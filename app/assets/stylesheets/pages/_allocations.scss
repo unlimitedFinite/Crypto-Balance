@@ -1,10 +1,15 @@
 .allocations {
-  background-color: $gray;
-  color: $black;
+  background-color: #f1f1f3;
+  color: #000000;
   width: auto;
-  padding: 15px;
+  padding: 0;
   border-radius: 25px;
   font-size: 13px;
+  display: inline-grid;
+}
+
+.allocations p,h4 {
+  padding: 10px 20px;
 }
 
 .num_input {
@@ -15,6 +20,7 @@
 
 #allocations {
   font-size: 0.7rem;
+  text-align: center;
 }
 
 #shares-cont {
@@ -22,22 +28,34 @@
 
 #shares {
   text-align: center;
-  border-radius: 25px;
+  border-radius: 0px 0px 10px 10px;
   padding: 8px;
-  margin: 8px 0;
+  margin: 0;
   color: white;
   font-size: 0.8rem;
   width:100%;
   transition: 1s;
+  justify-content: space-around;
+  display: flex;
 }
 
 #submit-alloc {
   width: 50%;
+  margin: 0 auto;
 }
+
+#submit-alloc:disabled {
+  width: 50%;
+  margin: 0 auto;
+  background-color: #bdb6ac6e;
+  border: none;
+  color: #8c888885;
+}
+
 
 .yellow {
   transition: 1s;
-  background-color: #f2de41b5;
+  background-color: #524b2a73;
 }
 
 .green {
