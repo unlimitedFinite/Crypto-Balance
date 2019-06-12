@@ -188,7 +188,7 @@ class Portfolio < ApplicationRecord
         end
 
         quantity = order_size(coinhash)
-        puts @coins_arr
+
         puts "executing trade for #{coinhash[:name]}"
         puts coinhash[:rebalance_amount]
         puts coinhash[:amount]
@@ -210,28 +210,52 @@ class Portfolio < ApplicationRecord
           type: 'MARKET'
         )
 
+        puts order
+
         get_trade_confirmation(order)
       end
     end
   end
 
-  def get_trade_confirmation(order)
-  # unless order == []
-  #   @confirmations_arr << order
-  #   o = Order.new(
-  #     status: order[:status],
-  #     price: order[:fills][0][:price],
-  #     quantity: order[:fills][0][:qty],
-  #     commission: order[:fills][0][:commission],
-  #     commision_asset: order[:fills][0][:commissionAsset],
-  #     side: order[:side],
-  #     order_type: order[:type],
-  #     binance_id: order[:orderId],
-  #     base_coin_id: 'BTC',
-  #     target_coin_id: Coin.find_by(symbol: order[:symbol].gsub('BTC', '')).id
-  #   )
-  #   o.save
-  #   end
+  def get_trade_confirmation(confirmation)
+
+    unless confirmation == []
+      puts @confirmations_arr
+      # byebug
+      @confirmations_arr << confirmation
+
+      # byebug
+
+      @confirmations_arr.each do |order|
+        # sets base coin to the held coin
+        if order[:symbol] == 'BTCUSDT'
+          base_coin = Coin.find_by(symbol: 'BTC')
+          target_coin = Coin.find_by(symbol: 'USDT')
+        else
+          ticker = order[:symbol].gsub('BTC', '')
+          ticker = ticker.gsub('USDT', '')
+          base_coin = Coin.find_by(symbol: ticker)
+          target_coin = Coin.find_by(symbol: order[:symbol].gsub("#{base_coin[:symbol]}", ''))
+        end
+# byebug
+        o = Order.new(
+          status: order[:status],
+          price: order[:fills][0][:price],
+          quantity: order[:fills][0][:qty],
+          commission: order[:fills][0][:commission],
+          commission_asset: order[:fills][0][:commissionAsset],
+          side: order[:side],
+          order_type: order[:type],
+          binance_id: order[:orderId],
+          portfolio_id: self.id,
+          base_coin_id: base_coin.id,
+          target_coin_id: target_coin.id,
+          transact_time: order[:transactTime]
+        )
+        o.save
+        # byebug
+      end
+    end
   end
 
   def order_size(coinhash)

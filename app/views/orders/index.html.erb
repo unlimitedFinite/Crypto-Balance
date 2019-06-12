@@ -1,60 +1,76 @@
-<h1>Orders#index</h1>
-<p>Find me in app/views/orders/index.html.erb</p>
+<h1>Orders</h1>
 
-<p>MAKE A TRADE TO BUY 100 XLM FOR ETH AT MARKET PRICE</p>
-<%= link_to "Trade", orders_create_path, class:"btn btn-primary", method:'post'  %>
 
-<br>
 <table class="table table-dark">
   <thead>
     <tr>
-      <th scope="col">#</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Handle</th>
+      <th scope="col">Binance ID</th>
+      <th scope="col">Transaction Time</th>
+      <th scope="col">Status</th>
+      <th scope="col">Symbol</th>
+      <th scope="col">Side</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Base Coin</th>
+      <th scope="col">Price</th>
+      <th scope="col">Target Coin</th>
+      <th scope="col">Type</th>
+      <th scope="col">Commission</th>
+      <th scope="col">Commission Asset</th>
     </tr>
   </thead>
   <tbody>
+      <% @orders.each do |trade| %>
+        <% @coin_base = Coin.find(trade[:base_coin_id]).symbol %>
+        <% @coin_target = Coin.find(trade[:target_coin_id]).symbol %>
+
     <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
+      <td><%= trade[:binance_id] %></td>
+      <td><%= Time.at(trade[:transact_time].to_i / 1000).to_datetime %></td>
+      <td><%= trade[:status] %></td>
+      <td><%= "#{@coin_base}#{@coin_target}" %></td>
+      <td><%= trade[:side] %></td>
+      <td><%= "%f" % trade[:quantity] %></td>
+      <td><%= @coin_base %></td>
+      <td><%= "%f" % trade[:price] %></td>
+      <td><%= @coin_target %></td>
+      <td><%= trade[:order_type] %></td>
+      <td><%= "%f" % trade[:commission] %></td>
+      <td><%= trade[:commission_asset] %></td>
+
     </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Larry</td>
-      <td>the Bird</td>
-      <td>@twitter</td>
-    </tr>
+    <% end %>
   </tbody>
 </table>
-<% @BatTrades.each do |trade| %>
-  <ul>
-    <li><%= trade[:symbol] %></li>
-    <li><%= trade[:orderId] %></li>
-    <li><%= trade[:price] %></li>
-    <li><%= trade[:status] %></li>
-    <li><%= trade[:type] %></li>
-    <li><%= trade[:executedQty] %></li>
-    <li><%= trade[:cummulativeQuoteQty] %></li>
-  </ul>
-<% end %>
-<br>
-<% @XlmTrades.each do |trade| %>
-  <ul>
-    <li><%= trade[:symbol] %></li>
-    <li><%= trade[:orderId] %></li>
-    <li><%= trade[:price] %></li>
-    <li><%= trade[:status] %></li>
-    <li><%= trade[:type] %></li>
-    <li><%= trade[:executedQty] %></li>
-    <li><%= trade[:cummulativeQuoteQty] %></li>
-  </ul>
-<% end %>
+
+      <!--# need to add trade time to schema
+      # need to convert coin_id to coin symbol
+      # need to add full ticker symbol
+      # sort orders by time done
+      # allow filter function to find_by where etc.
+      # do not display exponential number formats-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
