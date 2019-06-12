@@ -59,4 +59,4 @@ function drawChart() {
   chart.draw(data, options);
 };
 
-export {loadChart}
+export {drawChart}
