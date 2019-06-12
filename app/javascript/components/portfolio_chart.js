@@ -1,4 +1,4 @@
-function loadChart(){
+
 
 // Load the Visualization API and the corechart package.
 google.charts.load('current', {'packages':['corechart']});
@@ -10,7 +10,7 @@ google.charts.setOnLoadCallback(drawChart);
 // instantiates the pie chart, passes in the data and
 // draws it.
 
-}
+
 
 
 function drawChart() {
@@ -46,8 +46,10 @@ function drawChart() {
   // Set chart options
   var options = {
     'title':'Portfolio Positions',
-    width: '100%',
+
     height: 400,
+    width: '100%',
+
     'chartArea': {left:0, top:0, width:'100%', height:'100%'},
     'legend' : {position: 'bottom'},
     'colors': colors,
@@ -59,4 +61,4 @@ function drawChart() {
   chart.draw(data, options);
 };
 
-export {loadChart}
+export {drawChart}

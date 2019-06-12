@@ -4,11 +4,12 @@ import { apiHelper, portfolioHelper, dashboardHelper } from 'components/onboardi
 import { rebalanceConf, sellConf } from 'components/button_confirms';
 import { get_price_change } from 'components/price_changes';
 import { addValues, listeners, allocationChart, prepareData } from 'components/allocation_chart';
-import { loadChart } from 'components/portfolio_chart';
+import { drawChart } from 'components/portfolio_chart';
 
 const portfolioPage = document.querySelector('.portfolios.show');
 if (portfolioPage != null) {
   dashboardHelper();
+  drawChart();
   prepareData();
   get_price_change();
   rebalanceConf();
