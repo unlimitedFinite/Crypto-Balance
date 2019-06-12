@@ -22,7 +22,7 @@ function rebalanceConf(){
       },
       callback: function(result){
        if(result === true){
-        document.querySelector('#rebalance').submit();
+        document.querySelector('#rebalance-btn').submit();
         var dialog = bootbox.dialog({
             title: 'Rebalancing Portfolio',
             message: '<p><i class="fa fa-spin fa-spinner"></i> Rebalancing at work...</p>'

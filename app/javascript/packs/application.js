@@ -3,17 +3,16 @@ import "bootstrap";
 import { apiHelper, portfolioHelper, dashboardHelper } from 'components/onboarding'
 import { rebalanceConf, sellConf } from 'components/button_confirms';
 import { get_price_change } from 'components/price_changes';
-import { addValues, listeners, allocationChart, prepareData } from 'components/allocation_chart';
-import { drawChart } from 'components/portfolio_chart';
+import { addValues, listeners, allocationChart } from 'components/allocation_chart';
+import { loadChart } from 'components/portfolio_chart';
 
 const portfolioPage = document.querySelector('.portfolios.show');
 if (portfolioPage != null) {
-  get_price_change();
   dashboardHelper();
-  drawChart();
-  prepareData();
   rebalanceConf();
   sellConf();
+  loadChart();
+  get_price_change();
 }
 
 const allocationsNewPage = document.querySelector('.portfolios.new');
