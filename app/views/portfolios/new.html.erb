@@ -15,7 +15,7 @@
         </div>
         <div class="mb-3 mt-3 text-center">
           <%= f.label :rebalance_freq, "Frequency: " %>
-          <%= f.input_field :rebalance_freq, label: 'Frequency', class: 'freq-input', collection: %w(Daily Weekly Biweekly Monthly Quarterly), selected: @portfolio.rebalance_freq,  prompt: "Choose Frequency"  %>
+          <%= f.input_field :rebalance_freq, label: 'Frequency', class: 'freq-input', collection: %w(Daily Weekly Biweekly Monthly Quarterly), selected: "Weekly",  prompt: "Choose Frequency"  %>
 
         </div>
       </div>
