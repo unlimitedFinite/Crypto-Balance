@@ -12,6 +12,7 @@ require 'json'
 
 puts 'Destroying db contents'
 # Delete records
+Order.destroy_all
 Position.destroy_all
 Allocation.destroy_all
 Portfolio.destroy_all

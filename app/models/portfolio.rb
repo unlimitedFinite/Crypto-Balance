@@ -41,6 +41,8 @@ class Portfolio < ApplicationRecord
     self.update_positions
     @coins_arr = []
     @confirmations_arr = []
+    @flag = 'rebalance'
+    @transaction_id = SecureRandom.uuid
 
     # fetch lastest price for btc
     @price_btc = lastest_btc_price
@@ -99,7 +101,6 @@ class Portfolio < ApplicationRecord
 
       end
     end
-    @flag = 'rebalance'
     execute_orders
   end
 
@@ -108,6 +109,8 @@ class Portfolio < ApplicationRecord
     @confirmations_arr = []
     read_portfolio_info
     @price_btc = lastest_btc_price
+    @flag = 'panic_sell'
+    @transaction_id = SecureRandom.uuid
 
     @positions.each do |position|
       coin = Coin.find_by(symbol: position[:asset])
@@ -143,7 +146,6 @@ class Portfolio < ApplicationRecord
         # byebug
       end
     end
-    @flag = 'panic_sell'
     execute_orders
   end
 
@@ -218,7 +220,6 @@ class Portfolio < ApplicationRecord
   end
 
   def get_trade_confirmation(confirmation)
-
     unless confirmation == []
       puts @confirmations_arr
       # byebug
@@ -250,7 +251,9 @@ class Portfolio < ApplicationRecord
           portfolio_id: self.id,
           base_coin_id: base_coin.id,
           target_coin_id: target_coin.id,
-          transact_time: order[:transactTime]
+          transact_time: order[:transactTime],
+          description: @flag.capitalize,
+          transaction_id: @transaction_id
         )
         o.save
         # byebug
