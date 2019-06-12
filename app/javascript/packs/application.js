@@ -14,13 +14,11 @@ if (portfolioPage != null) {
 }
 const allocationsNewPage = document.querySelector('.portfolios.new');
 if (allocationsNewPage != null) {
+  addValues();
+  listeners();
   allocationChart();
-  initdataArray();
-  setListeners();
-  updateChart();
-  sumAllocations();
-  setEditChart();
 }
+
 const allocationsEditPage = document.querySelector('.portfolios.edit');
 if (allocationsEditPage != null) {
   addValues();

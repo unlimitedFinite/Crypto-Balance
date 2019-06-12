@@ -1,10 +1,11 @@
 .allocations {
-  background-color: $gray;
-  color: $black;
+  background-color: #f1f1f3;
+  color: #000000;
   width: auto;
   padding: 15px;
   border-radius: 25px;
   font-size: 13px;
+  display: inline-grid;
 }
 
 .num_input {
@@ -33,6 +34,7 @@
 
 #submit-alloc {
   width: 50%;
+  margin: 0 auto;
 }
 
 .yellow {

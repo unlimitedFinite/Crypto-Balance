@@ -1,32 +1,41 @@
-<div class="container">
-  <div class="form-header">
-    <h2 class="text-center p-3 mt-5">Portfolio Setup</h2>
-  </div>
+<div class="form-header">
+  <h2 class="text-center p-3 mt-5">Portfolio Settings</h2>
+</div>
 
+<div class="container">
   <div class="row justify-content-center">
-    <div class="d-flex col-lg-10 col-md-10">
+    <div class="col-md-7">
       <div class="allocations">
-        <p class="info">Set up some automation for your portfolio here. Remember you can always manually rebalance in your dashboard!</p>
+        <h4 class="text-center border-bottom">Rebalancing</h4>
+        <p>Choose your next rebalancing date and frequency below</p>
         <%= simple_form_for @portfolio, url: {action:"create"} do |f| %>
-          <%= f.input :rebalance_freq, collection: %w(Daily Weekly Biweekly Monthly Quarterly), selected: "Weekly",  prompt: "Choose frequency" %>
-          <div class="mb-3">
-            <%= f.label :next_rebalance_dt, "Set initial rebalance date*", :class => 'd-block' %>
-            <%= f.date_select :next_rebalance_dt, order: [:day, :month, :year], selected: Date.today + 7 , :class => 'align-right w-100'%>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <h2 class="text-center">Allocations</h2>
-              <span class="alert" id="allocations"></span>
-              <%= render 'shared/allocations' %>
-            </div>
-            <div class="col-8">
-              <div id="chart_div">
-              </div>
-            </div>
-          </div>
-          <%= f.submit "Create", :class => 'btn trigger btn-success', id: "submit-alloc" %>
+        <div class="mb-3 mt-3 text-center">
+          <%= f.label :next_rebalance_dt, "Next Rebalance: " %>
+          <%= f.date_select :next_rebalance_dt, order: [:day, :month, :year], selected: Date.today + 7 , :class => 'align-right w-100'%>
+        </div>
+        <div class="mb-3 mt-3 text-center">
+          <%= f.label :rebalance_freq, "Frequency: " %>
+          <%= f.input_field :rebalance_freq, label: 'Frequency', class: 'freq-input', collection: %w(Daily Weekly Biweekly Monthly Quarterly), selected: @portfolio.rebalance_freq,  prompt: "Choose Frequency"  %>
         </div>
       </div>
-    <% end %>
+    </div>
+    <div class="col-md-5">
+      <div class="allocations">
+      <h4 class="text-center border-bottom">Allocations</h4>
+      <p>Choose your allocations below, make sure they add up to 100</p>
+        <%= f.submit "Update", :class => 'btn trigger btn-success', id: "submit-alloc" %><br>
+      <span id="allocations"></span>
+      </div>
+    </div>
+  </div>
+  <div id="shares-cont">
+    <p id="shares"><span id="sum"> </span> of 100 shares chosen</p>
   </div>
 </div>
+<div class="container">
+  <div id="alloc_chart"></div>
+</div>
+<%= render 'shared/allocations' %>
+<% end %>
+
+
