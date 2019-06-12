@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   post "portfolios/:id/panic_sell", to: "portfolios#panic_sell", as: "sell_positions"
   resources :portfolios, except: [:index, :destroy] do
     resources :orders, except: [:new, :edit, :show]
+    get "orders/download", to: "orders#download", as: "download_orders"
   end
 
   devise_for :users, controllers: { registrations: "registrations" }
