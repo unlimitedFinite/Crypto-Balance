@@ -4,7 +4,7 @@
     <div class="position-card" style="border-left: 15px solid <%= coin.color %>;">
       <div class="position-card-top">
         <span class="title">
-          <%= image_tag coin.image, alt: "#{coin.name}" %>
+          <%= image_tag coin.image, alt: "" %>
           <%= coin.name %>
         </span>
       <p class="helper3">$<%= sprintf('%.2f', (position.quantity * coin.price_usdt)) %></p>
