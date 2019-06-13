@@ -2,13 +2,13 @@
 
   <div class="form-group">
     <div class="container helper2">
-      <div class="row justify-content-center" id="listener">
+      <div class="row justify-content-center coin-container" id="listener">
         <% @coins = ['Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tron','Stellar','Zcash'] %>
         <% @coins.each do |currency| %>
           <% coin = Coin.find_by(name: currency) %>
           <% allocation = @portfolio.allocations.find_by(coin_id: coin.id) %>
           <% default_value = allocation.nil? ? 0 : allocation.allocation_pct %>
-        <div class="col-lg-2 col-md-3 col-sm-4 col-6 text-center">
+        <div class="col text-center allo-col">
           <div class="allo-card">
             <div class="allo-title" style="border-bottom: 2px solid <%= coin.color %>;">
               <%= image_tag "#{coin.image}", alt: "#{currency}" %>
