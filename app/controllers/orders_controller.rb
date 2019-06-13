@@ -24,12 +24,6 @@ class OrdersController < ApplicationController
         send_data pdf, filename: 'report.pdf'
       end
     end
-    # html = render_to_string(template: 'orders/report')
-    # pdf = WickedPdf.new.pdf_from_string(html)
-
-    # send_data(pdf,
-    #   filename: "report.pdf",
-    #   disposition: 'attachment')
   end
 end
 
