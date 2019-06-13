@@ -1,5 +1,6 @@
 const allocationsEditPage = document.querySelector('.portfolios.edit');
-if (allocationsEditPage != null) {
+const allocationsNewPage = document.querySelector('.portfolios.new');
+if (allocationsEditPage != null || allocationsNewPage != null) {
   // Load the Visualization API and the corechart package.
   google.charts.load('current', {'packages':['corechart']});
 
