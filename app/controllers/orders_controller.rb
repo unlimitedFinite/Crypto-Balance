@@ -27,6 +27,3 @@ class OrdersController < ApplicationController
   end
 end
 
-private
-
-
