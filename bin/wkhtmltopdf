@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+###
+# wkhtmltopdf_binary_gem Copyright 2013 The University of Iowa
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy
+# of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+require 'rbconfig'
+
+suffix = case RbConfig::CONFIG['host_os']
+when /linux/
+  (RbConfig::CONFIG['host_cpu'] == 'x86_64') ? 'linux_amd64' : 'linux_x86'
+when /darwin/
+  'darwin_x86'
+else
+  raise "Invalid platform. Must be running on linux or intel-based Mac OS."
+end
+
+system *$*.unshift("#{__FILE__}_#{suffix}")
