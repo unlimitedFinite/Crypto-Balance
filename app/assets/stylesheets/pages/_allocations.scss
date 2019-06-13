@@ -8,6 +8,11 @@
   display: inline-grid;
 }
 
+.coin-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
 .allocations p,h4 {
   padding: 10px 20px;
 }
@@ -58,6 +63,7 @@
   background-color: #524b2a73;
 }
 
+
 .green {
   transition: 1s;
   background-color:$dark-green;
@@ -73,9 +79,9 @@
 }
 
 .allo-card {
-  margin: 5px 0;
+  margin: 10px 0;
   background-color: white;
-  width: 125px;
+  width: 130px;
   border-radius: 20px;
   box-shadow: 4px 4px #d0d0d0a8;
 }
@@ -85,6 +91,11 @@
   display: flex;
   position: relative;
   padding-left: 4px;
+}
+
+.allo-col {
+  justify-content: center;
+  display: flex;
 }
 
 .allo-title img {
