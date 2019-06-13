@@ -23,11 +23,12 @@
       <div class="allocations">
       <h4 class="text-center border-bottom">Allocations</h4>
       <p>Your current target allocations are below, please make any alterations and submit your changes</p>
-        <%= f.submit "Update", :class => 'btn trigger btn-success', id: "submit-alloc" %><br>
+        <%= f.submit "Update", :class => 'btn trigger btn-success', id: "submit-alloc" %>
+        <a class="btn btn-secondary reset-btn">Reset</a>
+        <br>
       <p id="shares">
         <span id="allocations"></span>
       </p>
-      <span id="allocations"></span>
       </div>
     </div>
   </div>
