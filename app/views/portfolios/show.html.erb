@@ -10,11 +10,12 @@
         <% value_yesterday = 0.0 %>
         <% Coin.all.each do |coin| %>
           <% position_yesterday = Position.where(as_of_dt: Date.yesterday, coin: coin, portfolio: @portfolio).order(created_at: :desc).limit(1) %>
-          <% value_yesterday += position_yesterday.first[:value_usdt] %>
+          <% value_yesterday += position_yesterday.first[:value_usdt] unless position_yesterday.first.nil? %>
         <% end %>
         <h5>Portfolio Value</h5>
         <% current_value = @portfolio.current_value_btc.to_f * price_btc %>
-        <% gain_loss = (100*(current_value - value_yesterday) / value_yesterday).round(2) %>
+        <% gain_loss = value_yesterday == 0.0 ? 0.0 : (100*(current_value - value_yesterday) / value_yesterday).round(2) %>
+
         <span class="display-4"><%= number_to_currency(current_value) %></span>
         <p class="<%= gain_loss > 0 ? 'text-success' : 'text-danger' %>"><%= gain_loss > 0 ? '+' : '-' %><%= gain_loss %>%</p>
       </div>
