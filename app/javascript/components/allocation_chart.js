@@ -111,7 +111,7 @@ function listeners(){
       prepareData();
     });
   });
-  var reset = document.querySelector(".reset-btn");
+  var reset = document.querySelector(".index-btn");
   reset.addEventListener('click', (e) => {
     resetIndex();
   })

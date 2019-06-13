@@ -23,11 +23,11 @@
     <div class="col-6">
       <div class="allocations helper3">
       <h4 class="text-center border-bottom">Allocations</h4>
-      <p>Your allocations must allows equal 100. These are the targets that you would like to hold of each coin. When you rebalance. If you would like to reset to our recommended index click reset below!</p>
-      <span id="index-container"></span>
-        <%= f.submit "Create", :class => 'btn trigger btn-success', id: "submit-alloc" %>
-      <a class="reset-btn">Reset</a>
-      <br>
+      <p>These are the targets that you would like to hold of each coin. Your allocations must equal 100 before you can submit. If you would like to reset to our recommended index click <strong><span class="index-btn">here!</span></strong></p>
+      <div class="buttons">
+          <%= f.submit "Update", :class => 'btn trigger btn-success', id: "submit-alloc" %>
+        </div>
+        <br>
       <p id="shares">
         <span id="allocations"></span>
       </p>
