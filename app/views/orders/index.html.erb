@@ -22,6 +22,7 @@
             <%= Time.at(transaction.last.first[:transact_time].to_i / 1000).to_datetime.strftime(" %b %d, %Y %l:%M %p") %>
           </span>
           <p><%= transaction.last.first[:description] %></p>
+          <p><%= link_to 'Download', portfolio_download_orders_path(transaction.first, format: 'pdf') %></p>
         </div>
       </div>
       <div id="collapse<%= index+1 %>" class="panel-collapse collapse">
@@ -34,6 +35,7 @@
                     <table class="table table-borderless">
                       <thead>
                         <tr>
+                          <th scope="col"></th>
                           <th scope="col">Symbol</th>
                           <th scope="col">Side</th>
                           <th scope="col">Quantity</th>
@@ -47,8 +49,10 @@
                       <tbody>
                         <% transaction.last.each do |order| %>
                             <% @coin_base = Coin.find(order[:base_coin_id]).symbol %>
+                            <% @coin_base_image = Coin.find(order[:base_coin_id]).image %>
                             <% @coin_target = Coin.find(order[:target_coin_id]).symbol %>
                                 <tr>
+                                  <td><%= image_tag @coin_base_image, alt: "#{@coin_base}" %></td>
                                   <td><%= "#{@coin_base}#{@coin_target}" %></td>
                                   <td><%= order[:side] %></td>
                                   <td><%= "%f" % order[:quantity] %></td>
