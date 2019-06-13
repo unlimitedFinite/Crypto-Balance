@@ -7,7 +7,7 @@
         <% @coins.each do |currency| %>
           <% coin = Coin.find_by(name: currency) %>
           <% allocation = @portfolio.allocations.find_by(coin_id: coin.id) %>
-          <% default_value = allocation.nil? ? 0 : allocation.allocation_pct %>
+          <% default_value = allocation.nil? ? nil : allocation.allocation_pct %>
         <div class="col text-center allo-col">
           <div class="allo-card">
             <div class="allo-title" style="border-bottom: 2px solid <%= coin.color %>;">
@@ -34,9 +34,6 @@
   var sum = 0;
   var dataHash = {};
   var dataArray = [];
-  // function onChangeTest(textbox) {
-  //       alert("Value is " + textbox.value + "\n" + "Old Value is " + textbox.oldvalue);
-  //   }
 </script>
 
 <!-- Page loads: show chart with labels but zero values -->

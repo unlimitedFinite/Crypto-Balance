@@ -5,7 +5,12 @@
   padding: 0;
   border-radius: 25px;
   font-size: 13px;
-  display: inline-grid;
+}
+
+.buttons {
+  justify-content: center;
+  align-items: center;
+  display: flex;
 }
 
 .coin-container {
@@ -23,12 +28,20 @@
   text-align: center;
 }
 
+.reset-btn {
+}
+
 #allocations {
   font-size: 0.7rem;
   text-align: center;
 }
 
-#shares-cont {
+.index-btn {
+  text-decoration: underline;
+}
+
+.index-btn:hover {
+  color: blue;
 }
 
 #shares {
@@ -46,12 +59,10 @@
 
 #submit-alloc {
   width: 50%;
-  margin: 0 auto;
 }
 
 #submit-alloc:disabled {
   width: 50%;
-  margin: 0 auto;
   background-color: #bdb6ac6e;
   border: none;
   color: #8c888885;

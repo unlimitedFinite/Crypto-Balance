@@ -38,12 +38,12 @@ function portfolioHelper(){
       },
       {
         element: '.helper2',
-        intro: 'Here you can manually set your target allocations. Just increase or decrease until you reach 100%!',
+        intro: 'Here is where you can define your allocations. We have preloaded an equal share of each coin, feel free to change them!',
         position: 'top'
       },
       {
         element: '.helper3',
-        intro: 'If you dont feel like choosing your own allocations, we can set your portfolio to match our recommended index!',
+        intro: 'If you accidently set your allocations too high or low, you can see how far off you are before submitting!',
         position: 'left'
       }
     ]
