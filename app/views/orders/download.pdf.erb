@@ -3,10 +3,58 @@
   <head>
     <meta charset='utf-8' />
     <%= wicked_pdf_stylesheet_link_tag "pdf" -%>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
   </head>
   <body onload='number_pages'>
-    <div id="content">
-      <h1>Your report comes here</h1>
+    <div class="d-flex bd-highlight mb-3">
+      <div class="display-1 d-flex"><strong>CryptoBalance</strong></div>
+      <div class="display-4 d-flex p-3">Transaction Confirmation for <%= user.first_name %> <%= user.last_name %></div>
+      <div class="display-3 p-3">
+        <span>
+          <%= Time.at(orders.first[:transact_time].to_i / 1000).to_datetime.strftime(" %b %d, %Y %l:%M %p") %>
+        </span>
+        <br>
+        <span><%= orders.first[:description] %></span>
+      </div>
     </div>
+    <br>
+    <br>
+    <br>
+    <div class="display-4">
+          <table class="table table-borderless">
+                      <thead>
+                        <tr>
+                          <th scope="col">Symbol</th>
+                          <th scope="col">Side</th>
+                          <th scope="col">Quantity</th>
+                          <th scope="col">Base Coin</th>
+                          <th scope="col">Price</th>
+                          <th scope="col">Target Coin</th>
+                          <th scope="col">Commission</th>
+                          <th scope="col">Commission Asset</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% orders.each do |order| %>
+                            <% @coin_base = Coin.find(order[:base_coin_id]).symbol %>
+                            <% @coin_target = Coin.find(order[:target_coin_id]).symbol %>
+                                <tr>
+                                  <td><%= "#{@coin_base}#{@coin_target}" %></td>
+                                  <td><%= order[:side] %></td>
+                                  <td><%= "%f" % order[:quantity] %></td>
+                                  <td><%= @coin_base %></td>
+                                  <td><%= "%f" % order[:price] %></td>
+                                  <td><%= @coin_target %></td>
+                                  <td><%= "%f" % order[:commission] %></td>
+                                  <td><%= order[:commission_asset] %></td>
+
+                                </tr>
+
+                        <% end %>
+                      </tbody>
+                    </table>
+    </div>
+
   </body>
 </html>

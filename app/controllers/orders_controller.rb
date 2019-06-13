@@ -16,12 +16,10 @@ class OrdersController < ApplicationController
 
   def download
     # aggregate your value here
-
-
-
+    @orders = Order.where(transaction_id: params[:portfolio_id])
     respond_to do |format|
       format.pdf do
-        pdf_html = ActionController::Base.new.render_to_string(template: 'orders/download')
+        pdf_html = ActionController::Base.new.render_to_string(template: 'orders/download', locals: { orders: @orders , user: current_user })
         pdf = WickedPdf.new.pdf_from_string(pdf_html)
         send_data pdf, filename: 'report.pdf'
       end
