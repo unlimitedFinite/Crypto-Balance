@@ -1,9 +1,12 @@
-// .alert {
-//   position: fixed;
-//   bottom: 16px;
-//   right: 16px;
-//   z-index: 1000;
-// }
+.alert {
+  position: absolute;
+  // padding: 0.75rem 1.25rem;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1;
+}
 
 
 .flash {
@@ -18,16 +21,28 @@
 }
 
 .flash-success {
-  border: 2px solid #1EDD88;
-  background-color: white;
+  border: 2px solid #43a57929;
+  background-color: #54ff0652;
 }
 
 .flash-warning {
-  border: 2px solid #FFC65A;
-  background-color: white;
+  border: 2px solid #b0b9386e;
+  background-color: #e3e4bf82;
+  color: #484e1c;
 }
 
 .flash-danger {
-  border: 2px solid #FD1015;
-  background-color: white;
+  border: 2px solid #af5b5d63;
+  background-color: #f11b1ba8;
+  color: #230606;
+}
+
+.alert-info {
+  border: 2px solid #b0b9386e;
+  background-color: #e3e4bf82;
+  color: #484e1c;
+}
+
+.alert-dismissible .close {
+  // padding: none;
 }
