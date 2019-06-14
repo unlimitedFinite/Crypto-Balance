@@ -18,11 +18,16 @@
           <% color = 'red' %>
         <% end %>
         <div class="position-card" style="border-left: 15px solid <%= color %>;">
-          <span>
-            <%= Time.at(transaction.last.first[:transact_time].to_i / 1000).to_datetime.strftime(" %b %d, %Y %l:%M %p") %>
-          </span>
-          <p><%= transaction.last.first[:description] %></p>
-          <p><%= link_to 'Download', portfolio_download_orders_path(transaction.first, format: 'pdf') %></p>
+          <div class="position-card-top">
+            <span>
+              <%= Time.at(transaction.last.first[:transact_time].to_i / 1000).to_datetime.strftime(" %b %d, %Y %l:%M %p") %>
+            </span>
+            <p><%= transaction.last.first[:description] %></p>
+          </div>
+          <p><%= link_to portfolio_download_orders_path(transaction.first, format: 'pdf') do %>
+              <i class="fas fa-file-download"></i>
+            <% end %>
+          </p>
         </div>
       </div>
       <div id="collapse<%= index+1 %>" class="panel-collapse collapse">
