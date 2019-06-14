@@ -21,6 +21,7 @@
       </div>
     </div>
   </div>
+
   <div class="d-flex justify-content-center">
     <%= form_tag rebalance_positions_path(@portfolio), :id => 'rebalance-btn' do %>
       <button class="btn trigger helper5 btn-success" id="rebalance-btn"> Rebalance</button>
@@ -32,6 +33,9 @@
     <%= form_tag sell_positions_path(@portfolio), :id => 'sell' do %>
       <button class="helper7 btn trigger btn-danger" id="sell-btn"> Panic Sell</button>
     <% end %>
+  </div>
+  <div class="next">Next Rebalance: <%= @portfolio.next_rebalance_dt.strftime("%A  #{@portfolio.next_rebalance_dt.day.ordinalize} %B") %>
+
   </div>
 </div>
 
