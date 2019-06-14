@@ -87,7 +87,7 @@ function dashboardHelper(){
       },
       {
         element: '.helper6',
-        intro: 'Simple refresh to get latest prices',
+        intro: 'Refresh to get the latest prices',
         position: 'bottom'
       },
       {

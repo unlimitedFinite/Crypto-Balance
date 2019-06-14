@@ -2,10 +2,18 @@
   padding-top: 10px;
 }
 
+.header p {
+  margin: 0;
+}
+
 .next {
-  background: white;
+  background: #173055;
   text-align: center;
-  padding: 15px;
+  padding: 5px 0;
+  /* border: 2px solid #666692; */
+  width: 400px;
+  margin: 0 auto;
+  color: #ffffffb0;
 }
 
 .dashboard {
