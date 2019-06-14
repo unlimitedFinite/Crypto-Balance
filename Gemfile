@@ -21,6 +21,7 @@ gem 'uglifier'
 gem 'webpacker'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
+gem 'wkhtmltopdf-heroku', '2.12.5.0'
 
 group :development do
   gem 'web-console', '>= 3.3.0'
