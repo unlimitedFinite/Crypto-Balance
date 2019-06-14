@@ -7,7 +7,7 @@
     <div class="col-6">
       <div class="allocations">
         <h4 class="text-center border-bottom">Rebalancing</h4>
-        <p>You current next rebalancing is due to take place on <%= @portfolio.next_rebalance_dt %>.</p>
+        <p>You current next rebalancing is due to take place on <%= @portfolio.next_rebalance_dt.strftime("%A  #{@portfolio.next_rebalance_dt.day.ordinalize} %B") %>.</p>
         <%= simple_form_for @portfolio, url: {action:"update"} do |f| %>
         <div class="mb-3 mt-3 text-center">
           <%= f.label :next_rebalance_dt, "Next Rebalance: " %>
