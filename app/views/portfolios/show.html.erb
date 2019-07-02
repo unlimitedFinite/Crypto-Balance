@@ -27,7 +27,9 @@
     <%= form_tag rebalance_positions_path(@portfolio), :id => 'rebalance-btn' do %>
       <button class="btn trigger helper5 btn-success" id="rebalance-btn"> Rebalance</button>
     <% end %>
-
+    <%= form_tag all_btc_path(@portfolio), :id => 'all-btc-btn' do %>
+      <button class="btn trigger helper5 btn-info" id="all-btc-btn"> All BTC</button>
+    <% end %>
     <%= link_to create_positions_path(@portfolio), class:"refresh" do %>
       <i class="refresh helper6 fas fa-sync-alt"></i>
     <% end %>

@@ -149,6 +149,31 @@ class Portfolio < ApplicationRecord
     execute_orders
   end
 
+  def btc
+    @coins_arr = []
+    @confirmations_arr = []
+    read_portfolio_info
+    @price_btc = lastest_btc_price
+    @flag = 'sell alts'
+    @transaction_id = SecureRandom.uuid
+
+    @positions.each do |position|
+      coin = Coin.find_by(symbol: position[:asset])
+
+      unless coin.nil?
+        min_order_value = 0.001 / coin.price_btc
+        coinhash = {
+          name: position[:asset],
+          amount: position[:free].to_f.abs,
+          rebalance_amount: -position[:free].to_f.abs,
+          min_order_value: min_order_value
+        }
+        @coins_arr << coinhash
+      end
+    end
+    execute_orders
+  end
+
   private
 
   def read_portfolio_info

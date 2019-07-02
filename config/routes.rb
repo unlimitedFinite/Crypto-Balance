@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get "portfolios/:id/create_positions", to: "portfolios#create_positions", as: "create_positions"
   post "portfolios/:id/rebalance_positions", to: "portfolios#rebalance_positions", as: "rebalance_positions"
   post "portfolios/:id/panic_sell", to: "portfolios#panic_sell", as: "sell_positions"
+  post "portfolios/:id/all_btc", to: "portfolios#all_btc", as: "all_btc"
   resources :portfolios, except: [:index, :destroy] do
     resources :orders, except: [:new, :edit, :show]
     get "orders/download", to: "orders#download", as: "download_orders"
