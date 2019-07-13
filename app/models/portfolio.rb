@@ -131,8 +131,6 @@ class Portfolio < ApplicationRecord
             symbol: 'BTCUSDT',
             type: 'MARKET'
           )
-          # get_trade_confirmation('BTC')
-
           get_trade_confirmation(order)
         end
 
@@ -160,7 +158,32 @@ class Portfolio < ApplicationRecord
     @positions.each do |position|
       coin = Coin.find_by(symbol: position[:asset])
 
-      unless coin.nil?
+      # if coin is USDT, buy order for BTC
+      if position[:asset] == 'USDT'
+
+        initialise_coin(position)
+
+        unless @number_of_usdt <= @min_order_value_usdt \
+          || @number_of_btc < order_size_btc(@number_of_btc, @min_trade_unit)
+
+          quantity = order_size_btc(@number_of_btc, @min_trade_unit)
+
+          order = Binance::Api::Order.create!(
+            quantity: quantity,
+            side: 'BUY',
+            symbol: 'BTCUSDT',
+            type: 'MARKET'
+          )
+          get_trade_confirmation(order)
+        end
+      end
+
+
+
+
+
+
+      unless coin.nil? || coin
         min_order_value = 0.001 / coin.price_btc
         coinhash = {
           name: position[:asset],
@@ -228,13 +251,16 @@ class Portfolio < ApplicationRecord
           ticker = "#{coinhash[:name]}BTC"
         elsif @flag == 'panic_sell'
           ticker = "#{coinhash[:name]}USDT"
+        elsif @flag == 'sell alts'
+          ticker = "#{coinhash}[:name]BTC"
         end
 
         order = Binance::Api::Order.create!(
           quantity: quantity,
           side: side,
           symbol: ticker,
-          type: 'MARKET'
+          type: 'MARKET',
+          test: true # remove line once functional!
         )
 
         puts order
