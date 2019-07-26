@@ -32,7 +32,20 @@ User.create(
 
 puts 'Creating coins'
 
-coins = ['Bitcoin','Ethereum','Ripple','Bitcoin-Cash','Litecoin','EOS','Cardano','Tether','Tron','Stellar','Zcash']
+coins = [
+  ['BTC', 'Bitcoin'],
+  ['ETH', 'Ethereum'],
+  ['XRP', 'Ripple'],
+  ['BCHABC', 'Bitcoin-Cash'],
+  ['LTC', 'Litecoin'],
+  ['EOS', 'EOS'],
+  ['ADA', 'Cardano'],
+  ['USDT', 'Tether'],
+  ['TRX', 'Tron'],
+  ['XLM', 'Stellar'],
+  ['ZEC', 'Zcash']
+]
+
 lots = {
   BTC: 0.000001,
   ETH: 0.001,
@@ -79,12 +92,14 @@ base_coins = ['BTC','USDT']
 
 
 coins.each do |coin|
-  coin_name_url = "https://api.99cryptocoin.com/v1/ticker/#{coin}"
-  coin_name_json = open(coin_name_url).read
-  coin_name_data = JSON.parse(coin_name_json)
+  symbol = coin[0]
+  coin_name = coin[1]
+  # p coin_name_url = "https://api.binance.com/api/v3/ticker/price?symbol=#{coin[0]}BTC"
+  # coin_name_json = open(coin_name_url).read
+  # coin_name_data = JSON.parse(coin_name_json)
 
-  symbol = coin_name_data['result']['symbol']
-  symbol = 'BCHABC' if symbol == 'BCH'
+  # symbol = coin_name_data['result']['symbol']
+  # symbol = 'BCHABC' if symbol == 'BCH'
 
   is_base_coin = true if base_coins.include?(symbol)
 
@@ -105,10 +120,10 @@ coins.each do |coin|
   bitcoin_data = JSON.parse(bitcoin_json)
 
 
-  if coin == 'Tether'
+  if coin_name == 'Tether'
     price_usdt = 1
     price_btc = 1 / bitcoin_data['price'].to_f
-  elsif coin == 'Bitcoin'
+  elsif coin_name == 'Bitcoin'
     price_usdt = usdt_data['price']
     price_btc = 1
   else
@@ -117,7 +132,7 @@ coins.each do |coin|
   end
 
   Coin.create(
-    name: coin,
+    name: coin_name,
     symbol: symbol,
     price_usdt: price_usdt,
     price_btc: price_btc,

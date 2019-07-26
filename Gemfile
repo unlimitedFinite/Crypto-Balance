@@ -11,6 +11,7 @@ gem 'redis'
 gem 'binance-ruby'
 gem 'sidekiq'
 gem 'sidekiq-failures', '~> 1.0'
+gem 'lockbox'
 gem 'sidekiq-scheduler'
 
 gem 'autoprefixer-rails'
