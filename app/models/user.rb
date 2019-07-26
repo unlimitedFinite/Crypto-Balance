@@ -6,4 +6,6 @@ class User < ApplicationRecord
   has_one :portfolio
 
   validates :email, uniqueness: true
+
+  encrypts :secret_key
 end
