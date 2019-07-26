@@ -7,10 +7,12 @@ class RebalancePortfolioJob < ApplicationJob
 
   def perform
     # Do something later
+
     portfolios = Portfolio.all
     portfolios.each do |portfolio|
       next unless Date.today == portfolio.next_rebalance_dt
-
+      Binance::Api::Configuration.api_key = portfolio.user.api_key
+      Binance::Api::Configuration.secret_key = portfolio.user.secret_key
       portfolio.rebalance
       if portfolio.rebalance_freq == 'Daily'
         portfolio.next_rebalance_dt = portfolio.next_rebalance_dt.tomorrow
