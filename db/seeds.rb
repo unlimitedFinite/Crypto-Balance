@@ -43,7 +43,7 @@ coins = [
   ['USDT', 'Tether'],
   ['TRX', 'Tron'],
   ['XLM', 'Stellar'],
-  ['ZEC', 'Z-Cash']
+  ['ZEC', 'Zcash']
 ]
 
 lots = {
