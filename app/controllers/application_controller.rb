@@ -10,8 +10,12 @@ class ApplicationController < ActionController::Base
 
   def set_credentials
     unless params[:controller].include?("devise")
-      Binance::Api::Configuration.api_key = current_user.api_key
-      Binance::Api::Configuration.secret_key = current_user.secret_key
+      if current_user.api_key
+        Binance::Api::Configuration.api_key = current_user.api_key
+        Binance::Api::Configuration.secret_key = current_user.secret_key
+      else
+        p "NO API KEY ENTERED - Entering Test Mode"
+      end
     end
   end
 

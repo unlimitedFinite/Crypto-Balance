@@ -19,17 +19,6 @@ Portfolio.destroy_all
 User.destroy_all
 Coin.destroy_all
 
-puts 'creating test user'
-
-User.create(
-  first_name: 'Testing',
-  last_name: 'Tester',
-  email: 'test@testing.com',
-  password: 'secret',
-  api_key: 'S1zgR71EfhvPCObCe4FhO0Fl79Cqlh4fWYEuUZVAu7YysNXutTwZsdJf5Xz5Ho7K',
-  secret_key: 'SE5vnFHHEUFpZGNoALl4ANhE3mntrFe5UIHeRNRukm8mGK0jF4oMR4MOovIsd7bR'
-)
-
 puts 'Creating coins'
 
 coins = [

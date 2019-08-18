@@ -10,6 +10,25 @@ class Portfolio < ApplicationRecord
   validates :rebalance_freq, inclusion: { in: %w[Daily Weekly Biweekly Monthly Quarterly] }
   validates :rebalance_freq, :coin_id, presence: true
 
+  def test_positions
+    p self.current_value_btc = 1
+    p self.current_value_usdt = lastest_btc_price
+    self.allocations.each do |allocation|
+      coin = Coin.find(allocation.coin_id)
+      position_btc = (self.current_value_btc / 100) * allocation.allocation_pct
+      quantity = position_btc / coin.price_btc
+      p Position.create(
+        portfolio: self,
+        coin_id: coin.id,
+        quantity: quantity,
+        value_usdt: quantity.to_f * coin.price_usdt,
+        value_btc: quantity.to_f * coin.price_btc,
+        as_of_dt: DateTime.now.to_date
+      )
+    end
+    # Make a pretend purchase of each coin in the portfolio to get asset balances
+  end
+
   def update_positions
     positions = []
     account_info = Binance::Api::Account.info!
