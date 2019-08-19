@@ -16,7 +16,7 @@
             </div>
             <div class="allo-content" style="background-color: <%= coin.color %>;border-radius: 20px;">
 
-              <%= p.number_field "crypto[#{currency}]", value: default_value, min: 0, max: 100, step: 5, class: 'form-control num_input', onfocus: "this.oldvalue = this.value;", onchange: "onChangeTest(this);this.oldvalue = this.value;" %>
+              <%= p.number_field "crypto[#{currency}]", value: default_value, min: 0, max: 100, step: 5, class: 'form-control num_input' %>
             </div>
           </div>
 

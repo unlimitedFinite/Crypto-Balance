@@ -2,6 +2,7 @@ require 'open-uri'
 require 'json'
 require 'date'
 require 'nokogiri'
+require 'pry-byebug'
 
 class PortfoliosController < ApplicationController
   before_action :authenticate_user!
@@ -56,11 +57,12 @@ class PortfoliosController < ApplicationController
   def create_positions
     if current_user.api_key
       @portfolio.update_positions
-      redirect_to portfolio_path(@portfolio)
     else
+      @portfolio.demo = true
       @portfolio.test_positions
-      redirect_to portfolio_path(@portfolio)
+      @portfolio.save
     end
+    redirect_to portfolio_path(@portfolio)
   end
 
   def get_total_usdt
