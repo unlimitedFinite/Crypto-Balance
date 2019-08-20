@@ -20,9 +20,11 @@
           </div>
 
         </li>
-        <li class="nav-item">
-          <%= link_to "Trade History", portfolio_orders_path(current_user.portfolio), class: "nav-link nav-link" %>
-        </li>
+        <% if Order.find_by(portfolio_id: current_user.portfolio.id) %>
+          <li class="nav-item">
+            <%= link_to "Trade History", portfolio_orders_path(current_user.portfolio), class: "nav-link nav-link" %>
+          </li>
+        <% end %>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class='fas fa-user'></i>
