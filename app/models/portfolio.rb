@@ -1,3 +1,5 @@
+require 'pry-byebug'
+
 class Portfolio < ApplicationRecord
   belongs_to :user
   belongs_to :coin
@@ -11,11 +13,16 @@ class Portfolio < ApplicationRecord
   validates :rebalance_freq, :coin_id, presence: true
 
   def test_positions
+    if positions.length > 0
+      positions.destroy_all
+      p "destroying positions"
+    end
     self.current_value_btc = 1
     self.current_value_usdt = lastest_btc_price
-    self.allocations.each do |allocation|
+    p "setting portfolio values"
+    allocations.each do |allocation|
       coin = Coin.find(allocation.coin_id)
-      position_btc = (self.current_value_btc / 100) * allocation.allocation_pct
+      position_btc = (current_value_btc / 100) * allocation.allocation_pct
       quantity = position_btc / coin.price_btc
       Position.create(
         portfolio: self,
@@ -26,6 +33,13 @@ class Portfolio < ApplicationRecord
         as_of_dt: DateTime.now.to_date
       )
     end
+    # current_value_usdt = 0
+    # current_value_btc = 0
+    # positions.each do |p|
+    #   current_value_usdt += p.value_usdt
+    #   current_value_btc += p.value_btc
+    # end
+    # byebug
   end
 
   def update_positions
@@ -120,6 +134,21 @@ class Portfolio < ApplicationRecord
       end
     end
     execute_orders
+  end
+
+  def panic_positions
+    Coin.all.each do |coin|
+      if coin.symbol == 'USDT'
+      end
+    end
+    # Position.create(
+    #     portfolio: self,
+    #     coin_id: coin.id,
+    #     quantity: quantity,
+    #     value_usdt: quantity.to_f * coin.price_usdt,
+    #     value_btc: quantity.to_f * coin.price_btc,
+    #     as_of_dt: DateTime.now.to_date
+    #   )
   end
 
   def panic

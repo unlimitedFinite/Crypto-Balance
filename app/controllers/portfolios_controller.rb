@@ -93,14 +93,22 @@ class PortfoliosController < ApplicationController
   end
 
   def rebalance_positions
-    @portfolio.rebalance
-    create_positions
+    if @portfolio.demo = false
+      @portfolio.rebalance
+      create_positions
+    else
+      create_positions
+    end
     flash[:success] = "Portfolio has been rebalanced!"
   end
 
   def panic_sell
-    @portfolio.panic
-    create_positions
+    if @portfolio.demo == true
+      @portfolio.panic_positions
+    else
+      @portfolio.panic
+      create_positions
+    end
     flash[:failure] = "Portfolio has been liquidated!"
   end
 
