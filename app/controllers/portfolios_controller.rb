@@ -6,7 +6,7 @@ require 'nokogiri'
 class PortfoliosController < ApplicationController
   before_action :authenticate_user!
 
-  before_action :set_portfolio, only: [:show, :edit, :update, :create_positions, :rebalance_positions, :panic_sell]
+  before_action :set_portfolio, only: [:show, :edit, :update, :create_positions, :rebalance_positions, :panic_sell, :all_btc]
 
 
   def new
@@ -95,6 +95,12 @@ class PortfoliosController < ApplicationController
     @portfolio.panic
     create_positions
     flash[:failure] = "Portfolio has been liquidated!"
+  end
+
+  def all_btc
+    @portfolio.btc
+    create_positions
+    flash[:success] = "You are now 100% Bitcoin"
   end
 
 private
