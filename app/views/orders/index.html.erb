@@ -8,7 +8,9 @@
   </div>
 <div class="container">
   <div class="card-container" id="target">
+
     <% all_orders = Order.where(portfolio_id: @portfolio) %>
+
     <% @transactions = all_orders.sort_by(&:transact_time).group_by(&:transaction_id) %>
     <% @transactions.each_with_index do |transaction, index| %>
       <div class="card-product" data-toggle="collapse" data-parent="#target" href="#collapse<%= index + 1 %>">
