@@ -2,6 +2,20 @@
   padding-top: 10px;
 }
 
+.header p {
+  margin: 0;
+}
+
+.next {
+  background: #173055;
+  text-align: center;
+  padding: 5px 0;
+  /* border: 2px solid #666692; */
+  width: 400px;
+  margin: 0 auto;
+  color: #ffffffb0;
+}
+
 .dashboard {
   padding: 10px 5px;
 }
@@ -16,7 +30,7 @@
 
 .chart-holder {
   display: flex;
-  height: 80vh;
+  padding-top: 30px;
   align-items: center;
 }
 

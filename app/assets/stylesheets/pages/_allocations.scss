@@ -5,7 +5,17 @@
   padding: 0;
   border-radius: 25px;
   font-size: 13px;
-  display: inline-grid;
+}
+
+.buttons {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.coin-container {
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .allocations p,h4 {
@@ -18,12 +28,20 @@
   text-align: center;
 }
 
+.reset-btn {
+}
+
 #allocations {
   font-size: 0.7rem;
   text-align: center;
 }
 
-#shares-cont {
+.index-btn {
+  text-decoration: underline;
+}
+
+.index-btn:hover {
+  color: blue;
 }
 
 #shares {
@@ -41,12 +59,10 @@
 
 #submit-alloc {
   width: 50%;
-  margin: 0 auto;
 }
 
 #submit-alloc:disabled {
   width: 50%;
-  margin: 0 auto;
   background-color: #bdb6ac6e;
   border: none;
   color: #8c888885;
@@ -57,6 +73,7 @@
   transition: 1s;
   background-color: #524b2a73;
 }
+
 
 .green {
   transition: 1s;
@@ -73,9 +90,9 @@
 }
 
 .allo-card {
-  margin: 5px 0;
+  margin: 10px 0;
   background-color: white;
-  width: 125px;
+  width: 130px;
   border-radius: 20px;
   box-shadow: 4px 4px #d0d0d0a8;
 }
@@ -85,6 +102,11 @@
   display: flex;
   position: relative;
   padding-left: 4px;
+}
+
+.allo-col {
+  justify-content: center;
+  display: flex;
 }
 
 .allo-title img {

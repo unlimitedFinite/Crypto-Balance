@@ -64,10 +64,30 @@ if (allocationsEditPage != null || allocationsNewPage != null) {
 //   };
 //   drawChart();
 // }
-function loadIndex(){
+function resetIndex(){
   var inputs = document.querySelectorAll('.num_input');
   inputs.forEach(function(i){
     i.value = 10;
+  })
+  addValues();
+  prepareData();
+}
+
+// function reset-listen(){
+//   var reset = document.getElementById("reset-btn");
+//   reset.addEventListener('click', (e) => {
+//     reset();
+//   })
+// }
+
+
+function loadIndex(){
+  var inputs = document.querySelectorAll('.num_input');
+  inputs.forEach(function(i){
+    // i.value = 10;
+    if (i.value === "") {
+      i.value = 10;
+    }
   })
   addValues();
   prepareData();
@@ -91,6 +111,10 @@ function listeners(){
       prepareData();
     });
   });
+  var reset = document.querySelector(".index-btn");
+  reset.addEventListener('click', (e) => {
+    resetIndex();
+  })
 }
 
 function prepareData(){

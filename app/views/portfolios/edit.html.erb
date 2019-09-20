@@ -7,7 +7,7 @@
     <div class="col-6">
       <div class="allocations">
         <h4 class="text-center border-bottom">Rebalancing</h4>
-        <p>You current next rebalancing is due to take place on <%= @portfolio.next_rebalance_dt %>.</p>
+        <p>You current next rebalancing is due to take place on <%= @portfolio.next_rebalance_dt.strftime("%A  #{@portfolio.next_rebalance_dt.day.ordinalize} %B") %>.</p>
         <%= simple_form_for @portfolio, url: {action:"update"} do |f| %>
         <div class="mb-3 mt-3 text-center">
           <%= f.label :next_rebalance_dt, "Next Rebalance: " %>
@@ -22,17 +22,20 @@
     <div class="col-6">
       <div class="allocations">
       <h4 class="text-center border-bottom">Allocations</h4>
-      <p>Your current target allocations are below, please make any alterations and submit your changes</p>
-        <%= f.submit "Update", :class => 'btn trigger btn-success', id: "submit-alloc" %><br>
+      <p class="mb-0">Your current target allocations are below, please make any alterations and submit your changes. You can also reset to our recommended <strong><span class="index-btn">index</span></strong></p>
+        <div class="buttons">
+          <%= f.submit "Update", :class => 'btn trigger btn-success', id: "submit-alloc" %>
+          <%= link_to "Cancel", portfolio_path(@portfolio), class:"trigger reset-btn btn btn-secondary"  %>
+        </div>
+        <br>
       <p id="shares">
         <span id="allocations"></span>
       </p>
-      <span id="allocations"></span>
       </div>
     </div>
   </div>
 </div>
-<div class="container">
+<div class="container mt-4 mb-4">
   <div id="alloc_chart"></div>
 </div>
 <%= render 'shared/allocations' %>

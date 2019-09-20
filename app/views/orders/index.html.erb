@@ -8,7 +8,9 @@
   </div>
 <div class="container">
   <div class="card-container" id="target">
-    <% all_orders = Order.where(portfolio_id: Portfolio.select("id").where(user_id: current_user.id)) %>
+
+    <% all_orders = Order.where(portfolio_id: @portfolio) %>
+
     <% @transactions = all_orders.sort_by(&:transact_time).group_by(&:transaction_id) %>
     <% @transactions.each_with_index do |transaction, index| %>
       <div class="card-product" data-toggle="collapse" data-parent="#target" href="#collapse<%= index + 1 %>">
@@ -24,10 +26,10 @@
             </span>
             <p><%= transaction.last.first[:description] %></p>
           </div>
-          <p><%= link_to portfolio_download_orders_path(transaction.first, format: 'pdf') do %>
+          <!-- <p><%#= link_to portfolio_download_orders_path(transaction.first, format: 'pdf') do %>
               <i class="fas fa-file-download"></i>
-            <% end %>
-          </p>
+            <%# end %>
+          </p> -->
         </div>
       </div>
       <div id="collapse<%= index+1 %>" class="panel-collapse collapse">
@@ -41,10 +43,10 @@
                       <thead>
                         <tr>
                           <th scope="col"></th>
-                          <th scope="col">Symbol</th>
+                          <th scope="col">Coin</th>
                           <th scope="col">Side</th>
                           <th scope="col">Quantity</th>
-                          <th scope="col">Base Coin</th>
+
                           <th scope="col">Price</th>
                           <th scope="col">Target Coin</th>
                           <th scope="col">Commission</th>
@@ -56,12 +58,13 @@
                             <% @coin_base = Coin.find(order[:base_coin_id]).symbol %>
                             <% @coin_base_image = Coin.find(order[:base_coin_id]).image %>
                             <% @coin_target = Coin.find(order[:target_coin_id]).symbol %>
+                            <% @coin_name = Coin.find(order[:base_coin_id]).name %>
                                 <tr>
                                   <td><%= image_tag @coin_base_image, alt: "#{@coin_base}" %></td>
-                                  <td><%= "#{@coin_base}#{@coin_target}" %></td>
+                                  <td><%= "#{@coin_name}" %></td>
                                   <td><%= order[:side] %></td>
                                   <td><%= "%f" % order[:quantity] %></td>
-                                  <td><%= @coin_base %></td>
+
                                   <td><%= "%f" % order[:price] %></td>
                                   <td><%= @coin_target %></td>
                                   <td><%= "%f" % order[:commission] %></td>

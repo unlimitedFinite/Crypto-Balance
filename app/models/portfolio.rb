@@ -28,8 +28,8 @@ class Portfolio < ApplicationRecord
         current_latest_position_record = Position.find_by(coin_id: coin.id, portfolio: self, as_of_dt_end: nil)
         new_position_record = create_new_position_record(coin, position)
         close_prior_position_record(current_latest_position_record, new_position_record)
-        self.current_value_usdt += new_position_record.value_usdt
-        self.current_value_btc += new_position_record.value_btc
+        self.current_value_usdt += new_position_record.value_usdt # this value and the value below don't match on the dash board total
+        self.current_value_btc += new_position_record.value_btc # read line above and investigate
       end
     end
 
@@ -80,9 +80,9 @@ class Portfolio < ApplicationRecord
 
       # byebug
 
-      unless position.nil?
+      unless position.nil? # should already be a position for each coin (dummy portfolio method) so dont need this conditional
 
-        position_value_usdt = position[:quantity] * coin.price_usdt
+        position_value_usdt = position[:quantity] * coin.price_usdt # assuming the coin prices have been updated during this method?
 
         current_pct = (position_value_usdt / self.current_value_usdt).round(2) * 100
         target_pct = @allocations.find { |a| a[:coin_id] == coin.id }.allocation_pct
@@ -284,6 +284,7 @@ class Portfolio < ApplicationRecord
   end
 
   def lastest_btc_price
+    # this would be more accurate if we take the average price of last 5 minutes
     @depth = Binance::Api.depth!(symbol: "BTCUSDT")
     @bid_price = @depth[:bids][0][0].to_f
     @ask_price = @depth[:asks][3][0].to_f
@@ -300,7 +301,7 @@ class Portfolio < ApplicationRecord
       @number_of_usdt = position[:free].to_f * @price_btc
     elsif position[:asset] == 'USDT'
       @number_of_usdt = position[:free].to_f
-      @number_of_btc = position[:free].to_f / @price_btc
+      @number_of_btc = position[:free].to_f / @price_btc  # is this correct?
     end
 
     @min_order_value_usdt = 10

@@ -23,13 +23,14 @@
     <div class="col-6">
       <div class="allocations helper3">
       <h4 class="text-center border-bottom">Allocations</h4>
-      <p>You can add a total of 100 shares, choose how you would like to spread your coins or prefill with our recommended amounts</p>
-      <span id="index-container"></span>
-        <%= f.submit "Create", :class => 'btn trigger btn-success', id: "submit-alloc" %><br>
+      <p>These are the targets that you would like to hold of each coin. Your allocations must equal 100 before you can submit. If you would like to reset to our recommended index click <strong><span class="index-btn">here!</span></strong></p>
+      <div class="buttons">
+          <%= f.submit "Update", :class => 'btn trigger btn-success', id: "submit-alloc" %>
+        </div>
+        <br>
       <p id="shares">
         <span id="allocations"></span>
       </p>
-      <span id="allocations"></span>
       </div>
     </div>
   </div>

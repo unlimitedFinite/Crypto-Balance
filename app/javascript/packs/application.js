@@ -36,5 +36,10 @@ if (signUpPage != null) {
   apiHelper();
 }
 
+if($('.alert').hasClass('show')) {
+  setTimeout(() => {
+    $('.alert').fadeOut();
+  }, 6000)
+}
 
 
